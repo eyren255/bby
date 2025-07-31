@@ -1,3 +1,4 @@
+// This constant stores a heartfelt message to be displayed on the webpage.
 const message = `
 Hey Honey Bun 💕,
 
