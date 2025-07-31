@@ -1,20 +1,18 @@
 body {
   margin: 0;
-  padding: 20px;
+  padding: 40px; /* Increased padding for better spacing */
   background-color: #f5f5dc;
   font-family: 'Comic Sans MS', cursive;
   text-align: center;
   color: #8b4513;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden;
+  display: block; /* Remove flexbox alignment */
+  height: auto; /* Adjust height to fit content */
+  overflow: auto; /* Allow scrolling if content overflows */
 }
 
 .message-container {
   font-size: 1.2rem;
-  margin: 20px auto;
+  margin: 40px auto; /* Center the container vertically with spacing */
   padding: 20px;
   background-color: #fff8dc;
   border: 2px solid #deb887;
@@ -23,8 +21,9 @@ body {
   max-width: 600px; /* Added for better responsiveness */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #8b4513;
-  text-align: left;
+  text-align: justify; /* Align text for a cleaner look */
   white-space: pre-wrap; /* Preserve line breaks in the message */
+  line-height: 1.6; /* Improved readability */
 }
 
 h1 {
@@ -41,7 +40,7 @@ p {
 }
 
 .back-button-container {
-  margin-top: 20px;
+  margin-top: 20px; /* Adjust spacing above the button */
   text-align: center; /* Center the button */
 }
 
@@ -54,6 +53,7 @@ p {
   border-radius: 10px;
   font-size: 1rem;
   transition: background 0.3s;
+  font-weight: bold; /* Make the button text more prominent */
 }
 
 .back-button:hover {
