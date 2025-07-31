@@ -2,30 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Virtual Hug 🤗</title>
   <link rel="stylesheet" href="hug.css" />
 </head>
 <body>
-  <h1>Virtual Hug 🤗</h1>
-  <p>Sending you the warmest hug ever! 💖</p>
-
-  <!-- Back Button -->
-  <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
-  </div>
-
   <div class="hug-container">
-    <!-- Hidden video initially -->
-    <video id="hugVideo" width="320" height="320" style="display: none;" muted playsinline>
-      <source src="../../assets/videos/hug.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+    <div id="tapOverlay" class="overlay">
+      <p class="tap-text">🤗 Tap to Hug</p>
+    </div>
 
-    <p class="hug-message">A big warm hug just for you, Honey Bun 💖</p>
-    <button id="hugBtn">Give Me a Hug 💗</button>
+    <video id="hugVideo" src="../../assets/video/hug.mp4" playsinline></video>
+
+    <div class="back-button-container">
+      <a href="../../index.html" class="back-button">← Back to Menu</a>
+    </div>
   </div>
 
-  <audio id="hugSound" src="../../assets/audio/hug.wav" preload="auto"></audio>
+  <script src="hug.js"></script>
 </body>
 </html>
