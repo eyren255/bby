@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dress the Bunny 🐰</title>
+  <link rel="stylesheet" href="dress.css" />
+  <script defer src="dress.js"></script>
+</head>
+<body>
+  <h1>Dress the Bunny 🐰</h1>
+  <p class="subtitle">Make the bunny look adorable! 💖</p>
+
+  <div class="game-container">
+    <div class="bunny">
+      <img id="bunnyImage" src="../../assets/images/bunny-base.png" alt="Bunny" />
+    </div>
+
+    <div class="clothes">
+      <button class="clothing-btn" data-outfit="hat">🎩 Hat</button>
+      <button class="clothing-btn" data-outfit="bow">🎀 Bow</button>
+      <button class="clothing-btn" data-outfit="glasses">👓 Glasses</button>
+      <button class="clothing-btn" data-outfit="scarf">🧣 Scarf</button>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+  </div>
+
+  <audio id="dressSound" src="../../assets/audio/dress.wav" preload="auto"></audio>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta Information -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Title -->
+  <title>For Honey Bun 💖</title>
+  
+  <!-- Styles and Scripts -->
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+  <script defer>
+    // Password protection for the main menu
+    document.addEventListener("DOMContentLoaded", () => {
+      const correctPassword = "iloveyouhoneybun"; // Replace with your desired password
+      let attempts = 3;
+
+      while (attempts > 0) {
+        const userInput = prompt("Enter the password to access the menu:");
+        if (userInput === correctPassword) {
+          alert("Access granted! Welcome, Honey Bun 💖");
+          document.querySelector(".menu").style.display = "block"; // Show the menu
+          return;
+        } else {
+          attempts--;
+          alert(`Incorrect password. ${attempts} attempts remaining.`);
+        }
+      }
+
+      alert("Access denied. Redirecting...");
+      window.location.href = "https://google.com"; // Redirect if access is denied
+    });
+  </script>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <h1 class="main-title">Welcome, My Honey Bun 💖</h1>
+    <p class="main-subtitle">Pick something cute to do today 💕</p>
+  </header>
+
+  <!-- Tap to Start Section -->
+  <div id="tapToStart">
+    <div class="overlay-text">💖 Tap anywhere to begin...</div>
+  </div>
+
+  <!-- Background Music and Sound Effects -->
+  <audio id="bgMusic" src="assets/audio/bg-music.mp3" autoplay loop muted></audio>
+  <audio id="clickSound" src="assets/audio/click.wav" preload="auto"></audio>
+
+  <!-- Main Menu -->
+  <main class="menu" style="display: none;">
+    <!-- Cute Things to Play Section -->
+    <section class="menu-section">
+      <h2>💘 Cute Things to Play</h2>
+      <div class="button-grid">
+        <a href="features/hug/hug.html" class="menu-button btn-hug">🤗 Virtual Hug</a>
+        <a href="features/quiz/quiz.html" class="menu-button btn-quiz">❓ Know Me Quiz</a>
+        <a href="features/memory-match/memory.html" class="menu-button btn-memory">🃏 Memory Match</a>
+        <a href="features/dress-bunny/dress.html" class="menu-button btn-bunny">🧸 Dress the Bunny</a>
+      </div>
+    </section>
+
+    <!-- Random & Fun Section -->
+    <section class="menu-section">
+      <h2>🔮 Random & Fun</h2>
+      <div class="button-grid">
+        <a href="features/wheel/wheel.html" class="menu-button btn-wheel">🎡 Love Spin</a>
+        <a href="features/fortune/fortune.html" class="menu-button btn-fortune">🔮 Daily Fortune</a>
+      </div>
+    </section>
+
+    <!-- Sweet Memories Section -->
+    <section class="menu-section">
+      <h2>📖 Sweet Memories</h2>
+      <div class="button-grid">
+        <a href="features/story/story.html" class="menu-button btn-story">📖 Our Story</a>
+        <a href="features/message/message.html" class="menu-button btn-message">💌 Send Me a Message</a>
+      </div>
+    </section>
+
+    <!-- Surprise Section (Hidden by Default) -->
+    <section class="menu-section surprise hidden">
+      <h2>🎁 Surprise</h2>
+      <div class="button-grid">
+        <a href="features/unlock-note/unlock.html" class="menu-button btn-note">🔐 Secret Love Note</a>
+        <a href="features/sticker-wall/sticker.html" class="menu-button btn-sticker">🎀 Sticker Wall</a>
+      </div>
+    </section>
+
+    <!-- Reveal Button -->
+    <button id="revealBtn" class="reveal-button">👀 I want a surprise!</button>
+  </main>
+</body>
+</html>

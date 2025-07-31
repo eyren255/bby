@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Know Me Quiz ❓</title>
+  <link rel="stylesheet" href="quiz.css" />
+</head>
+<body>
+  <h1>Know Me Quiz ❓</h1>
+  <p>Test how well you know me! 💕</p>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+  </div>
+
+  <div class="quiz-container">
+    <form id="quizForm">
+      <div class="question">
+        <p>1. What's my favorite snack?</p>
+        <input type="radio" name="q1" value="a" /> Chips<br />
+        <input type="radio" name="q1" value="b" /> Ice cream<br />
+        <input type="radio" name="q1" value="c" /> Noodle<br />
+      </div>
+
+      <div class="question">
+        <p>2. When is our anniversary?</p>
+        <input type="radio" name="q2" value="a" /> February 14<br />
+        <input type="radio" name="q2" value="b" /> July 28<br />
+        <input type="radio" name="q2" value="c" /> December 1<br />
+      </div>
+
+      <div class="question">
+        <p>3. What's my biggest fear?</p>
+        <input type="radio" name="q3" value="a" /> Spiders<br />
+        <input type="radio" name="q3" value="b" /> Losing you<br />
+        <input type="radio" name="q3" value="c" /> Heights<br />
+      </div>
+
+      <button type="submit">Submit 💕</button>
+    </form>
+    <div id="resultBox" class="hidden"></div>
+  </div>
+
+  <script src="quiz.js"></script>
+</body>
+</html>

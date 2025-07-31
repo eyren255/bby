@@ -1,0 +1,36 @@
+body {
+  font-family: 'Comic Sans MS', cursive;
+  background-color: #ffe4e1;
+  text-align: center;
+  padding: 20px;
+  color: #ff69b4;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.back-button-container {
+  margin-top: 20px;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ffb6c1;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background-color: #ff69b4;
+}

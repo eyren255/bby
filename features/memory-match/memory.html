@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Memory Match 🃏</title>
+  <link rel="stylesheet" href="memory.css" />
+  <script defer src="memory.js"></script>
+</head>
+<body>
+
+  <h1>Memory Match 🃏</h1>
+  <p>Match the cards and win! 🧠</p>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+  </div>
+
+  <div class="game-board" id="gameBoard"></div>
+  <div id="matchMessage" class="match-msg hidden">You matched a pair!</div>
+
+  <div id="winMessage" class="hidden">
+    🏆 WOW!! Honey Bun!, Good Job! 💗
+  </div>
+
+  <button onclick="window.location.reload()" class="restart-btn">🔄 Play Again</button>
+  <audio id="flipSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+<audio id="matchSound" src="../../assets/audio/match.wav" preload="auto"></audio>
+<audio id="winSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+
+
+
+
+</body>
+</html>
