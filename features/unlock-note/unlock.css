@@ -10,6 +10,8 @@ body {
   justify-content: center;
   min-height: 100vh;
   text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -22,19 +24,19 @@ h1 {
   background-color: #3f3928;
   border: 2px solid #e3c48f;
   border-radius: 15px;
-  padding: 30px 20px;
-  max-width: 600px;
-  width: 90%;
+  padding: 24px 18px;
+  width: 100%;
+  max-width: 500px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1.8;
   white-space: pre-wrap;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   animation: fadeIn 0.5s ease-in-out;
 }
 
 .back-button-container {
-  margin-top: 10px;
+  text-align: center;
 }
 
 .back-button {
@@ -46,6 +48,7 @@ h1 {
   font-size: 1rem;
   font-weight: bold;
   transition: all 0.3s ease;
+  display: inline-block;
 }
 
 .back-button:hover {
@@ -61,5 +64,22 @@ h1 {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Responsive Fixes */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .message-container {
+    padding: 18px 14px;
+    font-size: 1rem;
+  }
+
+  .back-button {
+    font-size: 0.95rem;
+    padding: 10px 20px;
   }
 }
