@@ -2,17 +2,19 @@ body {
   margin: 0;
   padding: 0;
   background-color: #fff0f5;
-  font-family: 'Comic Sans MS', cursive;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  touch-action: manipulation;
 }
 
 .hug-container {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
+  height: 80vh;
   padding: 20px;
   box-sizing: border-box;
   text-align: center;
@@ -20,8 +22,11 @@ body {
 
 #hugVideo {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
   border-radius: 16px;
   display: none;
+  background-color: #fff0f5;
 }
 
 .overlay {
@@ -35,25 +40,32 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .tap-text {
-  font-size: 1.8rem;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
   color: #d63384;
   background: white;
   padding: 15px 30px;
   border-radius: 12px;
   animation: pulse 1.5s infinite;
+  user-select: none;
 }
 
 @keyframes pulse {
   0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 0.8; }
   100% { transform: scale(1); opacity: 1; }
 }
 
 .back-button-container {
-  margin-top: 20px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
 }
 
 .back-button {
@@ -69,4 +81,16 @@ body {
 
 .back-button:hover {
   background-color: #ff69b4;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .hug-container {
+    height: 70vh;
+    padding: 10px;
+  }
+  
+  .tap-text {
+    padding: 10px 20px;
+  }
 }
