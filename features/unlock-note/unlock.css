@@ -20,6 +20,7 @@ body {
   border: 2px solid #deb887;
   border-radius: 10px;
   width: 80%;
+  max-width: 600px; /* Added for better responsiveness */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: #8b4513;
   text-align: left;
@@ -41,6 +42,7 @@ p {
 
 .back-button-container {
   margin-top: 20px;
+  text-align: center; /* Center the button */
 }
 
 .back-button {
@@ -66,5 +68,26 @@ p {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .message-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .back-button {
+    font-size: 0.9rem;
+    padding: 8px 16px;
   }
 }
