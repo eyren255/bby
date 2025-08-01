@@ -2,24 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sticker Wall 🎀</title>
   <link rel="stylesheet" href="sticker.css" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 </head>
 <body>
-  
-  <h1>Sticker Wall 🎀</h1>
-  <p>Decorate the wall with cute stickers! 🌟</p>
+  <h1 class="title">🎀 Decorate Your Memory Wall</h1>
 
-  <input type="file" id="stickerUpload" accept="image/*" />
-
-  <div id="wall" style="position:relative; width: 100%; max-width: 600px; height: 400px; margin: 20px auto; border: 2px dashed #ff69b4; background: #fff0f6;"></div>
-
-  <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+  <!-- Upload Photo -->
+  <div class="upload-box">
+    <label for="photoInput" class="upload-label">📸 Upload a photo</label>
+    <input type="file" id="photoInput" accept="image/*" />
   </div>
 
-  <script type="module" src="sticker.js"></script>
+  <!-- Canvas Area -->
+  <div id="canvas" class="canvas">
+    <p class="placeholder-text">Upload a photo to start decorating!</p>
+    <img id="uploadedImage" class="photo hidden" />
+  </div>
 
+  <!-- Sticker Bar -->
+  <div class="sticker-bar">
+    <div class="sticker" draggable="true">💖</div>
+    <div class="sticker" draggable="true">🌸</div>
+    <div class="sticker" draggable="true">🐰</div>
+    <div class="sticker" draggable="true">🧸</div>
+    <div class="sticker" draggable="true">💐</div>
+    <div class="sticker" draggable="true">🍓</div>
+    <div class="sticker" draggable="true">⭐️</div>
+  </div>
+<button id="saveWallBtn" class="save-button">💾 Save My Wall</button>
+
+  <script src="sticker.js"></script>
 </body>
 </html>
