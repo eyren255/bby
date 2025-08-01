@@ -1,38 +1,21 @@
-const video = document.getElementById('hugVideo');
 const overlay = document.getElementById('tapOverlay');
+const gif = document.getElementById('hugGif');
 
-// Set video source based on device size
-function setVideoSource() {
-  const isMobile = window.innerWidth <= 768;
-  video.src = isMobile ? "../../assets/video/hug.mp4" : "../../assets/video/hug.mp4";
-}
-
-// Initialize video
-setVideoSource();
-window.addEventListener('resize', setVideoSource);
-
-// Handle both touch and click events
-function startHug() {
+function playHug() {
   overlay.style.display = 'none';
-  video.style.display = 'block';
-  video.currentTime = 0;
-  video.play().catch(err => console.error("Video play failed:", err));
-  
-  // Remove event listeners after first interaction
-  overlay.removeEventListener('click', startHug);
-  overlay.removeEventListener('touchstart', startHug);
+  gif.style.display = 'block';
+
+  // Reset the GIF by reassigning its src
+  const src = gif.src;
+  gif.src = '';
+  gif.src = src;
+
+  // Allow replay after 4s (you can adjust this to match your GIF duration)
+  setTimeout(() => {
+    gif.style.display = 'none';
+    overlay.style.display = 'flex';
+  }, 4000);
 }
 
-// Add both touch and click event listeners
-overlay.addEventListener('click', startHug);
-overlay.addEventListener('touchstart', startHug);
-
-// Show tap overlay when video ends
-video.addEventListener('ended', () => {
-  video.style.display = 'none';
-  overlay.style.display = 'flex';
-  
-  // Re-add event listeners for another hug
-  overlay.addEventListener('click', startHug);
-  overlay.addEventListener('touchstart', startHug);
-});
+overlay.addEventListener('click', playHug);
+overlay.addEventListener('touchstart', playHug);
