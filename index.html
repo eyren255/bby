@@ -4,7 +4,8 @@
   <!-- Meta Information -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+  <meta name="theme-color" content="#ffeef8" />
+
   <!-- Title -->
   <title>For Honey Bun 💖</title>
   
@@ -12,35 +13,20 @@
   <link rel="stylesheet" href="style.css" />
   <script defer src="script.js"></script>
   <script defer>
-    // Password protection for the main menu
-    document.addEventListener("DOMContentLoaded", () => {
-      const correctPassword = "iloveyouhoneybun"; // Replace with your desired password
-      let attempts = 3;
-
-      while (attempts > 0) {
-        const userInput = prompt("Enter the password to access the menu:");
-        if (userInput === correctPassword) {
-          alert("Access granted! Welcome, Honey Bun 💖");
-          document.querySelector(".menu").style.display = "block"; // Show the menu
-          return;
-        } else {
-          attempts--;
-          alert(`Incorrect password. ${attempts} attempts remaining.`);
-        }
-      }
-
-      alert("Access denied. Redirecting...");
-      window.location.href = "https://google.com"; // Redirect if access is denied
-    });
+    
   </script>
 </head>
-<script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"; import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js"; const firebaseConfig = { apiKey: "AIzaSyAC3OBuV8LxNuP1WND-8mB8yqz_IgxzzNQ", authDomain: "honeybunapp-5f96e.firebaseapp.com", projectId: "honeybunapp-5f96e", storageBucket: "honeybunapp-5f96e.appspot.com", messagingSenderId: "920031816754", appId: "1:920031816754:web:8ecbb7368afb284ec4602b" }; const app = initializeApp(firebaseConfig); const storage = getStorage(app); const fileInput = document.getElementById("photoUpload"); const preview = document.getElementById("photoPreview"); // Load saved image const path = localStorage.getItem("userPhotoPath"); if (path) { getDownloadURL(ref(storage, path)).then(url => { preview.src = url; preview.style.display = "block"; }); } fileInput.addEventListener("change", async (e) => { const file = e.target.files[0]; if (!file) return; const fileRef = ref(storage, `user-uploads/${file.name}`); await uploadBytes(fileRef, file); localStorage.setItem("userPhotoPath", `user-uploads/${file.name}`); const url = await getDownloadURL(fileRef); preview.src = url; preview.style.display = "block"; }); </script>
+<!-- Modular scripts -->
+<script type="module" src="./firebase.js"></script>
+<script type="module" src="./firebase-upload.js"></script>
+<script type="module" src="./password.js"></script>
 
 <body>
   <!-- Header Section -->
   <header>
     <h1 class="main-title">Welcome, My Honey Bun 💖</h1>
     <p class="main-subtitle">Pick something cute to do today 💕</p>
+    
   </header>
 
   <!-- Tap to Start Section -->
@@ -49,7 +35,7 @@
   </div>
 
   <!-- Background Music and Sound Effects -->
-  <audio id="bgMusic" src="assets/audio/bg-music.mp3" autoplay loop muted></audio>
+  <audio id="bgMusic" src="assets/audio/bg-music.mp3" autoplay loop></audio>
   <audio id="clickSound" src="assets/audio/click.wav" preload="auto"></audio>
 
   <!-- Main Menu -->
@@ -96,5 +82,13 @@
     <!-- Reveal Button -->
     <button id="revealBtn" class="reveal-button">👀 I want a surprise!</button>
   </main>
+  <div id="passwordModal" class="modal">
+  <div class="modal-content">
+    <p>Enter the password to continue 💖</p>
+    <input type="password" id="passwordInput" placeholder="Password..." />
+    <button id="submitPassword">Unlock</button>
+  </div>
+</div>
+
 </body>
 </html>
