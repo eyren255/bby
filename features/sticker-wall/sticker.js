@@ -1,6 +1,5 @@
 // sticker.js
 
-// Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
@@ -30,7 +29,11 @@ photoInput.addEventListener("change", (e) => {
   reader.onload = (event) => {
     uploadedImage.src = event.target.result;
     uploadedImage.classList.remove("hidden");
+    uploadedImage.classList.add("pop-in");
     document.querySelector(".placeholder-text")?.remove();
+
+    // Enable photo dragging
+    makeDraggable(uploadedImage);
   };
   reader.readAsDataURL(file);
 });
@@ -42,7 +45,7 @@ document.querySelectorAll(".sticker").forEach(sticker => {
   });
 });
 
-// Drop onto canvas
+// Drop sticker
 canvas.addEventListener("dragover", (e) => e.preventDefault());
 canvas.addEventListener("drop", (e) => {
   e.preventDefault();
@@ -54,33 +57,45 @@ canvas.addEventListener("drop", (e) => {
   newSticker.textContent = emoji;
   newSticker.style.left = `${e.clientX - rect.left - 20}px`;
   newSticker.style.top = `${e.clientY - rect.top - 20}px`;
-  newSticker.setAttribute("draggable", "true");
 
-  // Enable repositioning
-  newSticker.addEventListener("dragstart", (dragEvent) => {
-    dragEvent.dataTransfer.setData("text/plain", "move");
-    dragEvent.target.dataset.offsetX = dragEvent.offsetX;
-    dragEvent.target.dataset.offsetY = dragEvent.offsetY;
+  canvas.appendChild(newSticker);
+  makeDraggable(newSticker);
+  makeResizable(newSticker);
+});
+
+// Make element draggable inside canvas
+function makeDraggable(el) {
+  el.style.position = "absolute";
+  el.setAttribute("draggable", true);
+
+  el.addEventListener("dragstart", (e) => {
+    e.target.dataset.offsetX = e.offsetX;
+    e.target.dataset.offsetY = e.offsetY;
+
+    // Prevent "move" label
+    e.dataTransfer.setData("text/plain", "");
+    e.dataTransfer.setDragImage(el, 20, 20); // shows the element itself
   });
 
-  newSticker.addEventListener("dragend", (e) => {
+  el.addEventListener("dragend", (e) => {
     const rect = canvas.getBoundingClientRect();
     const offsetX = parseInt(e.target.dataset.offsetX || 0);
     const offsetY = parseInt(e.target.dataset.offsetY || 0);
     e.target.style.left = `${e.clientX - rect.left - offsetX}px`;
     e.target.style.top = `${e.clientY - rect.top - offsetY}px`;
   });
+}
 
-  // Scroll to resize
-  newSticker.addEventListener("wheel", (e) => {
+
+// Resize with scroll
+function makeResizable(el) {
+  el.addEventListener("wheel", (e) => {
     e.preventDefault();
-    const current = parseFloat(getComputedStyle(newSticker).fontSize);
+    const current = parseFloat(getComputedStyle(el).fontSize);
     const change = e.deltaY < 0 ? 2 : -2;
-    newSticker.style.fontSize = `${Math.max(16, current + change)}px`;
+    el.style.fontSize = `${Math.max(16, current + change)}px`;
   });
-
-  canvas.appendChild(newSticker);
-});
+}
 
 // Save to Firebase
 document.getElementById("saveWallBtn").addEventListener("click", async () => {
@@ -94,17 +109,17 @@ document.getElementById("saveWallBtn").addEventListener("click", async () => {
     const storageRef = ref(storage, `walls/${filename}`);
     await uploadBytes(storageRef, blob);
     const url = await getDownloadURL(storageRef);
-    alert("🎉 Your wall is saved!\nLink copied to clipboard.");
+    alert("🎉 Saved! Link copied to clipboard.");
     navigator.clipboard.writeText(url);
   } catch (err) {
-    alert("Something went wrong while saving 💔");
+    alert("💔 Oops! Something went wrong.");
     console.error(err);
   }
 
   btn.textContent = "💾 Save My Wall";
 });
 
-// Download locally
+// Download Image
 document.getElementById("downloadBtn").addEventListener("click", async () => {
   const snapshot = await html2canvas(canvas);
   const link = document.createElement("a");
