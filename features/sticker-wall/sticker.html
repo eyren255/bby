@@ -6,12 +6,11 @@
   <title>Sticker Wall 🎀</title>
   <link rel="stylesheet" href="sticker.css" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 </head>
 <body>
   <h1 class="title">🎀 Decorate Your Memory Wall</h1>
 
-  <!-- Upload Photo -->
+  <!-- Upload Section -->
   <div class="upload-box">
     <label for="photoInput" class="upload-label">📸 Upload a photo</label>
     <input type="file" id="photoInput" accept="image/*" />
@@ -33,8 +32,13 @@
     <div class="sticker" draggable="true">🍓</div>
     <div class="sticker" draggable="true">⭐️</div>
   </div>
-<button id="saveWallBtn" class="save-button">💾 Save My Wall</button>
 
-  <script src="sticker.js"></script>
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button id="saveWallBtn" class="save-button">💾 Save My Wall</button>
+    <button id="downloadBtn" class="save-button">⬇️ Download Image</button>
+  </div>
+
+  <script type="module" src="sticker.js"></script>
 </body>
 </html>

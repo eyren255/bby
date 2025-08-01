@@ -9,6 +9,7 @@ body {
 .title {
   color: #d63384;
   margin-bottom: 10px;
+  font-size: 1.8rem;
 }
 
 .upload-box {
@@ -61,19 +62,21 @@ body {
 
 .sticker-bar {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  overflow-x: auto;
   gap: 10px;
-  margin-top: 20px;
+  padding: 10px;
+  margin: 20px 0;
+  justify-content: center;
 }
 
 .sticker {
   font-size: 2rem;
   cursor: grab;
   user-select: none;
+  display: inline-block;
 }
 
-.canvas .placed-sticker {
+.placed-sticker {
   position: absolute;
   font-size: 2rem;
   cursor: move;
@@ -81,11 +84,8 @@ body {
   z-index: 1;
 }
 
-.hidden {
-  display: none;
-}
 .save-button {
-  margin-top: 20px;
+  margin: 10px;
   padding: 10px 20px;
   background-color: #ffb6e6;
   color: white;
@@ -93,4 +93,18 @@ body {
   border-radius: 12px;
   border: none;
   cursor: pointer;
+}
+
+.save-button:hover {
+  filter: brightness(1.1);
+}
+
+.hidden {
+  display: none;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
