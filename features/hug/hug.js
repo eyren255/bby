@@ -4,7 +4,7 @@ const overlay = document.getElementById('tapOverlay');
 // Set video source based on device size
 function setVideoSource() {
   const isMobile = window.innerWidth <= 768;
-  video.src = isMobile ? "../../assets/video/hug-mobile.mp4" : "../../assets/video/hug.mp4";
+  video.src = isMobile ? "../../assets/video/hug.mp4" : "../../assets/video/hug.mp4";
 }
 
 // Initialize video
