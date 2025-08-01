@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sticker Wall 🎀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticker Wall 🎉</title>
   <link rel="stylesheet" href="sticker.css" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <h1 class="title">🎀 Decorate Your Memory Wall</h1>
+  <h1 class="title">🧷 Sticker Wall</h1>
 
   <!-- Upload Section -->
   <div class="upload-box">
     <label for="photoInput" class="upload-label">📸 Upload a photo</label>
     <input type="file" id="photoInput" accept="image/*" />
+    <button id="submitToWallBtn">📤 Add to Wall</button>
   </div>
 
-  <!-- Canvas Area -->
+  <!-- Canvas to Decorate -->
   <div id="canvas" class="canvas">
-    <p class="placeholder-text">Upload a photo to start decorating!</p>
     <img id="uploadedImage" class="photo hidden" />
   </div>
 
@@ -28,16 +28,12 @@
     <div class="sticker" draggable="true">🌸</div>
     <div class="sticker" draggable="true">🐰</div>
     <div class="sticker" draggable="true">🧸</div>
-    <div class="sticker" draggable="true">💐</div>
-    <div class="sticker" draggable="true">🍓</div>
-    <div class="sticker" draggable="true">⭐️</div>
+    <div class="sticker" draggable="true">🎀</div>
   </div>
 
-  <!-- Action Buttons -->
-  <div class="action-buttons">
-    <button id="saveWallBtn" class="save-button">💾 Save My Wall</button>
-    <button id="downloadBtn" class="save-button">⬇️ Download Image</button>
-  </div>
+  <!-- Shared Sticker Wall -->
+  <h2 class="title">🌟 Shared Sticker Wall</h2>
+  <div id="sharedWall" class="shared-wall"></div>
 
   <script type="module" src="sticker.js"></script>
 </body>

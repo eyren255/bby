@@ -1,7 +1,13 @@
 // sticker.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  listAll
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -19,8 +25,9 @@ const storage = getStorage(app);
 const canvas = document.getElementById("canvas");
 const photoInput = document.getElementById("photoInput");
 const uploadedImage = document.getElementById("uploadedImage");
+const sharedWall = document.getElementById("sharedWall");
 
-// Upload photo
+// Upload and display
 photoInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -29,23 +36,18 @@ photoInput.addEventListener("change", (e) => {
   reader.onload = (event) => {
     uploadedImage.src = event.target.result;
     uploadedImage.classList.remove("hidden");
-    uploadedImage.classList.add("pop-in");
-    document.querySelector(".placeholder-text")?.remove();
-
-    // Enable photo dragging
     makeDraggable(uploadedImage);
   };
   reader.readAsDataURL(file);
 });
 
-// Drag sticker from bar
+// Drag stickers
 document.querySelectorAll(".sticker").forEach(sticker => {
   sticker.addEventListener("dragstart", (e) => {
     e.dataTransfer.setData("text/plain", sticker.textContent);
   });
 });
 
-// Drop sticker
 canvas.addEventListener("dragover", (e) => e.preventDefault());
 canvas.addEventListener("drop", (e) => {
   e.preventDefault();
@@ -63,7 +65,7 @@ canvas.addEventListener("drop", (e) => {
   makeResizable(newSticker);
 });
 
-// Make element draggable inside canvas
+// Make draggable
 function makeDraggable(el) {
   el.style.position = "absolute";
   el.setAttribute("draggable", true);
@@ -71,10 +73,8 @@ function makeDraggable(el) {
   el.addEventListener("dragstart", (e) => {
     e.target.dataset.offsetX = e.offsetX;
     e.target.dataset.offsetY = e.offsetY;
-
-    // Prevent "move" label
     e.dataTransfer.setData("text/plain", "");
-    e.dataTransfer.setDragImage(el, 20, 20); // shows the element itself
+    e.dataTransfer.setDragImage(el, 20, 20);
   });
 
   el.addEventListener("dragend", (e) => {
@@ -86,44 +86,52 @@ function makeDraggable(el) {
   });
 }
 
-
-// Resize with scroll
+// Resizable with scroll
 function makeResizable(el) {
   el.addEventListener("wheel", (e) => {
     e.preventDefault();
-    const current = parseFloat(getComputedStyle(el).fontSize);
-    const change = e.deltaY < 0 ? 2 : -2;
-    el.style.fontSize = `${Math.max(16, current + change)}px`;
+    const size = parseFloat(getComputedStyle(el).fontSize);
+    const delta = e.deltaY < 0 ? 2 : -2;
+    el.style.fontSize = `${Math.max(16, size + delta)}px`;
   });
 }
 
-// Save to Firebase
-document.getElementById("saveWallBtn").addEventListener("click", async () => {
-  const btn = document.getElementById("saveWallBtn");
-  btn.textContent = "Saving...";
-
+// Save to shared sticker wall
+document.getElementById("submitToWallBtn").addEventListener("click", async () => {
   try {
     const snapshot = await html2canvas(canvas);
     const blob = await new Promise(res => snapshot.toBlob(res, "image/png"));
     const filename = `wall-${Date.now()}.png`;
-    const storageRef = ref(storage, `walls/${filename}`);
+    const storageRef = ref(storage, `shared/${filename}`);
     await uploadBytes(storageRef, blob);
     const url = await getDownloadURL(storageRef);
-    alert("🎉 Saved! Link copied to clipboard.");
-    navigator.clipboard.writeText(url);
+    alert("🎉 Added to the shared wall!");
+    addImageToWall(url);
   } catch (err) {
-    alert("💔 Oops! Something went wrong.");
+    alert("❌ Upload failed");
     console.error(err);
   }
-
-  btn.textContent = "💾 Save My Wall";
 });
 
-// Download Image
-document.getElementById("downloadBtn").addEventListener("click", async () => {
-  const snapshot = await html2canvas(canvas);
-  const link = document.createElement("a");
-  link.download = `sticker-wall-${Date.now()}.png`;
-  link.href = snapshot.toDataURL("image/png");
-  link.click();
-});
+// Load all saved sticker walls
+async function loadSharedWall() {
+  const listRef = ref(storage, "shared");
+  const result = await listAll(listRef);
+
+  result.items.forEach(async (itemRef) => {
+    const url = await getDownloadURL(itemRef);
+    addImageToWall(url);
+  });
+}
+
+function addImageToWall(url) {
+  const img = document.createElement("img");
+  img.src = url;
+  img.className = "shared-image";
+  img.draggable = true;
+  makeDraggable(img);
+  sharedWall.appendChild(img);
+}
+
+// Init
+loadSharedWall();
