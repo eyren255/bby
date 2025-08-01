@@ -76,11 +76,6 @@ function createSticker(src, x = 50, y = 50, id = null) {
   });
 
   window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    let newX = e.clientX - offsetX;
-    let newY = e.clientY - offsetY;
-
-window.addEventListener('mousemove', (e) => {
   if (!isDragging) return;
   let newX = e.clientX - offsetX;
   let newY = e.clientY - offsetY;
@@ -88,11 +83,6 @@ window.addEventListener('mousemove', (e) => {
   img.style.left = newX + 'px';
   img.style.top = newY + 'px';
 });
-
-
-    img.style.left = newX + 'px';
-    img.style.top = newY + 'px';
-  });
 
   window.addEventListener('mouseup', async () => {
     if (isDragging) {
