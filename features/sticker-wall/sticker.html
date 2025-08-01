@@ -8,33 +8,55 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <h1 class="title">🧷 Sticker Wall</h1>
+  <a href="../../index.html" class="back-button">🔙 Back to Menu</a>
 
-  <!-- Upload Section -->
-  <div class="upload-box">
-    <label for="photoInput" class="upload-label">📸 Upload a photo</label>
-    <input type="file" id="photoInput" accept="image/*" />
-    <button id="submitToWallBtn">📤 Add to Wall</button>
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop muted></audio>
+  <div id="floatingHearts"></div>
+
+  <h1 class="title">🧸 Sticker Wall</h1>
+
+  <div class="controls">
+    <label for="photoInput" class="upload-label">📷 Upload Image</label>
+    <input type="file" id="photoInput" accept="image/*" hidden />
+    <button id="saveDesignBtn">💾 Save Design</button>
+    <button id="clearBtn">🗑️ Clear</button>
+    <button id="submitToWallBtn">📤 Add to Shared Wall</button>
   </div>
 
-  <!-- Canvas to Decorate -->
-  <div id="canvas" class="canvas">
+  <div id="canvas" class="canvas" contenteditable="false">
     <img id="uploadedImage" class="photo hidden" />
   </div>
 
-  <!-- Sticker Bar -->
   <div class="sticker-bar">
     <div class="sticker" draggable="true">💖</div>
     <div class="sticker" draggable="true">🌸</div>
     <div class="sticker" draggable="true">🐰</div>
-    <div class="sticker" draggable="true">🧸</div>
+    <div class="sticker" draggable="true">🧋</div>
     <div class="sticker" draggable="true">🎀</div>
   </div>
 
-  <!-- Shared Sticker Wall -->
   <h2 class="title">🌟 Shared Sticker Wall</h2>
   <div id="sharedWall" class="shared-wall"></div>
 
   <script type="module" src="sticker.js"></script>
+  <script>
+    // 🎶 Tap to play music
+    document.body.addEventListener('click', () => {
+      const music = document.getElementById("bgMusic");
+      if (music && music.paused) {
+        music.muted = false;
+        music.play().catch(() => {});
+      }
+    }, { once: true });
+
+    // 💖 Floating hearts
+    for (let i = 0; i < 30; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDelay = Math.random() * 5 + "s";
+      document.getElementById("floatingHearts").appendChild(heart);
+    }
+  </script>
 </body>
 </html>

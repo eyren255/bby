@@ -1,5 +1,3 @@
-// sticker.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getStorage,
@@ -27,7 +25,6 @@ const photoInput = document.getElementById("photoInput");
 const uploadedImage = document.getElementById("uploadedImage");
 const sharedWall = document.getElementById("sharedWall");
 
-// Upload and display
 photoInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -65,7 +62,7 @@ canvas.addEventListener("drop", (e) => {
   makeResizable(newSticker);
 });
 
-// Make draggable
+// Draggable
 function makeDraggable(el) {
   el.style.position = "absolute";
   el.setAttribute("draggable", true);
@@ -86,7 +83,7 @@ function makeDraggable(el) {
   });
 }
 
-// Resizable with scroll
+// Resizable
 function makeResizable(el) {
   el.addEventListener("wheel", (e) => {
     e.preventDefault();
@@ -96,7 +93,19 @@ function makeResizable(el) {
   });
 }
 
-// Save to shared sticker wall
+// Save to localStorage
+document.getElementById("saveDesignBtn").addEventListener("click", () => {
+  localStorage.setItem("myStickerWall", canvas.innerHTML);
+  alert("💾 Your design is saved locally!");
+});
+
+// Clear design
+document.getElementById("clearBtn").addEventListener("click", () => {
+  canvas.innerHTML = '<img id="uploadedImage" class="photo hidden" />';
+  alert("🗑️ Canvas cleared!");
+});
+
+// Upload to Firebase
 document.getElementById("submitToWallBtn").addEventListener("click", async () => {
   try {
     const snapshot = await html2canvas(canvas);
@@ -105,7 +114,7 @@ document.getElementById("submitToWallBtn").addEventListener("click", async () =>
     const storageRef = ref(storage, `shared/${filename}`);
     await uploadBytes(storageRef, blob);
     const url = await getDownloadURL(storageRef);
-    alert("🎉 Added to the shared wall!");
+    alert("🎉 Added to shared wall!");
     addImageToWall(url);
   } catch (err) {
     alert("❌ Upload failed");
@@ -113,7 +122,7 @@ document.getElementById("submitToWallBtn").addEventListener("click", async () =>
   }
 });
 
-// Load all saved sticker walls
+// Load shared wall
 async function loadSharedWall() {
   const listRef = ref(storage, "shared");
   const result = await listAll(listRef);
@@ -133,5 +142,17 @@ function addImageToWall(url) {
   sharedWall.appendChild(img);
 }
 
-// Init
+// Load from local
+function loadLocal() {
+  const saved = localStorage.getItem("myStickerWall");
+  if (saved) {
+    canvas.innerHTML = saved;
+    canvas.querySelectorAll(".placed-sticker").forEach(el => {
+      makeDraggable(el);
+      makeResizable(el);
+    });
+  }
+}
+
 loadSharedWall();
+loadLocal();
