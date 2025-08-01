@@ -7,12 +7,46 @@
   <link rel="stylesheet" href="fortune.css" />
 </head>
 <body>
-  <h1>Daily Fortune 🔮</h1>
-  <p>What does your day hold? Find out! 🌟</p>
+  <div class="fortune-wrapper">
+    <h1>Daily Fortune 🔮</h1>
+    <p class="subtitle">What does your day hold? Find out! 🌟</p>
 
-  <!-- Back Button -->
-  <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+    <!-- Back Button -->
+    <div class="back-button-container">
+      <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+    </div>
+
+    <div class="fortune-container">
+      <div id="crystalBall" class="crystal-ball">
+        <div class="crystal-glow"></div>
+        <div class="crystal-content">
+          <div id="fortuneText" class="fortune-text">
+            <span class="crystal-emoji">🔮</span>
+            <p>Focus your energy and ask for your fortune...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="getFortune" class="fortune-btn">🔮 Get My Fortune</button>
+        <button id="resetFortune" class="reset-btn hidden">🔄 New Fortune</button>
+      </div>
+
+      <div id="fortuneResult" class="fortune-result hidden">
+        <div class="result-content">
+          <div id="fortuneMessage"></div>
+          <div id="fortuneAdvice"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating sparkles -->
+    <div id="sparkles"></div>
   </div>
+
+  <audio id="crystalSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="magicSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+
+  <script src="fortune.js"></script>
 </body>
 </html>

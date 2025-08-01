@@ -1,0 +1,262 @@
+// Message configuration
+const messageStyles = {
+  romantic: {
+    background: 'linear-gradient(135deg, #ffe6f0, #ffd6e0)',
+    borderColor: '#ff69b4',
+    emoji: '💕'
+  },
+  cute: {
+    background: 'linear-gradient(135deg, #fff0f5, #ffe6f0)',
+    borderColor: '#ffb6c1',
+    emoji: '🌸'
+  },
+  sweet: {
+    background: 'linear-gradient(135deg, #fff8dc, #fffacd)',
+    borderColor: '#ffd700',
+    emoji: '🍯'
+  },
+  passionate: {
+    background: 'linear-gradient(135deg, #ffe4e1, #ffb6c1)',
+    borderColor: '#ff6347',
+    emoji: '🔥'
+  }
+};
+
+// DOM elements
+const messageForm = document.getElementById('messageForm');
+const messageTitle = document.getElementById('messageTitle');
+const messageContent = document.getElementById('messageContent');
+const charCount = document.getElementById('charCount');
+const previewBtn = document.getElementById('previewBtn');
+const messagePreview = document.getElementById('messagePreview');
+const previewContent = document.getElementById('previewContent');
+const closePreview = document.getElementById('closePreview');
+const editMessage = document.getElementById('editMessage');
+const confirmSend = document.getElementById('confirmSend');
+const messageList = document.getElementById('messageList');
+const typeSound = document.getElementById('typeSound');
+const sendSound = document.getElementById('sendSound');
+
+// State variables
+let currentStyle = 'romantic';
+let selectedEffects = [];
+let messages = JSON.parse(localStorage.getItem('loveMessages') || '[]');
+
+// Initialize message feature
+function initMessage() {
+  // Add event listeners
+  messageForm.addEventListener('submit', handleSubmit);
+  previewBtn.addEventListener('click', showPreview);
+  closePreview.addEventListener('click', hidePreview);
+  editMessage.addEventListener('click', hidePreview);
+  confirmSend.addEventListener('click', sendMessage);
+  
+  // Character counting
+  messageContent.addEventListener('input', updateCharCount);
+  messageTitle.addEventListener('input', updateCharCount);
+  
+  // Style buttons
+  document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.addEventListener('click', () => selectStyle(btn.dataset.style));
+  });
+  
+  // Effect buttons
+  document.querySelectorAll('.effect-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleEffect(btn.dataset.effect));
+  });
+  
+  // Load existing messages
+  loadMessages();
+  
+  // Initial character count
+  updateCharCount();
+}
+
+// Update character count
+function updateCharCount() {
+  const titleLength = messageTitle.value.length;
+  const contentLength = messageContent.value.length;
+  const totalLength = titleLength + contentLength;
+  
+  charCount.textContent = totalLength;
+  
+  // Change color based on length
+  if (totalLength > 450) {
+    charCount.style.color = '#ff6347';
+  } else if (totalLength > 400) {
+    charCount.style.color = '#ffa500';
+  } else {
+    charCount.style.color = '#666';
+  }
+  
+  // Play typing sound
+  playSound(typeSound);
+}
+
+// Select message style
+function selectStyle(style) {
+  currentStyle = style;
+  
+  // Update active button
+  document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelector(`[data-style="${style}"]`).classList.add('active');
+}
+
+// Toggle effect
+function toggleEffect(effect) {
+  const btn = document.querySelector(`[data-effect="${effect}"]`);
+  
+  if (selectedEffects.includes(effect)) {
+    selectedEffects = selectedEffects.filter(e => e !== effect);
+    btn.style.background = '#f8f9fa';
+  } else {
+    selectedEffects.push(effect);
+    btn.style.background = '#9370db';
+    btn.style.color = 'white';
+  }
+}
+
+// Show preview
+function showPreview() {
+  if (!messageTitle.value.trim() || !messageContent.value.trim()) {
+    alert('Please fill in both title and message! 💕');
+    return;
+  }
+  
+  const style = messageStyles[currentStyle];
+  const effects = selectedEffects.map(effect => {
+    switch(effect) {
+      case 'hearts': return '💖';
+      case 'sparkles': return '✨';
+      case 'flowers': return '🌹';
+      case 'music': return '🎵';
+      default: return '';
+    }
+  }).join(' ');
+  
+  previewContent.innerHTML = `
+    <div style="background: ${style.background}; border-left: 4px solid ${style.borderColor}; padding: 20px; border-radius: 12px;">
+      <h3 style="color: ${style.borderColor}; margin-bottom: 15px;">${style.emoji} ${messageTitle.value}</h3>
+      <div style="white-space: pre-wrap; line-height: 1.6; color: #333;">
+        ${messageContent.value}
+      </div>
+      ${effects ? `<div style="text-align: center; margin-top: 15px; font-size: 1.2rem;">${effects}</div>` : ''}
+    </div>
+  `;
+  
+  messagePreview.classList.remove('hidden');
+  messageForm.classList.add('hidden');
+}
+
+// Hide preview
+function hidePreview() {
+  messagePreview.classList.add('hidden');
+  messageForm.classList.remove('hidden');
+}
+
+// Handle form submission
+function handleSubmit(e) {
+  e.preventDefault();
+  showPreview();
+}
+
+// Send message
+function sendMessage() {
+  const message = {
+    id: Date.now(),
+    title: messageTitle.value,
+    content: messageContent.value,
+    style: currentStyle,
+    effects: selectedEffects,
+    date: new Date().toLocaleDateString(),
+    timestamp: Date.now()
+  };
+  
+  // Add to messages array
+  messages.unshift(message);
+  
+  // Save to localStorage
+  localStorage.setItem('loveMessages', JSON.stringify(messages));
+  
+  // Play send sound
+  playSound(sendSound);
+  
+  // Show success message
+  alert('💌 Your love message has been sent! 💕');
+  
+  // Reset form
+  messageForm.reset();
+  updateCharCount();
+  selectedEffects = [];
+  currentStyle = 'romantic';
+  
+  // Reset buttons
+  document.querySelectorAll('.style-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelector('.style-btn').classList.add('active');
+  
+  document.querySelectorAll('.effect-btn').forEach(btn => {
+    btn.style.background = '#f8f9fa';
+    btn.style.color = '#333';
+  });
+  
+  // Hide preview
+  hidePreview();
+  
+  // Reload messages
+  loadMessages();
+}
+
+// Load messages
+function loadMessages() {
+  messageList.innerHTML = '';
+  
+  if (messages.length === 0) {
+    messageList.innerHTML = `
+      <div style="text-align: center; color: #666; font-style: italic; padding: 20px;">
+        No messages yet. Write your first love message! 💕
+      </div>
+    `;
+    return;
+  }
+  
+  messages.forEach(message => {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message-item';
+    
+    const effects = message.effects.map(effect => {
+      switch(effect) {
+        case 'hearts': return '💖';
+        case 'sparkles': return '✨';
+        case 'flowers': return '🌹';
+        case 'music': return '🎵';
+        default: return '';
+      }
+    }).join(' ');
+    
+    messageElement.innerHTML = `
+      <h4>${message.title}</h4>
+      <p>${message.content}</p>
+      ${effects ? `<div style="text-align: center; margin-top: 10px; font-size: 1.1rem;">${effects}</div>` : ''}
+      <div class="date">${message.date}</div>
+    `;
+    
+    messageList.appendChild(messageElement);
+  });
+}
+
+// Play sound effect
+function playSound(audioElement) {
+  if (audioElement) {
+    audioElement.currentTime = 0;
+    audioElement.play().catch(() => {
+      // Ignore autoplay restrictions
+    });
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initMessage); 

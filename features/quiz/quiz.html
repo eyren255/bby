@@ -7,41 +7,131 @@
   <link rel="stylesheet" href="quiz.css" />
 </head>
 <body>
-  <h1>Know Me Quiz ❓</h1>
-  <p>Test how well you know me! 💕</p>
+  <div class="quiz-wrapper">
+    <h1>Know Me Quiz ❓</h1>
+    <p class="subtitle">Test how well you know me! 💕</p>
 
-  <!-- Back Button -->
-  <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+    <!-- Back Button -->
+    <div class="back-button-container">
+      <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+    </div>
+
+    <div class="quiz-container">
+      <div id="startScreen" class="start-screen">
+        <h2>Ready to test your knowledge? 🧠</h2>
+        <p>Answer 5 questions about me and see how well you know your honey bun! 💖</p>
+        <button id="startQuiz" class="start-btn">Start Quiz 💕</button>
+      </div>
+
+      <form id="quizForm" class="hidden">
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        
+        <div class="question-container">
+          <div class="question">
+            <h3>1. What's my favorite snack?</h3>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q1" value="a" />
+                <span class="option-text">🍟 Chips</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q1" value="b" />
+                <span class="option-text">🍦 Ice cream</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q1" value="c" />
+                <span class="option-text">🍜 Noodle</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>2. When is our anniversary?</h3>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q2" value="a" />
+                <span class="option-text">💝 February 14</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q2" value="b" />
+                <span class="option-text">🌞 July 28</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q2" value="c" />
+                <span class="option-text">❄️ December 1</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>3. What's my biggest fear?</h3>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q3" value="a" />
+                <span class="option-text">🕷️ Spiders</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q3" value="b" />
+                <span class="option-text">💔 Losing you</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q3" value="c" />
+                <span class="option-text">🏔️ Heights</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>4. What's my favorite color?</h3>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q4" value="a" />
+                <span class="option-text">💙 Blue</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q4" value="b" />
+                <span class="option-text">💖 Pink</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q4" value="c" />
+                <span class="option-text">💜 Purple</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="question">
+            <h3>5. What do I love most about you?</h3>
+            <div class="options">
+              <label class="option">
+                <input type="radio" name="q5" value="a" />
+                <span class="option-text">😊 Your smile</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q5" value="b" />
+                <span class="option-text">💝 Your kindness</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="q5" value="c" />
+                <span class="option-text">🎵 Your voice</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Answers 💕</button>
+      </form>
+      
+      <div id="resultBox" class="result-box hidden">
+        <div id="resultContent"></div>
+        <button id="retryBtn" class="retry-btn">🔄 Try Again</button>
+      </div>
+    </div>
   </div>
 
-  <div class="quiz-container">
-    <form id="quizForm">
-      <div class="question">
-        <p>1. What's my favorite snack?</p>
-        <input type="radio" name="q1" value="a" /> Chips<br />
-        <input type="radio" name="q1" value="b" /> Ice cream<br />
-        <input type="radio" name="q1" value="c" /> Noodle<br />
-      </div>
-
-      <div class="question">
-        <p>2. When is our anniversary?</p>
-        <input type="radio" name="q2" value="a" /> February 14<br />
-        <input type="radio" name="q2" value="b" /> July 28<br />
-        <input type="radio" name="q2" value="c" /> December 1<br />
-      </div>
-
-      <div class="question">
-        <p>3. What's my biggest fear?</p>
-        <input type="radio" name="q3" value="a" /> Spiders<br />
-        <input type="radio" name="q3" value="b" /> Losing you<br />
-        <input type="radio" name="q3" value="c" /> Heights<br />
-      </div>
-
-      <button type="submit">Submit 💕</button>
-    </form>
-    <div id="resultBox" class="hidden"></div>
-  </div>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="winSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
 
   <script src="quiz.js"></script>
 </body>

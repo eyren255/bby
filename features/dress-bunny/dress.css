@@ -1,74 +1,288 @@
 body {
   font-family: 'Comic Sans MS', cursive;
-  background-color: #fff0f6;
-  text-align: center;
+  background: linear-gradient(135deg, #fff0f6 0%, #ffe6f0 100%);
+  margin: 0;
   padding: 20px;
+  min-height: 100vh;
   color: #d63384;
+  overflow-x: hidden;
+}
+
+.dress-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 10px;
+  color: #d63384;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  animation: bunnyBounce 2s ease-in-out infinite;
 }
 
-p {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
+@keyframes bunnyBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .subtitle {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
   color: #a8255c;
 }
 
 .game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  margin-bottom: 30px;
+  align-items: start;
 }
 
-.bunny img {
-  width: 200px;
-  height: auto;
+.bunny-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 2px solid #ffb6c1;
+  position: sticky;
+  top: 20px;
+}
+
+.bunny-display {
+  text-align: center;
   margin-bottom: 20px;
 }
 
-.clothes {
+.bunny-image {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 15px;
+  background: linear-gradient(135deg, #fff0f5, #ffe6f0);
+  border-radius: 50%;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(255,182,193,0.3);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.bunny-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(255,182,193,0.4);
+}
+
+.bunny-emoji {
+  font-size: 4rem;
+  animation: bunnyWiggle 3s ease-in-out infinite;
+}
+
+@keyframes bunnyWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+.bunny-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #d63384;
+  margin-bottom: 20px;
+}
+
+.outfit-display {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: center;
+  min-height: 60px;
+  padding: 15px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 12px;
+  border: 2px dashed #ffb6c1;
+}
+
+.outfit-item {
+  font-size: 1.5rem;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: itemAppear 0.3s ease;
+}
+
+@keyframes itemAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.clothes-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 2px solid #ffb6c1;
+}
+
+.clothes-section h3 {
+  color: #d63384;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.clothing-categories {
+  display: grid;
+  gap: 25px;
+}
+
+.category {
+  border: 2px solid #ffe6f0;
+  border-radius: 15px;
+  padding: 20px;
+  background: rgba(255,255,255,0.8);
+}
+
+.category h4 {
+  color: #d63384;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.clothing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
 }
 
 .clothing-btn {
-  padding: 10px 20px;
-  background-color: #ffb6c1;
+  background: linear-gradient(45deg, #ffb6c1, #ffc1da);
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 1rem;
+  padding: 12px 15px;
+  border-radius: 12px;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255,182,193,0.3);
+  font-family: inherit;
+  font-weight: bold;
 }
 
 .clothing-btn:hover {
-  background-color: #ff69b4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,182,193,0.4);
+  background: linear-gradient(45deg, #ff69b4, #ff8fab);
+}
+
+.clothing-btn.selected {
+  background: linear-gradient(45deg, #d63384, #ff69b4);
+  box-shadow: 0 4px 15px rgba(214,51,132,0.4);
+}
+
+.bunny-controls {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  background: linear-gradient(45deg, #ffd700, #ffb347);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+  font-family: inherit;
+  font-weight: bold;
+}
+
+.control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,215,0,0.4);
 }
 
 .back-button-container {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .back-button {
   display: inline-block;
-  padding: 10px 20px;
-  background-color: #ffb6c1;
+  padding: 12px 25px;
+  background: linear-gradient(45deg, #ffb6c1, #ff69b4);
   color: white;
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: 25px;
   font-size: 1rem;
-  transition: background 0.3s;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255,182,193,0.3);
 }
 
 .back-button:hover {
-  background-color: #ff69b4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,182,193,0.4);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dress-wrapper {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .game-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .bunny-section {
+    position: static;
+  }
+  
+  .bunny-image {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .bunny-emoji {
+    font-size: 3rem;
+  }
+  
+  .clothing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .clothing-btn {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .bunny-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-btn {
+    width: 100%;
+    max-width: 200px;
+  }
 }

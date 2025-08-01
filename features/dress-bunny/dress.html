@@ -8,27 +8,100 @@
   <script defer src="dress.js"></script>
 </head>
 <body>
-  <h1>Dress the Bunny 🐰</h1>
-  <p class="subtitle">Make the bunny look adorable! 💖</p>
+  <div class="dress-wrapper">
+    <h1>Dress the Bunny 🐰</h1>
+    <p class="subtitle">Make the bunny look adorable! 💖</p>
 
-  <div class="game-container">
-    <div class="bunny">
-      <img id="bunnyImage" src="../../assets/images/bunny-base.png" alt="Bunny" />
+    <div class="game-container">
+      <div class="bunny-section">
+        <div class="bunny-display">
+          <div id="bunnyImage" class="bunny-image">
+            <span class="bunny-emoji">🐰</span>
+          </div>
+          <div class="bunny-name">Honey Bun</div>
+        </div>
+        
+        <div class="outfit-display">
+          <div class="outfit-item" id="hatDisplay"></div>
+          <div class="outfit-item" id="bowDisplay"></div>
+          <div class="outfit-item" id="glassesDisplay"></div>
+          <div class="outfit-item" id="scarfDisplay"></div>
+          <div class="outfit-item" id="necklaceDisplay"></div>
+        </div>
+      </div>
+
+      <div class="clothes-section">
+        <h3>🎀 Choose Outfits</h3>
+        
+        <div class="clothing-categories">
+          <div class="category">
+            <h4>👒 Hats</h4>
+            <div class="clothing-grid">
+              <button class="clothing-btn" data-outfit="hat" data-item="crown">👑 Crown</button>
+              <button class="clothing-btn" data-outfit="hat" data-item="party">🎉 Party Hat</button>
+              <button class="clothing-btn" data-outfit="hat" data-item="flower">🌸 Flower Crown</button>
+              <button class="clothing-btn" data-outfit="hat" data-item="winter">❄️ Winter Hat</button>
+            </div>
+          </div>
+
+          <div class="category">
+            <h4>🎀 Accessories</h4>
+            <div class="clothing-grid">
+              <button class="clothing-btn" data-outfit="bow" data-item="pink">🎀 Pink Bow</button>
+              <button class="clothing-btn" data-outfit="bow" data-item="blue">💙 Blue Bow</button>
+              <button class="clothing-btn" data-outfit="bow" data-item="rainbow">🌈 Rainbow Bow</button>
+              <button class="clothing-btn" data-outfit="bow" data-item="star">⭐ Star Bow</button>
+            </div>
+          </div>
+
+          <div class="category">
+            <h4>👓 Glasses</h4>
+            <div class="clothing-grid">
+              <button class="clothing-btn" data-outfit="glasses" data-item="sunny">😎 Sunglasses</button>
+              <button class="clothing-btn" data-outfit="glasses" data-item="reading">📚 Reading Glasses</button>
+              <button class="clothing-btn" data-outfit="glasses" data-item="cool">🕶️ Cool Glasses</button>
+              <button class="clothing-btn" data-outfit="glasses" data-item="cute">🥺 Cute Glasses</button>
+            </div>
+          </div>
+
+          <div class="category">
+            <h4>🧣 Scarves</h4>
+            <div class="clothing-grid">
+              <button class="clothing-btn" data-outfit="scarf" data-item="red">❤️ Red Scarf</button>
+              <button class="clothing-btn" data-outfit="scarf" data-item="blue">💙 Blue Scarf</button>
+              <button class="clothing-btn" data-outfit="scarf" data-item="striped">🌈 Striped Scarf</button>
+              <button class="clothing-btn" data-outfit="scarf" data-item="warm">🧶 Warm Scarf</button>
+            </div>
+          </div>
+
+          <div class="category">
+            <h4>💎 Necklaces</h4>
+            <div class="clothing-grid">
+              <button class="clothing-btn" data-outfit="necklace" data-item="heart">💖 Heart Necklace</button>
+              <button class="clothing-btn" data-outfit="necklace" data-item="star">⭐ Star Necklace</button>
+              <button class="clothing-btn" data-outfit="necklace" data-item="flower">🌸 Flower Necklace</button>
+              <button class="clothing-btn" data-outfit="necklace" data-item="pearl">💎 Pearl Necklace</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bunny-controls">
+          <button id="resetBunny" class="control-btn">🔄 Reset Bunny</button>
+          <button id="randomOutfit" class="control-btn">🎲 Random Outfit</button>
+          <button id="saveOutfit" class="control-btn">💾 Save Outfit</button>
+        </div>
+      </div>
     </div>
 
-    <div class="clothes">
-      <button class="clothing-btn" data-outfit="hat">🎩 Hat</button>
-      <button class="clothing-btn" data-outfit="bow">🎀 Bow</button>
-      <button class="clothing-btn" data-outfit="glasses">👓 Glasses</button>
-      <button class="clothing-btn" data-outfit="scarf">🧣 Scarf</button>
+    <!-- Back Button -->
+    <div class="back-button-container">
+      <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
     </div>
   </div>
 
-  <!-- Back Button -->
-  <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
-  </div>
+  <audio id="dressSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="saveSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
 
-  <audio id="dressSound" src="../../assets/audio/dress.wav" preload="auto"></audio>
+  <script src="dress.js"></script>
 </body>
 </html>
