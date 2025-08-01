@@ -34,3 +34,15 @@ p {
 .back-button:hover {
   background-color: #ff69b4;
 }
+#wall {
+  margin: 0 auto;
+}
+
+.sticker {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  width: 80px;
+  border: 2px solid #ff69b4;
+  border-radius: 10px;
+}

@@ -7,12 +7,19 @@
   <link rel="stylesheet" href="sticker.css" />
 </head>
 <body>
+  
   <h1>Sticker Wall 🎀</h1>
   <p>Decorate the wall with cute stickers! 🌟</p>
 
-  <!-- Back Button -->
+  <input type="file" id="stickerUpload" accept="image/*" />
+
+  <div id="wall" style="position:relative; width: 100%; max-width: 600px; height: 400px; margin: 20px auto; border: 2px dashed #ff69b4; background: #fff0f6;"></div>
+
   <div class="back-button-container">
     <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
   </div>
+
+  <script type="module" src="sticker.js"></script>
+
 </body>
 </html>
