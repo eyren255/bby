@@ -1,206 +1,555 @@
-// Quiz configuration
-const quizConfig = {
-  answers: {
-    q1: "c",  // Noodle
-    q2: "b",  // July 28
-    q3: "b",  // Losing you
-    q4: "a",  // blue
-    q5: "a"   // Your smile
-  },
-  totalQuestions: 5
-};
+// 🧠 Enhanced Quiz JavaScript
+document.addEventListener('DOMContentLoaded', () => {
+  // DOM Elements
+  const startScreen = document.getElementById('startScreen');
+  const startBtn = document.getElementById('startQuiz');
+  const quizContainer = document.getElementById('quizContainer');
+  const questionDisplay = document.getElementById('questionDisplay');
+  const questionText = document.getElementById('questionText');
+  const questionHint = document.getElementById('questionHint');
+  const optionsContainer = document.getElementById('optionsContainer');
+  const hintBtn = document.getElementById('hintBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const resultScreen = document.getElementById('resultScreen');
+  const progressFill = document.getElementById('progressFill');
+  const currentQuestion = document.getElementById('currentQuestion');
+  const totalQuestions = document.getElementById('totalQuestions');
+  const currentScore = document.getElementById('currentScore');
+  const finalScore = document.getElementById('finalScore');
+  const finalPercentage = document.getElementById('finalPercentage');
+  const timeTaken = document.getElementById('timeTaken');
+  const resultIcon = document.getElementById('resultIcon');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMessage = document.getElementById('resultMessage');
+  const retryBtn = document.getElementById('retryBtn');
+  const shareBtn = document.getElementById('shareBtn');
+  const quizzesTaken = document.getElementById('quizzesTaken');
+  const bestScore = document.getElementById('bestScore');
+  const perfectScores = document.getElementById('perfectScores');
 
-// DOM elements
-const startScreen = document.getElementById('startScreen');
-const startBtn = document.getElementById('startQuiz');
-const quizForm = document.getElementById('quizForm');
-const progressFill = document.getElementById('progressFill');
-const resultBox = document.getElementById('resultBox');
-const resultContent = document.getElementById('resultContent');
-const retryBtn = document.getElementById('retryBtn');
-const clickSound = document.getElementById('clickSound');
-const winSound = document.getElementById('winSound');
+  // Audio elements
+  const clickSound = document.getElementById('clickSound');
+  const correctSound = document.getElementById('correctSound');
+  const wrongSound = document.getElementById('wrongSound');
+  const achievementSound = document.getElementById('achievementSound');
 
-// State variables
-let currentQuestion = 0;
-let score = 0;
-let answeredQuestions = new Set();
-
-// Initialize quiz
-function initQuiz() {
-  // Add event listeners
-  startBtn.addEventListener('click', startQuiz);
-  quizForm.addEventListener('submit', handleSubmit);
-  retryBtn.addEventListener('click', resetQuiz);
-  
-  // Add progress tracking for radio buttons
-  document.querySelectorAll('input[type="radio"]').forEach(radio => {
-    radio.addEventListener('change', updateProgress);
-  });
-}
-
-// Start the quiz
-function startQuiz() {
-  playSound(clickSound);
-  startScreen.classList.add('hidden');
-  quizForm.classList.remove('hidden');
-  updateProgress();
-}
-
-// Update progress bar
-function updateProgress() {
-  const answeredCount = document.querySelectorAll('input[type="radio"]:checked').length;
-  const progress = (answeredCount / quizConfig.totalQuestions) * 100;
-  progressFill.style.width = `${progress}%`;
-}
-
-// Handle form submission
-function handleSubmit(e) {
-  e.preventDefault();
-  
-  const formData = new FormData(quizForm);
-  const answers = {};
-  
-  // Collect all answers
-  for (let i = 1; i <= quizConfig.totalQuestions; i++) {
-    const answer = formData.get(`q${i}`);
-    if (answer) {
-      answers[`q${i}`] = answer;
+  // Quiz data with categories
+  const quizData = {
+    basic: {
+      name: 'Basic Questions',
+      questions: [
+        {
+          question: "What's my favorite snack?",
+          options: ["🍟 Chips", "🍦 Ice cream", "🍜 Noodle", "🍕 Pizza"],
+          correct: 2,
+          hint: "Think about what I always crave when we're together!",
+          explanation: "I love noodles! They're my comfort food."
+        },
+        {
+          question: "What's my favorite color?",
+          options: ["💙 Blue", "💖 Pink", "💜 Purple", "💚 Green"],
+          correct: 1,
+          hint: "It's a very romantic color!",
+          explanation: "Pink is my favorite color - it's so pretty and romantic!"
+        },
+        {
+          question: "What's my biggest fear?",
+          options: ["🕷️ Spiders", "💔 Losing you", "🏔️ Heights", "🌩️ Thunder"],
+          correct: 1,
+          hint: "It's something that would break my heart...",
+          explanation: "My biggest fear is losing you - you mean everything to me!"
+        },
+        {
+          question: "What do I love most about you?",
+          options: ["😊 Your smile", "💝 Your kindness", "🎵 Your voice", "🤗 Your hugs"],
+          correct: 0,
+          hint: "It's the first thing I notice about you!",
+          explanation: "Your smile lights up my world! It's the most beautiful thing ever!"
+        },
+        {
+          question: "When is our anniversary?",
+          options: ["💝 February 14", "🌞 July 28", "❄️ December 1", "🌸 March 15"],
+          correct: 1,
+          hint: "It's in the middle of the year!",
+          explanation: "July 28th is our special day - the day we became official!"
+        }
+      ]
+    },
+    personal: {
+      name: 'Personal Questions',
+      questions: [
+        {
+          question: "What's my dream job?",
+          options: ["👩‍⚕️ Doctor", "👩‍🏫 Teacher", "👩‍🎨 Artist", "👩‍💼 Business"],
+          correct: 2,
+          hint: "I love creating beautiful things!",
+          explanation: "I want to be an artist - I love expressing myself through art!"
+        },
+        {
+          question: "What's my favorite season?",
+          options: ["🌸 Spring", "☀️ Summer", "🍂 Fall", "❄️ Winter"],
+          correct: 0,
+          hint: "When flowers bloom and everything is beautiful!",
+          explanation: "Spring is my favorite - everything is so fresh and beautiful!"
+        },
+        {
+          question: "What's my favorite movie genre?",
+          options: ["💕 Romance", "😂 Comedy", "🎭 Drama", "🚀 Action"],
+          correct: 0,
+          hint: "I love love stories!",
+          explanation: "Romance movies are my favorite - they make me feel all warm inside!"
+        },
+        {
+          question: "What's my ideal date night?",
+          options: ["🍽️ Fancy dinner", "🎬 Movie night", "🎨 Art gallery", "🌳 Nature walk"],
+          correct: 1,
+          hint: "I love cuddling and watching stories together!",
+          explanation: "Movie nights are perfect - we can cuddle and share the experience!"
+        },
+        {
+          question: "What's my biggest pet peeve?",
+          options: ["😤 Being late", "📱 Phone addiction", "🗣️ Loud people", "🧹 Messiness"],
+          correct: 1,
+          hint: "It's something that distracts from our time together!",
+          explanation: "I hate when people are always on their phones instead of being present!"
+        }
+      ]
+    },
+    relationship: {
+      name: 'Relationship Questions',
+      questions: [
+        {
+          question: "What's my favorite way to show love?",
+          options: ["💝 Gifts", "🤗 Physical touch", "💌 Words", "⏰ Quality time"],
+          correct: 1,
+          hint: "I love being close to you!",
+          explanation: "Physical touch is my love language - hugs and cuddles mean everything!"
+        },
+        {
+          question: "What's my biggest relationship goal?",
+          options: ["💍 Marriage", "🏠 Living together", "👶 Having kids", "💕 Growing together"],
+          correct: 3,
+          hint: "It's about our journey together!",
+          explanation: "I want us to grow together and become better people as a couple!"
+        },
+        {
+          question: "What's my favorite memory with you?",
+          options: ["💕 Our first date", "🎉 Our anniversary", "🏖️ Our vacation", "🏠 Moving in"],
+          correct: 0,
+          hint: "It was the beginning of our love story!",
+          explanation: "Our first date was magical - I knew you were the one!"
+        },
+        {
+          question: "What's my biggest relationship fear?",
+          options: ["💔 Being cheated on", "😴 Growing apart", "💰 Money problems", "👨‍👩‍👧‍👦 Family issues"],
+          correct: 1,
+          hint: "I'm afraid we might change and drift apart...",
+          explanation: "I'm scared we might grow apart and lose our connection!"
+        },
+        {
+          question: "What's my favorite thing about our relationship?",
+          options: ["😊 How you make me laugh", "💝 How you care for me", "🎵 How we communicate", "🤗 How safe I feel"],
+          correct: 1,
+          hint: "You always put my needs first!",
+          explanation: "I love how you always care for me and put my happiness first!"
+        }
+      ]
+    },
+    random: {
+      name: 'Random Questions',
+      questions: [
+        {
+          question: "What's my favorite animal?",
+          options: ["🐱 Cat", "🐶 Dog", "🐰 Rabbit", "🐼 Panda"],
+          correct: 2,
+          hint: "It's small and fluffy!",
+          explanation: "Rabbits are my favorite - they're so cute and gentle!"
+        },
+        {
+          question: "What's my favorite dessert?",
+          options: ["🍰 Cake", "🍦 Ice cream", "🍪 Cookies", "🍮 Pudding"],
+          correct: 1,
+          hint: "It's cold and sweet!",
+          explanation: "Ice cream is my favorite dessert - especially chocolate!"
+        },
+        {
+          question: "What's my favorite hobby?",
+          options: ["📖 Reading", "🎨 Drawing", "🎵 Music", "🏃‍♀️ Exercise"],
+          correct: 1,
+          hint: "I love creating things!",
+          explanation: "Drawing is my favorite hobby - I can express myself through art!"
+        },
+        {
+          question: "What's my biggest strength?",
+          options: ["💪 Physical strength", "🧠 Intelligence", "💝 Empathy", "🎯 Determination"],
+          correct: 2,
+          hint: "I can feel what others feel!",
+          explanation: "My empathy is my biggest strength - I can understand others' feelings!"
+        },
+        {
+          question: "What's my biggest weakness?",
+          options: ["😰 Anxiety", "😤 Stubbornness", "😴 Laziness", "😡 Anger"],
+          correct: 0,
+          hint: "I worry about things a lot!",
+          explanation: "I struggle with anxiety - I worry about everything!"
+        }
+      ]
     }
+  };
+
+  // State variables
+  let currentCategory = 'basic';
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let startTime = 0;
+  let quizStats = {
+    quizzesTaken: 0,
+    bestScore: 0,
+    perfectScores: 0
+  };
+
+  // Initialize quiz
+  function initQuiz() {
+    loadStats();
+    setupEventListeners();
+    updateStatsDisplay();
   }
-  
-  // Check if all questions are answered
-  if (Object.keys(answers).length < quizConfig.totalQuestions) {
-    alert('Please answer all questions before submitting! 💕');
-    return;
-  }
-  
-  // Calculate score
-  score = 0;
-  Object.keys(answers).forEach(question => {
-    if (answers[question] === quizConfig.answers[question]) {
-      score++;
-    }
-  });
-  
-  // Show results
-  showResults();
-}
 
-// Show quiz results
-function showResults() {
-  playSound(winSound);
-  
-  const percentage = (score / quizConfig.totalQuestions) * 100;
-  let message = '';
-  let emoji = '';
-  
-  if (percentage === 100) {
-    message = `💯 Perfect Score! You know me so well, my love! You're absolutely amazing! 💕`;
-    emoji = '🏆';
-  } else if (percentage >= 80) {
-    message = `🥰 Excellent! You know me pretty well, cutie! ${score}/5 correct!`;
-    emoji = '💖';
-  } else if (percentage >= 60) {
-    message = `😊 Good job! You know me quite well! ${score}/5 correct!`;
-    emoji = '💝';
-  } else if (percentage >= 40) {
-    message = `😅 Not bad! We need more time together! ${score}/5 correct!`;
-    emoji = '💕';
-  } else {
-    message = `😅 Aww... we need a movie night to fix this! ${score}/5 correct!`;
-    emoji = '🎬';
-  }
-  
-  resultContent.innerHTML = `
-    <div style="font-size: 3rem; margin-bottom: 15px;">${emoji}</div>
-    <div>${message}</div>
-    <div style="margin-top: 15px; font-size: 1.1rem; color: #666;">
-      Score: ${score}/${quizConfig.totalQuestions} (${percentage}%)
-    </div>
-  `;
-  
-  quizForm.classList.add('hidden');
-  resultBox.classList.remove('hidden');
-  
-  // Add celebration animation
-  createCelebration();
-}
-
-// Create celebration effects
-function createCelebration() {
-  // Create floating hearts
-  for (let i = 0; i < 20; i++) {
-    setTimeout(() => {
-      createHeart();
-    }, i * 100);
-  }
-}
-
-// Create floating heart
-function createHeart() {
-  const heart = document.createElement('div');
-  heart.innerHTML = '💖';
-  heart.style.position = 'fixed';
-  heart.style.left = Math.random() * 100 + 'vw';
-  heart.style.top = '100vh';
-  heart.style.fontSize = '2rem';
-  heart.style.pointerEvents = 'none';
-  heart.style.zIndex = '9999';
-  heart.style.animation = 'floatUp 3s ease-out forwards';
-  
-  document.body.appendChild(heart);
-  
-  setTimeout(() => {
-    heart.remove();
-  }, 3000);
-}
-
-// Reset quiz
-function resetQuiz() {
-  playSound(clickSound);
-  
-  // Reset form
-  quizForm.reset();
-  
-  // Reset state
-  score = 0;
-  currentQuestion = 0;
-  answeredQuestions.clear();
-  
-  // Reset progress
-  progressFill.style.width = '0%';
-  
-  // Show start screen
-  resultBox.classList.add('hidden');
-  startScreen.classList.remove('hidden');
-}
-
-// Play sound effect
-function playSound(audioElement) {
-  if (audioElement) {
-    audioElement.currentTime = 0;
-    audioElement.play().catch(() => {
-      // Ignore autoplay restrictions
+  // Setup event listeners
+  function setupEventListeners() {
+    // Category buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (clickSound) {
+          clickSound.currentTime = 0;
+          clickSound.volume = 0.3;
+          clickSound.play().catch(() => {});
+        }
+        
+        selectCategory(btn.dataset.category);
+      });
     });
-  }
-}
 
-// Add floating hearts animation
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes floatUp {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-100vh) scale(1.5);
-      opacity: 0;
+    // Start button
+    startBtn.addEventListener('click', startQuiz);
+
+    // Quiz buttons
+    hintBtn.addEventListener('click', showHint);
+    nextBtn.addEventListener('click', nextQuestion);
+    retryBtn.addEventListener('click', resetQuiz);
+    shareBtn.addEventListener('click', shareResult);
+  }
+
+  // Select category
+  function selectCategory(category) {
+    currentCategory = category;
+    
+    // Update active button
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    const activeBtn = document.querySelector(`[data-category="${category}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
     }
   }
-`;
-document.head.appendChild(style);
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initQuiz);
+  // Start quiz
+  function startQuiz() {
+    if (clickSound) {
+      clickSound.currentTime = 0;
+      clickSound.volume = 0.3;
+      clickSound.play().catch(() => {});
+    }
+    
+    startTime = Date.now();
+    currentQuestionIndex = 0;
+    score = 0;
+    
+    startScreen.classList.add('hidden');
+    quizContainer.classList.remove('hidden');
+    
+    loadQuestion();
+  }
+
+  // Load question
+  function loadQuestion() {
+    const questions = quizData[currentCategory].questions;
+    const question = questions[currentQuestionIndex];
+    
+    // Update progress
+    currentQuestion.textContent = currentQuestionIndex + 1;
+    totalQuestions.textContent = questions.length;
+    currentScore.textContent = score;
+    
+    // Update progress bar
+    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    progressFill.style.width = `${progress}%`;
+    
+    // Display question
+    questionText.textContent = question.question;
+    questionHint.textContent = '';
+    questionHint.classList.add('hidden');
+    
+    // Display options
+    optionsContainer.innerHTML = '';
+    question.options.forEach((option, index) => {
+      const optionBtn = document.createElement('button');
+      optionBtn.className = 'option-btn';
+      optionBtn.innerHTML = option;
+      optionBtn.addEventListener('click', () => selectOption(index));
+      optionsContainer.appendChild(optionBtn);
+    });
+    
+    // Reset buttons
+    hintBtn.classList.remove('hidden');
+    nextBtn.classList.add('hidden');
+  }
+
+  // Select option
+  function selectOption(selectedIndex) {
+    const questions = quizData[currentCategory].questions;
+    const question = questions[currentQuestionIndex];
+    
+    // Disable all options
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.disabled = true;
+    });
+    
+    // Check answer
+    const isCorrect = selectedIndex === question.correct;
+    
+    if (isCorrect) {
+      score++;
+      if (correctSound) {
+        correctSound.currentTime = 0;
+        correctSound.volume = 0.3;
+        correctSound.play().catch(() => {});
+      }
+    } else {
+      if (wrongSound) {
+        wrongSound.currentTime = 0;
+        wrongSound.volume = 0.3;
+        wrongSound.play().catch(() => {});
+      }
+    }
+    
+    // Update UI
+    document.querySelectorAll('.option-btn').forEach((btn, index) => {
+      if (index === question.correct) {
+        btn.classList.add('correct');
+      } else if (index === selectedIndex && !isCorrect) {
+        btn.classList.add('incorrect');
+      }
+    });
+    
+    // Show explanation
+    questionHint.textContent = question.explanation;
+    questionHint.classList.remove('hidden');
+    
+    // Show next button
+    hintBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+    
+    // Update score
+    currentScore.textContent = score;
+  }
+
+  // Show hint
+  function showHint() {
+    const questions = quizData[currentCategory].questions;
+    const question = questions[currentQuestionIndex];
+    
+    questionHint.textContent = question.hint;
+    questionHint.classList.remove('hidden');
+    hintBtn.classList.add('hidden');
+  }
+
+  // Next question
+  function nextQuestion() {
+    const questions = quizData[currentCategory].questions;
+    
+    if (currentQuestionIndex < questions.length - 1) {
+      currentQuestionIndex++;
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  // Show results
+  function showResults() {
+    const questions = quizData[currentCategory].questions;
+    const percentage = (score / questions.length) * 100;
+    const timeElapsed = Math.round((Date.now() - startTime) / 1000);
+    
+    // Update stats
+    quizStats.quizzesTaken++;
+    if (percentage > quizStats.bestScore) {
+      quizStats.bestScore = percentage;
+    }
+    if (percentage === 100) {
+      quizStats.perfectScores++;
+    }
+    saveStats();
+    
+    // Set result content
+    finalScore.textContent = `${score}/${questions.length}`;
+    finalPercentage.textContent = `${percentage}%`;
+    timeTaken.textContent = `${timeElapsed}s`;
+    
+    // Set result message
+    if (percentage === 100) {
+      resultIcon.textContent = '🏆';
+      resultTitle.textContent = 'Perfect Score!';
+      resultMessage.textContent = 'You know me so well, my love! You\'re absolutely amazing! 💕';
+      
+      if (achievementSound) {
+        achievementSound.currentTime = 0;
+        achievementSound.volume = 0.3;
+        achievementSound.play().catch(() => {});
+      }
+    } else if (percentage >= 80) {
+      resultIcon.textContent = '💖';
+      resultTitle.textContent = 'Excellent!';
+      resultMessage.textContent = `You know me pretty well, cutie! ${score}/5 correct!`;
+    } else if (percentage >= 60) {
+      resultIcon.textContent = '💝';
+      resultTitle.textContent = 'Good Job!';
+      resultMessage.textContent = `You know me quite well! ${score}/5 correct!`;
+    } else if (percentage >= 40) {
+      resultIcon.textContent = '💕';
+      resultTitle.textContent = 'Not Bad!';
+      resultMessage.textContent = `We need more time together! ${score}/5 correct!`;
+    } else {
+      resultIcon.textContent = '🎬';
+      resultTitle.textContent = 'Aww...';
+      resultMessage.textContent = `We need a movie night to fix this! ${score}/5 correct!`;
+    }
+    
+    // Show result screen
+    quizContainer.classList.add('hidden');
+    resultScreen.classList.remove('hidden');
+    
+    // Update stats display
+    updateStatsDisplay();
+    
+    // Create celebration
+    createCelebration();
+  }
+
+  // Create celebration effects
+  function createCelebration() {
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => {
+        createHeart();
+      }, i * 100);
+    }
+  }
+
+  // Create floating heart
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.innerHTML = '💖';
+    heart.style.position = 'fixed';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.top = '100vh';
+    heart.style.fontSize = '2rem';
+    heart.style.pointerEvents = 'none';
+    heart.style.zIndex = '9999';
+    heart.style.animation = 'floatUp 3s ease-out forwards';
+    
+    document.body.appendChild(heart);
+    
+    setTimeout(() => {
+      heart.remove();
+    }, 3000);
+  }
+
+  // Reset quiz
+  function resetQuiz() {
+    if (clickSound) {
+      clickSound.currentTime = 0;
+      clickSound.volume = 0.3;
+      clickSound.play().catch(() => {});
+    }
+    
+    resultScreen.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+  }
+
+  // Share result
+  function shareResult() {
+    const percentage = finalPercentage.textContent;
+    const message = `I just scored ${percentage} on the Know Me Quiz! How well do you know your partner? 💕`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'Know Me Quiz Result',
+        text: message,
+        url: window.location.href
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(message).then(() => {
+        showMessage('Result copied to clipboard! 📋');
+      });
+    }
+  }
+
+  // Load stats
+  function loadStats() {
+    const saved = localStorage.getItem('quizStats');
+    if (saved) {
+      try {
+        quizStats = JSON.parse(saved);
+      } catch (error) {
+        console.error('Error loading quiz stats:', error);
+      }
+    }
+  }
+
+  // Save stats
+  function saveStats() {
+    localStorage.setItem('quizStats', JSON.stringify(quizStats));
+  }
+
+  // Update stats display
+  function updateStatsDisplay() {
+    if (quizzesTaken) quizzesTaken.textContent = quizStats.quizzesTaken;
+    if (bestScore) bestScore.textContent = `${quizStats.bestScore}%`;
+    if (perfectScores) perfectScores.textContent = quizStats.perfectScores;
+  }
+
+  // Show message
+  function showMessage(message) {
+    const popup = document.createElement('div');
+    popup.className = 'message-popup';
+    popup.textContent = message;
+    document.body.appendChild(popup);
+    
+    setTimeout(() => {
+      popup.remove();
+    }, 3000);
+  }
+
+  // Add floating hearts animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Initialize the quiz
+  initQuiz();
+});

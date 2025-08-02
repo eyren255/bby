@@ -8,125 +8,119 @@
   <link rel="stylesheet" href="quiz.css" />
 </head>
 <body>
+  <!-- Header -->
+  <header class="quiz-header">
+    <h1 class="main-title">❓ Know Me Quiz</h1>
+    <p class="subtitle">Test how well you know your honey bun! 💕</p>
+  </header>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">
+      <span class="back-icon">⬅️</span>
+      <span class="back-text">Back to Main Menu</span>
+    </a>
+  </div>
+
   <div class="quiz-wrapper">
-    <h1>Know Me Quiz ❓</h1>
-    <p class="subtitle">Test how well you know me! 💕</p>
-
-    <!-- Back Button -->
-    <div class="back-button-container">
-      <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
-    </div>
-
-    <div class="quiz-container">
-      <div id="startScreen" class="start-screen">
-        <h2>Ready to test your knowledge? 🧠</h2>
-        <p>Answer 5 questions about me and see how well you know your honey bun! 💖</p>
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+      <div class="start-content">
+        <div class="start-icon">🧠</div>
+        <h2>Ready to test your knowledge?</h2>
+        <p>Answer questions about me and see how well you know your honey bun! 💖</p>
+        
+        <!-- Quiz Categories -->
+        <div class="category-selection">
+          <h3>Choose Quiz Category:</h3>
+          <div class="category-buttons">
+            <button class="category-btn active" data-category="basic">😊 Basic</button>
+            <button class="category-btn" data-category="personal">💝 Personal</button>
+            <button class="category-btn" data-category="relationship">💕 Relationship</button>
+            <button class="category-btn" data-category="random">🎲 Random</button>
+          </div>
+        </div>
+        
         <button id="startQuiz" class="start-btn">Start Quiz 💕</button>
       </div>
+    </div>
 
-      <form id="quizForm" class="hidden">
+    <!-- Quiz Container -->
+    <div id="quizContainer" class="quiz-container hidden">
+      <!-- Progress Section -->
+      <div class="progress-section">
+        <div class="progress-info">
+          <span class="question-counter">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">5</span></span>
+          <span class="score-display">Score: <span id="currentScore">0</span></span>
+        </div>
         <div class="progress-bar">
           <div id="progressFill" class="progress-fill"></div>
         </div>
+      </div>
+
+      <!-- Question Display -->
+      <div id="questionDisplay" class="question-display">
+        <div class="question-header">
+          <h3 id="questionText">Loading question...</h3>
+          <div class="question-hint" id="questionHint"></div>
+        </div>
         
-        <div class="question-container">
-          <div class="question">
-            <h3>1. What's my favorite snack?</h3>
-            <div class="options">
-              <label class="option">
-                <input type="radio" name="q1" value="a" />
-                <span class="option-text">🍟 Chips</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q1" value="b" />
-                <span class="option-text">🍦 Ice cream</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q1" value="c" />
-                <span class="option-text">🍜 Noodle</span>
-              </label>
-            </div>
-          </div>
+        <div class="options-container" id="optionsContainer">
+          <!-- Options will be populated by JavaScript -->
+        </div>
+        
+        <div class="question-actions">
+          <button id="hintBtn" class="hint-btn">💡 Get Hint</button>
+          <button id="nextBtn" class="next-btn hidden">Next Question ➡️</button>
+        </div>
+      </div>
+    </div>
 
-          <div class="question">
-            <h3>2. When is our anniversary?</h3>
-            <div class="options">
-              <label class="option">
-                <input type="radio" name="q2" value="a" />
-                <span class="option-text">💝 February 14</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q2" value="b" />
-                <span class="option-text">🌞 July 28</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q2" value="c" />
-                <span class="option-text">❄️ December 1</span>
-              </label>
-            </div>
+    <!-- Results Screen -->
+    <div id="resultScreen" class="result-screen hidden">
+      <div class="result-content">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <h2 id="resultTitle">Quiz Complete!</h2>
+        <p id="resultMessage">You did great!</p>
+        
+        <div class="score-details">
+          <div class="score-item">
+            <span class="score-label">Final Score:</span>
+            <span class="score-value" id="finalScore">0/5</span>
           </div>
-
-          <div class="question">
-            <h3>3. What's my biggest fear?</h3>
-            <div class="options">
-              <label class="option">
-                <input type="radio" name="q3" value="a" />
-                <span class="option-text">🕷️ Spiders</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q3" value="b" />
-                <span class="option-text">💔 Losing you</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q3" value="c" />
-                <span class="option-text">🏔️ Heights</span>
-              </label>
-            </div>
+          <div class="score-item">
+            <span class="score-label">Percentage:</span>
+            <span class="score-value" id="finalPercentage">0%</span>
           </div>
-
-          <div class="question">
-            <h3>4. What's my favorite color?</h3>
-            <div class="options">
-              <label class="option">
-                <input type="radio" name="q4" value="a" />
-                <span class="option-text">💙 Blue</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q4" value="b" />
-                <span class="option-text">💖 Pink</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q4" value="c" />
-                <span class="option-text">💜 Purple</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="question">
-            <h3>5. What do I love most about you?</h3>
-            <div class="options">
-              <label class="option">
-                <input type="radio" name="q5" value="a" />
-                <span class="option-text">😊 Your smile</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q5" value="b" />
-                <span class="option-text">💝 Your kindness</span>
-              </label>
-              <label class="option">
-                <input type="radio" name="q5" value="c" />
-                <span class="option-text">🎵 Your voice</span>
-              </label>
-            </div>
+          <div class="score-item">
+            <span class="score-label">Time Taken:</span>
+            <span class="score-value" id="timeTaken">0s</span>
           </div>
         </div>
+        
+        <div class="result-actions">
+          <button id="retryBtn" class="retry-btn">🔄 Try Again</button>
+          <button id="shareBtn" class="share-btn">📤 Share Result</button>
+        </div>
+      </div>
+    </div>
 
-        <button type="submit" class="submit-btn">Submit Answers 💕</button>
-      </form>
-      
-      <div id="resultBox" class="result-box hidden">
-        <div id="resultContent"></div>
-        <button id="retryBtn" class="retry-btn">🔄 Try Again</button>
+    <!-- Statistics Panel -->
+    <div class="stats-panel">
+      <div class="stat-item">
+        <span class="stat-icon">🎯</span>
+        <span class="stat-label">Quizzes Taken</span>
+        <span class="stat-value" id="quizzesTaken">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🏆</span>
+        <span class="stat-label">Best Score</span>
+        <span class="stat-value" id="bestScore">0%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">⭐</span>
+        <span class="stat-label">Perfect Scores</span>
+        <span class="stat-value" id="perfectScores">0</span>
       </div>
     </div>
   </div>
@@ -134,8 +128,9 @@
   <!-- Audio Elements -->
   <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
   <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
-  <audio id="correctSound" src="../../assets/audio/correct.mp3" preload="auto"></audio>
-  <audio id="wrongSound" src="../../assets/audio/wrong.mp3" preload="auto"></audio>
+  <audio id="correctSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+  <audio id="wrongSound" src="../../assets/audio/pop.mp3" preload="auto"></audio>
+  <audio id="achievementSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
 
   <!-- Global Settings System -->
   <script src="../shared/global-settings.js"></script>

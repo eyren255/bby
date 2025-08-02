@@ -10,12 +10,134 @@
   <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 </head>
 <body>
-  <a href="../../index.html" class="back-button">🔙 Back to Menu</a>
+  <!-- Header -->
+  <header class="sticker-header">
+    <h1 class="main-title">🎨 Sticker Wall</h1>
+    <p class="subtitle">Create beautiful memories with stickers! 💕</p>
+  </header>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">
+      <span class="back-icon">⬅️</span>
+      <span class="back-text">Back to Main Menu</span>
+    </a>
+  </div>
+
+  <!-- Main Container -->
+  <div class="sticker-container">
+    <!-- Canvas Section -->
+    <div class="canvas-section">
+      <div class="canvas-header">
+        <h2>🎨 Your Canvas</h2>
+        <div class="canvas-tools">
+          <button id="clearBtn" class="tool-btn">🗑️ Clear</button>
+          <button id="saveBtn" class="tool-btn">💾 Save</button>
+          <button id="exportBtn" class="tool-btn">📤 Export</button>
+        </div>
+      </div>
+      
+      <div class="canvas-wrapper">
+        <canvas id="canvas" width="600" height="400"></canvas>
+        <div class="canvas-overlay">
+          <div class="canvas-info">Drop stickers here or click to add! 🎯</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticker Panel -->
+    <div class="sticker-panel">
+      <div class="panel-header">
+        <h3>🎯 Stickers</h3>
+        <div class="unlock-progress">
+          <span class="progress-text">Unlocked: <span id="unlockedCount">0</span>/<span id="totalCount">0</span></span>
+          <div class="progress-bar">
+            <div class="progress-fill" id="unlockProgress"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="category-tabs">
+        <button class="category-btn active" data-category="love">💖 Love</button>
+        <button class="category-btn" data-category="nature">🌿 Nature</button>
+        <button class="category-btn" data-category="food">🍕 Food</button>
+        <button class="category-btn" data-category="animals">🐰 Animals</button>
+        <button class="category-btn" data-category="objects">🎁 Objects</button>
+        <button class="category-btn" data-category="special">⭐ Special</button>
+      </div>
+
+      <!-- Sticker Grid -->
+      <div class="sticker-grid" id="stickerGrid">
+        <!-- Stickers will be populated by JavaScript -->
+      </div>
+
+      <!-- Unlock System -->
+      <div class="unlock-section">
+        <h4>🔓 Unlock New Stickers</h4>
+        <div class="unlock-challenges">
+          <div class="challenge-item" data-challenge="first-sticker">
+            <span class="challenge-icon">🎯</span>
+            <span class="challenge-text">Add your first sticker</span>
+            <span class="challenge-status">🔒</span>
+          </div>
+          <div class="challenge-item" data-challenge="five-stickers">
+            <span class="challenge-icon">⭐</span>
+            <span class="challenge-text">Use 5 stickers</span>
+            <span class="challenge-status">🔒</span>
+          </div>
+          <div class="challenge-item" data-challenge="ten-stickers">
+            <span class="challenge-icon">🏆</span>
+            <span class="challenge-text">Use 10 stickers</span>
+            <span class="challenge-status">🔒</span>
+          </div>
+          <div class="challenge-item" data-challenge="save-design">
+            <span class="challenge-icon">💾</span>
+            <span class="challenge-text">Save a design</span>
+            <span class="challenge-status">🔒</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Panel -->
+  <div class="stats-panel">
+    <div class="stat-item">
+      <span class="stat-icon">🎯</span>
+      <span class="stat-label">Stickers Used</span>
+      <span class="stat-value" id="stickersUsed">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">💾</span>
+      <span class="stat-label">Designs Saved</span>
+      <span class="stat-value" id="designsSaved">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">🔓</span>
+      <span class="stat-label">Stickers Unlocked</span>
+      <span class="stat-value" id="stickersUnlocked">0</span>
+    </div>
+  </div>
+
+  <!-- Achievement Modal -->
+  <div id="achievementModal" class="achievement-modal">
+    <div class="achievement-content">
+      <div class="achievement-icon">🏆</div>
+      <h3 class="achievement-title">Achievement Unlocked!</h3>
+      <p class="achievement-description" id="achievementDesc"></p>
+      <button class="achievement-btn" onclick="closeAchievementModal()">Awesome! 💕</button>
+    </div>
+  </div>
+
+  <!-- Floating Hearts Container -->
+  <div id="floatingHearts" class="floating-hearts"></div>
 
   <!-- Audio Elements -->
   <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
   <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
-  <audio id="stickerSound" src="../../assets/audio/sticker.mp3" preload="auto"></audio>
+  <audio id="stickerSound" src="../../assets/audio/pop.mp3" preload="auto"></audio>
+  <audio id="achievementSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
 
   <!-- Global Settings System -->
   <script src="../shared/global-settings.js"></script>
