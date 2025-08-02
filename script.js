@@ -918,57 +918,127 @@ function openSettings() {
   }
 }
 
-// Test function to verify button functionality
-function testButtons() {
-  console.log('🧪 Testing button functionality...');
-  
-  // Test showWhatsNew
-  console.log('🧪 Testing showWhatsNew function...');
-  showWhatsNew();
-  
-  // Test settings manager
-  console.log('🧪 Testing settings manager...');
-  console.log('🧪 window.settingsManager:', window.settingsManager);
-  console.log('🧪 typeof window.settingsManager?.openModal:', typeof window.settingsManager?.openModal);
-  
-  // Test openSettings
-  console.log('🧪 Testing openSettings function...');
-  openSettings();
-}
 
-// Add a simple test to check settings manager
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    console.log('🧪 Checking settings manager after DOM loaded...');
-    console.log('🧪 window.settingsManager:', window.settingsManager);
-    if (window.settingsManager) {
-      console.log('✅ Settings manager is available');
-      console.log('🧪 openModal function:', typeof window.settingsManager.openModal);
-    } else {
-      console.error('❌ Settings manager is not available');
+
+  // === Global Settings Loader ===
+  // This ensures settings are applied to all pages automatically
+  function loadAndApplyGlobalSettings() {
+    try {
+      const saved = localStorage.getItem('userSettings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        
+        // Apply theme
+        if (settings.theme === 'dark') {
+          document.body.classList.add('dark-mode');
+        } else {
+          document.body.classList.remove('dark-mode');
+        }
+
+        // Apply font size
+        let fontSize = '1rem';
+        switch (settings.fontSize) {
+          case 'small': fontSize = '0.9rem'; break;
+          case 'large': fontSize = '1.2rem'; break;
+        }
+        document.body.style.fontSize = fontSize;
+
+        // Apply animation speed
+        let animationSpeed = '0.6s';
+        switch (settings.animationSpeed) {
+          case 'fast': animationSpeed = '0.3s'; break;
+          case 'slow': animationSpeed = '1.2s'; break;
+        }
+        document.body.style.setProperty('--animation-speed', animationSpeed);
+
+        // Apply volume to all audio elements
+        const audioElements = document.querySelectorAll('audio');
+        audioElements.forEach(audio => {
+          audio.volume = (settings.volume || 50) / 100;
+        });
+      }
+    } catch (error) {
+      console.error('Error loading global settings:', error);
     }
-    
-    // Add a test button for debugging
-    const testBtn = document.createElement('button');
-    testBtn.textContent = '🧪 Test Settings';
-    testBtn.style.cssText = `
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 10000;
-      background: blue;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    `;
-    testBtn.onclick = () => {
-      console.log('🧪 Test button clicked');
-      openSettings();
-    };
-    document.body.appendChild(testBtn);
-    console.log('🧪 Test button added');
-  }, 1000);
+  }
+
+  // === Background Music Management ===
+  function manageBackgroundMusic() {
+    try {
+      // Stop all background music on other pages
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        if (audio !== document.querySelector('#bgMusic')) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+      
+      // Start background music on current page
+      const currentBgMusic = document.querySelector('#bgMusic');
+      if (currentBgMusic) {
+        currentBgMusic.play().catch(() => {
+          console.log('Background music autoplay blocked');
+        });
+      }
+    } catch (error) {
+      console.error('Error managing background music:', error);
+    }
+  }
+
+  // Stop all background music when leaving page
+  function stopAllBackgroundMusic() {
+    try {
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    } catch (error) {
+      console.error('Error stopping background music:', error);
+    }
+  }
+
+  // Apply settings immediately when script loads
+  loadAndApplyGlobalSettings();
+  manageBackgroundMusic();
+
+  // === Settings Change Broadcaster ===
+  // This function broadcasts settings changes to all pages
+  function broadcastSettingsChange() {
+    try {
+      const saved = localStorage.getItem('userSettings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        
+        // Dispatch custom event for other pages to listen to
+        window.dispatchEvent(new CustomEvent('settingsChanged', {
+          detail: settings
+        }));
+        
+        // Also trigger storage event for cross-tab communication
+        localStorage.setItem('settingsLastUpdated', Date.now().toString());
+        
+        console.log('📡 Settings change broadcasted to all pages');
+      }
+    } catch (error) {
+      console.error('Error broadcasting settings change:', error);
+    }
+  }
+
+  // Listen for settings changes from settings modal
+  window.addEventListener('settingsUpdated', () => {
+    loadAndApplyGlobalSettings();
+    broadcastSettingsChange();
+  });
+
+  // Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize existing functionality
+  createFloatingHearts();
+  checkForNewMessages();
+  
+  // Check for new messages every 30 seconds
+  setInterval(checkForNewMessages, 30000);
 });
 
