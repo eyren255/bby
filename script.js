@@ -415,8 +415,8 @@ function showMessageNotification(count) {
   // === Global Settings Loader ===
   // This ensures settings are applied to all pages automatically
   function loadAndApplyGlobalSettings() {
-    try {
-      const saved = localStorage.getItem('userSettings');
+      try {
+        const saved = localStorage.getItem('userSettings');
       if (saved) {
         const settings = JSON.parse(saved);
         
@@ -449,7 +449,7 @@ function showMessageNotification(count) {
           audio.volume = (settings.volume || 50) / 100;
         });
       }
-    } catch (error) {
+      } catch (error) {
       console.error('Error loading global settings:', error);
     }
   }
@@ -473,7 +473,7 @@ function showMessageNotification(count) {
           console.log('Background music autoplay blocked');
         });
       }
-    } catch (error) {
+      } catch (error) {
       console.error('Error managing background music:', error);
     }
   }
@@ -502,15 +502,15 @@ function showMessageNotification(count) {
       const saved = localStorage.getItem('userSettings');
       if (saved) {
         const settings = JSON.parse(saved);
-        
-        // Dispatch custom event for other pages to listen to
-        window.dispatchEvent(new CustomEvent('settingsChanged', {
+      
+      // Dispatch custom event for other pages to listen to
+      window.dispatchEvent(new CustomEvent('settingsChanged', {
           detail: settings
-        }));
-        
+      }));
+      
         // Also trigger storage event for cross-tab communication
-        localStorage.setItem('settingsLastUpdated', Date.now().toString());
-        
+      localStorage.setItem('settingsLastUpdated', Date.now().toString());
+      
         console.log('📡 Settings change broadcasted to all pages');
       }
     } catch (error) {
@@ -789,9 +789,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update aria-expanded
         revealBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+        }
+      });
+    }
 });
 
 // Show changelog modal
@@ -808,12 +808,12 @@ function showWhatsNew() {
       console.log('✅ Changelog modal opened successfully');
       
       // Play sound if available
-      const clickSound = document.getElementById('clickSound');
+        const clickSound = document.getElementById('clickSound');
       if (clickSound) {
-        clickSound.currentTime = 0;
+          clickSound.currentTime = 0;
         clickSound.volume = 0.3;
-        clickSound.play().catch(() => {});
-      }
+          clickSound.play().catch(() => {});
+        }
     } else {
       console.error('❌ Changelog modal not found');
     }
@@ -889,7 +889,7 @@ function openSettings() {
     }
     
     // Wait a bit for the settings manager to initialize
-    setTimeout(() => {
+      setTimeout(() => {
       console.log('🔍 Delayed check - window.settingsManager:', window.settingsManager);
       console.log('🔍 Delayed check - typeof window.settingsManager?.openModal:', typeof window.settingsManager?.openModal);
       
@@ -1177,6 +1177,25 @@ function setupInstallPrompt() {
     hideInstallButton();
     deferredPrompt = null;
   });
+  
+  // Check if app is already installed
+  if (window.matchMedia('(display-mode: standalone)').matches || 
+      window.navigator.standalone === true) {
+    console.log('📱 App is already installed');
+    hideInstallButton();
+  } else {
+    // Show install button if service worker is registered
+    setTimeout(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then((registration) => {
+          if (registration) {
+            console.log('📱 Service Worker registered, showing install button');
+            showInstallButton();
+          }
+        });
+      }
+    }, 2000);
+  }
 }
 
 function showInstallButton() {
@@ -1205,11 +1224,19 @@ function showInstallButton() {
         box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
         z-index: 1000;
         animation: bounce 2s infinite;
+        font-size: 14px;
+        min-width: 120px;
+        transition: all 0.3s ease;
       }
       
       .install-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        background: linear-gradient(135deg, #ff8fab, #ff69b4);
+      }
+      
+      .install-btn:active {
+        transform: translateY(0);
       }
       
       @keyframes bounce {
@@ -1217,10 +1244,187 @@ function showInstallButton() {
         40% { transform: translateY(-5px); }
         60% { transform: translateY(-3px); }
       }
+      
+      /* Mobile responsive */
+      @media (max-width: 768px) {
+        .install-btn {
+          bottom: 15px;
+          right: 15px;
+          padding: 0.6rem 1.2rem;
+          font-size: 13px;
+          min-width: 100px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .install-btn {
+          bottom: 10px;
+          right: 10px;
+          padding: 0.5rem 1rem;
+          font-size: 12px;
+          min-width: 90px;
+        }
+      }
     `;
     document.head.appendChild(style);
     
     document.body.appendChild(installBtn);
+    console.log('📱 Install button created');
+  }
+  
+  // Also show bottom banner
+  showBottomInstallBanner();
+}
+
+function showBottomInstallBanner() {
+  // Create bottom banner if it doesn't exist
+  if (!document.getElementById('installBanner')) {
+    const banner = document.createElement('div');
+    banner.id = 'installBanner';
+    banner.className = 'install-banner';
+    banner.innerHTML = `
+      <div class="banner-content">
+        <div class="banner-text">
+          <span class="banner-icon">📱</span>
+          <span>Install Baby Love App</span>
+        </div>
+        <div class="banner-actions">
+          <button class="banner-install-btn" onclick="installApp()">Install</button>
+          <button class="banner-close-btn" onclick="hideBottomInstallBanner()">✕</button>
+        </div>
+      </div>
+    `;
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .install-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #ff69b4, #ff8fab);
+        color: white;
+        padding: 1rem;
+        z-index: 999;
+        animation: slideUp 0.5s ease-out;
+        box-shadow: 0 -2px 10px rgba(255, 105, 180, 0.3);
+      }
+      
+      .banner-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      
+      .banner-text {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      
+      .banner-icon {
+        font-size: 1.2em;
+      }
+      
+      .banner-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      
+      .banner-install-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+      
+      .banner-install-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+      
+      .banner-close-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+      
+      .banner-close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      
+      /* Mobile responsive */
+      @media (max-width: 768px) {
+        .banner-content {
+          flex-direction: column;
+          gap: 0.5rem;
+          text-align: center;
+        }
+        
+        .banner-text {
+          font-size: 14px;
+        }
+        
+        .banner-install-btn {
+          font-size: 13px;
+          padding: 0.4rem 0.8rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .install-banner {
+          padding: 0.8rem;
+        }
+        
+        .banner-text {
+          font-size: 13px;
+        }
+        
+        .banner-install-btn {
+          font-size: 12px;
+          padding: 0.3rem 0.7rem;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(banner);
+    console.log('📱 Install banner created');
+  }
+}
+
+function hideBottomInstallBanner() {
+  const banner = document.getElementById('installBanner');
+  if (banner) {
+    banner.remove();
+    console.log('📱 Install banner hidden');
   }
 }
 
@@ -1228,22 +1432,176 @@ function hideInstallButton() {
   const installBtn = document.getElementById('installBtn');
   if (installBtn) {
     installBtn.remove();
+    console.log('📱 Install button hidden');
   }
+  
+  // Also hide bottom banner
+  hideBottomInstallBanner();
 }
 
 function installApp() {
+  console.log('📱 Install button clicked');
+  
   if (deferredPrompt) {
+    console.log('📱 Using deferred prompt');
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
         console.log('📱 User accepted install prompt');
+        hideInstallButton();
       } else {
         console.log('📱 User dismissed install prompt');
       }
       deferredPrompt = null;
     });
+  } else {
+    console.log('📱 No deferred prompt, showing manual install instructions');
+    showManualInstallInstructions();
   }
 }
+
+function showManualInstallInstructions() {
+  const instructions = document.createElement('div');
+  instructions.id = 'installInstructions';
+  instructions.className = 'install-instructions';
+  
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+  
+  let instructionText = '';
+  if (isIOS) {
+    instructionText = `
+      <div class="instruction-content">
+        <h3>📱 Install on iOS</h3>
+        <ol>
+          <li>Tap the <strong>Share</strong> button <span style="font-size: 1.2em;">📤</span></li>
+          <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+          <li>Tap <strong>"Add"</strong> to install</li>
+        </ol>
+        <button onclick="closeInstallInstructions()" class="close-btn">Got it!</button>
+      </div>
+    `;
+  } else if (isAndroid) {
+    instructionText = `
+      <div class="instruction-content">
+        <h3>📱 Install on Android</h3>
+        <ol>
+          <li>Tap the <strong>Menu</strong> button <span style="font-size: 1.2em;">⋮</span></li>
+          <li>Tap <strong>"Add to Home screen"</strong></li>
+          <li>Tap <strong>"Add"</strong> to install</li>
+        </ol>
+        <button onclick="closeInstallInstructions()" class="close-btn">Got it!</button>
+      </div>
+    `;
+  } else {
+    instructionText = `
+      <div class="instruction-content">
+        <h3>📱 Install App</h3>
+        <p>Look for the install icon in your browser's address bar or menu:</p>
+        <ul>
+          <li><strong>Chrome:</strong> Look for the install icon ⚙️ in the address bar</li>
+          <li><strong>Edge:</strong> Look for the install icon 📱 in the address bar</li>
+          <li><strong>Firefox:</strong> Look for the install icon in the menu</li>
+        </ul>
+        <button onclick="closeInstallInstructions()" class="close-btn">Got it!</button>
+      </div>
+    `;
+  }
+  
+  instructions.innerHTML = instructionText;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .install-instructions {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .instruction-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 400px;
+      margin: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: left;
+    }
+    
+    .instruction-content h3 {
+      color: #ff69b4;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .instruction-content ol {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .instruction-content li {
+      margin: 0.5rem 0;
+      line-height: 1.5;
+    }
+    
+    .instruction-content ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .close-btn {
+      background: linear-gradient(135deg, #ff69b4, #ff8fab);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    
+    .close-btn:hover {
+      background: linear-gradient(135deg, #ff8fab, #ff69b4);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      .instruction-content {
+        background: #2a2a2a;
+        color: white;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(instructions);
+}
+
+function closeInstallInstructions() {
+  const instructions = document.getElementById('installInstructions');
+  if (instructions) {
+    instructions.remove();
+  }
+}
+
+// Make function globally available
+window.closeInstallInstructions = closeInstallInstructions;
+window.hideBottomInstallBanner = hideBottomInstallBanner;
 
 // === PWA Status Check ===
 function checkPWAStatus() {

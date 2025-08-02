@@ -101,7 +101,7 @@ class SimpleSettingsManager {
     try {
       console.log('🔧 Applying settings globally...');
       
-      // Apply theme
+    // Apply theme
       this.applyTheme();
       
       // Apply font size
@@ -124,11 +124,11 @@ class SimpleSettingsManager {
 
   applyTheme() {
     try {
-      if (this.settings.theme === 'dark') {
-        document.body.classList.add('dark-mode');
+    if (this.settings.theme === 'dark') {
+      document.body.classList.add('dark-mode');
         console.log('🌙 Dark mode applied');
-      } else {
-        document.body.classList.remove('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
         console.log('☀️ Light mode applied');
       }
     } catch (error) {
@@ -177,9 +177,9 @@ class SimpleSettingsManager {
 
   applyAudioSettings() {
     try {
-      // Apply volume to all audio elements
-      const audioElements = document.querySelectorAll('audio');
-      audioElements.forEach(audio => {
+    // Apply volume to all audio elements
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
         audio.volume = (this.settings.volume || 50) / 100;
         audio.muted = !this.settings.soundEffects;
       });
@@ -221,7 +221,7 @@ class SimpleSettingsManager {
   // === Modal Management ===
   setupModal() {
     try {
-      const settingsModal = document.getElementById('settingsModal');
+    const settingsModal = document.getElementById('settingsModal');
       const closeBtn = document.getElementById('closeSettingsBtn');
       const saveBtn = document.getElementById('saveSettingsBtn');
 
@@ -254,7 +254,7 @@ class SimpleSettingsManager {
             this.closeModal();
           } else if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
-            this.saveCurrentSettings();
+      this.saveCurrentSettings();
           }
         }
       });
@@ -622,17 +622,17 @@ class SimpleSettingsManager {
 
   setupToggleControls() {
     try {
-      const toggles = {
-        'bgMusicToggle': 'bgMusic',
-        'soundEffectsToggle': 'soundEffects',
+    const toggles = {
+      'bgMusicToggle': 'bgMusic',
+      'soundEffectsToggle': 'soundEffects',
         'notificationsToggle': 'notifications',
-        'autoSaveToggle': 'autoSave',
+      'autoSaveToggle': 'autoSave',
         'performanceToggle': 'performanceMode'
-      };
+    };
 
-      Object.entries(toggles).forEach(([toggleId, settingKey]) => {
-        const toggle = document.getElementById(toggleId);
-        if (toggle) {
+    Object.entries(toggles).forEach(([toggleId, settingKey]) => {
+      const toggle = document.getElementById(toggleId);
+      if (toggle) {
           // Set initial value based on settings
           let initialValue = false;
           if (settingKey === 'notifications' || settingKey === 'autoSave' || settingKey === 'performanceMode') {
@@ -644,7 +644,7 @@ class SimpleSettingsManager {
           toggle.checked = initialValue;
           console.log(`🔧 Set ${toggleId} initial value to:`, initialValue);
           
-          toggle.addEventListener('change', (e) => {
+        toggle.addEventListener('change', (e) => {
             console.log(`🔧 ${settingKey} changed to:`, e.target.checked);
             
             // Update settings based on the toggle type
@@ -652,12 +652,12 @@ class SimpleSettingsManager {
               if (!this.settings.preferences) this.settings.preferences = {};
               this.settings.preferences[settingKey] = e.target.checked;
             } else {
-              this.settings[settingKey] = e.target.checked;
+          this.settings[settingKey] = e.target.checked;
             }
             
             // Save settings immediately
             this.saveSettings();
-            this.applySettings();
+          this.applySettings();
             
             this.showNotification(`${this.getToggleLabel(toggleId)} ${e.target.checked ? 'enabled' : 'disabled'}! ✨`, 'success');
           });
@@ -718,16 +718,16 @@ class SimpleSettingsManager {
 
   setupSliderControls() {
     try {
-      const volumeSlider = document.getElementById('volumeSlider');
-      const volumeValue = document.getElementById('volumeValue');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
       
-      if (volumeSlider && volumeValue) {
+    if (volumeSlider && volumeValue) {
         const initialVolume = this.settings.volume || 50;
         volumeSlider.value = initialVolume;
         volumeValue.textContent = `${initialVolume}%`;
         console.log(`🔧 Set volume slider initial value to:`, initialVolume);
         
-        volumeSlider.addEventListener('input', (e) => {
+      volumeSlider.addEventListener('input', (e) => {
           const newVolume = parseInt(e.target.value);
           console.log('🔧 Volume changed to:', newVolume);
           this.settings.volume = newVolume;
@@ -735,8 +735,8 @@ class SimpleSettingsManager {
           
           // Save settings immediately
           this.saveSettings();
-          this.applySettings();
-        });
+        this.applySettings();
+      });
       } else {
         console.warn('⚠️ Volume slider elements not found');
       }
@@ -749,16 +749,16 @@ class SimpleSettingsManager {
 
   setupSelectControls() {
     try {
-      const selects = {
-        'fontSizeSelect': 'fontSize',
-        'animationSpeedSelect': 'animationSpeed',
+    const selects = {
+      'fontSizeSelect': 'fontSize',
+      'animationSpeedSelect': 'animationSpeed',
         'layoutSelect': 'layout',
         'languageSelect': 'language'
-      };
+    };
 
-      Object.entries(selects).forEach(([selectId, settingKey]) => {
-        const select = document.getElementById(selectId);
-        if (select) {
+    Object.entries(selects).forEach(([selectId, settingKey]) => {
+      const select = document.getElementById(selectId);
+      if (select) {
           // Set initial value based on settings
           let initialValue = '';
           if (settingKey === 'language') {
@@ -770,7 +770,7 @@ class SimpleSettingsManager {
           select.value = initialValue;
           console.log(`🔧 Set ${selectId} initial value to:`, initialValue);
           
-          select.addEventListener('change', (e) => {
+        select.addEventListener('change', (e) => {
             console.log(`🔧 ${settingKey} changed to:`, e.target.value);
             
             // Update settings based on the select type
@@ -778,8 +778,8 @@ class SimpleSettingsManager {
               this.settings.language = e.target.value;
               this.showNotification(`Language changed to ${e.target.value}! ✨`, 'success');
             } else {
-              this.settings[settingKey] = e.target.value;
-              this.applySettings();
+          this.settings[settingKey] = e.target.value;
+          this.applySettings();
               this.showNotification(`${this.getSelectLabel(selectId)} changed to ${e.target.value}! ✨`, 'success');
             }
             
