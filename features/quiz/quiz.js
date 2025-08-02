@@ -1,5 +1,92 @@
 // 🧠 Enhanced Quiz JavaScript
+
+// === Settings Loading ===
+function loadAndApplySettings() {
+  try {
+    const saved = localStorage.getItem('userSettings');
+    if (saved) {
+      const settings = JSON.parse(saved);
+      
+      // Apply theme
+      if (settings.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Apply font size
+      let fontSize = '1rem';
+      switch (settings.fontSize) {
+        case 'small': fontSize = '0.9rem'; break;
+        case 'large': fontSize = '1.2rem'; break;
+      }
+      document.body.style.fontSize = fontSize;
+
+      // Apply animation speed
+      let animationSpeed = '0.6s';
+      switch (settings.animationSpeed) {
+        case 'fast': animationSpeed = '0.3s'; break;
+        case 'slow': animationSpeed = '1.2s'; break;
+      }
+      document.body.style.setProperty('--animation-speed', animationSpeed);
+
+      // Apply volume to all audio elements
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        audio.volume = (settings.volume || 50) / 100;
+      });
+    }
+  } catch (error) {
+    console.error('Error loading settings in quiz:', error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Load settings first
+  loadAndApplySettings();
+  
+  // === Settings Change Listener ===
+  // Listen for settings changes from main menu
+  window.addEventListener('settingsChanged', (e) => {
+    const settings = e.detail;
+    
+    // Apply theme
+    if (settings.theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+
+    // Apply font size
+    let fontSize = '1rem';
+    switch (settings.fontSize) {
+      case 'small': fontSize = '0.9rem'; break;
+      case 'large': fontSize = '1.2rem'; break;
+    }
+    document.body.style.fontSize = fontSize;
+
+    // Apply animation speed
+    let animationSpeed = '0.6s';
+    switch (settings.animationSpeed) {
+      case 'fast': animationSpeed = '0.3s'; break;
+      case 'slow': animationSpeed = '1.2s'; break;
+    }
+    document.body.style.setProperty('--animation-speed', animationSpeed);
+
+    // Apply volume to all audio elements
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
+      audio.volume = (settings.volume || 50) / 100;
+    });
+  });
+
+  // Also listen for storage events (cross-tab communication)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'userSettings' || e.key === 'settingsLastUpdated') {
+      loadAndApplySettings();
+    }
+  });
+  
   // DOM Elements
   const startScreen = document.getElementById('startScreen');
   const startBtn = document.getElementById('startQuiz');
@@ -213,6 +300,27 @@ document.addEventListener('DOMContentLoaded', () => {
     loadStats();
     setupEventListeners();
     updateStatsDisplay();
+    
+    // Start background music
+    startBackgroundMusic();
+    
+    // Stop background music when leaving page
+    window.addEventListener('beforeunload', stopBackgroundMusic);
+  }
+
+  // === Audio Functions ===
+  function playSound(audioId) {
+    try {
+      const audio = document.getElementById(audioId);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          // Ignore autoplay restrictions
+        });
+      }
+    } catch (error) {
+      console.log('Audio playback failed:', error);
+    }
   }
 
   // Setup event listeners
@@ -220,12 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Category buttons
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (clickSound) {
-          clickSound.currentTime = 0;
-          clickSound.volume = 0.3;
-          clickSound.play().catch(() => {});
-        }
-        
+        playSound('clickSound');
         selectCategory(btn.dataset.category);
       });
     });
@@ -257,11 +360,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Start quiz
   function startQuiz() {
-    if (clickSound) {
-      clickSound.currentTime = 0;
-      clickSound.volume = 0.3;
-      clickSound.play().catch(() => {});
-    }
+    playSound('clickSound');
+    
+    // Play game sound when starting quiz
+    playSound('gameSound');
     
     startTime = Date.now();
     currentQuestionIndex = 0;
@@ -322,17 +424,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (isCorrect) {
       score++;
-      if (correctSound) {
-        correctSound.currentTime = 0;
-        correctSound.volume = 0.3;
-        correctSound.play().catch(() => {});
-      }
+      playSound('correctSound');
     } else {
-      if (wrongSound) {
-        wrongSound.currentTime = 0;
-        wrongSound.volume = 0.3;
-        wrongSound.play().catch(() => {});
-      }
+      playSound('wrongSound');
     }
     
     // Update UI
@@ -405,11 +499,8 @@ document.addEventListener('DOMContentLoaded', () => {
       resultTitle.textContent = 'Perfect Score!';
       resultMessage.textContent = 'You know me so well, my love! You\'re absolutely amazing! 💕';
       
-      if (achievementSound) {
-        achievementSound.currentTime = 0;
-        achievementSound.volume = 0.3;
-        achievementSound.play().catch(() => {});
-      }
+      // Play achievement sound for perfect score
+      playSound('achievementSound');
     } else if (percentage >= 80) {
       resultIcon.textContent = '💖';
       resultTitle.textContent = 'Excellent!';
@@ -469,11 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Reset quiz
   function resetQuiz() {
-    if (clickSound) {
-      clickSound.currentTime = 0;
-      clickSound.volume = 0.3;
-      clickSound.play().catch(() => {});
-    }
+    playSound('clickSound');
     
     resultScreen.classList.add('hidden');
     startScreen.classList.remove('hidden');
@@ -549,6 +636,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(style);
+
+  // Background music management
+  function startBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) {
+      // Stop all other background music first
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        if (audio !== bgMusic) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+      
+      // Start current background music
+      bgMusic.play().catch(() => {
+        console.log('Background music autoplay blocked');
+      });
+    }
+  }
+
+  // Stop background music when leaving page
+  function stopBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) {
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+  }
 
   // Initialize the quiz
   initQuiz();

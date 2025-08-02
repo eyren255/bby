@@ -1,24 +1,114 @@
-// Enhanced Memory Match Game with Multiple Difficulty Levels
+// Enhanced Memory Match Game with Modern Design
+
+// === Settings Loading ===
+function loadAndApplySettings() {
+  try {
+    const saved = localStorage.getItem('userSettings');
+    if (saved) {
+      const settings = JSON.parse(saved);
+      
+      // Apply theme
+      if (settings.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Apply font size
+      let fontSize = '1rem';
+      switch (settings.fontSize) {
+        case 'small': fontSize = '0.9rem'; break;
+        case 'large': fontSize = '1.2rem'; break;
+      }
+      document.body.style.fontSize = fontSize;
+
+      // Apply animation speed
+      let animationSpeed = '0.6s';
+      switch (settings.animationSpeed) {
+        case 'fast': animationSpeed = '0.3s'; break;
+        case 'slow': animationSpeed = '1.2s'; break;
+      }
+      document.body.style.setProperty('--animation-speed', animationSpeed);
+
+      // Apply volume to all audio elements
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        audio.volume = (settings.volume || 50) / 100;
+      });
+    }
+  } catch (error) {
+    console.error('Error loading settings in memory match:', error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Load settings first
+  loadAndApplySettings();
+  
+  // === Settings Change Listener ===
+  // Listen for settings changes from main menu
+  window.addEventListener('settingsChanged', (e) => {
+    const settings = e.detail;
+    
+    // Apply theme
+    if (settings.theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+
+    // Apply font size
+    let fontSize = '1rem';
+    switch (settings.fontSize) {
+      case 'small': fontSize = '0.9rem'; break;
+      case 'large': fontSize = '1.2rem'; break;
+    }
+    document.body.style.fontSize = fontSize;
+
+    // Apply animation speed
+    let animationSpeed = '0.6s';
+    switch (settings.animationSpeed) {
+      case 'fast': animationSpeed = '0.3s'; break;
+      case 'slow': animationSpeed = '1.2s'; break;
+    }
+    document.body.style.setProperty('--animation-speed', animationSpeed);
+
+    // Apply volume to all audio elements
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
+      audio.volume = (settings.volume || 50) / 100;
+    });
+  });
+
+  // Also listen for storage events (cross-tab communication)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'userSettings' || e.key === 'settingsLastUpdated') {
+      loadAndApplySettings();
+    }
+  });
+  
   // Game Configuration
   const gameLevels = {
     easy: {
       name: 'Easy',
       gridSize: 4,
       emojis: ['🐰', '💌', '🌸', '🧸', '💖', '⭐️', '🍓', '🎀'],
-      maxTime: 120
+      maxTime: 120,
+      totalPairs: 8
     },
     medium: {
       name: 'Medium',
       gridSize: 5,
       emojis: ['🐰', '💌', '🌸', '🧸', '💖', '⭐️', '🍓', '🎀', '🌹', '🎵', '🍫', '🎁'],
-      maxTime: 180
+      maxTime: 180,
+      totalPairs: 12
     },
     hard: {
       name: 'Hard',
       gridSize: 6,
       emojis: ['🐰', '💌', '🌸', '🧸', '💖', '⭐️', '🍓', '🎀', '🌹', '🎵', '🍫', '🎁', '🦋', '🌈', '🍭', '🎪', '🎨', '🎭'],
-      maxTime: 300
+      maxTime: 300,
+      totalPairs: 18
     }
   };
 
@@ -44,13 +134,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const finalMoves = document.getElementById('finalMoves');
   const finalTime = document.getElementById('finalTime');
   const finalLevel = document.getElementById('finalLevel');
+  const performance = document.getElementById('performance');
+  const progressCount = document.getElementById('progressCount');
+  const totalPairs = document.getElementById('totalPairs');
+  const progressFill = document.getElementById('progressFill');
   const playAgainBtn = document.getElementById('playAgainBtn');
   const nextLevelBtn = document.getElementById('nextLevelBtn');
   const newGameBtn = document.getElementById('newGameBtn');
   const levelBtn = document.getElementById('levelBtn');
   const levelModal = document.getElementById('levelModal');
   const closeModalBtn = document.getElementById('closeModalBtn');
-  const flipSound = document.getElementById('flipSound');
   const matchSound = document.getElementById('matchSound');
   const winSound = document.getElementById('winSound');
   const clickSound = document.getElementById('clickSound');
@@ -62,9 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
   async function initializeGame() {
     await loadBestScore();
     updateLevelDisplay();
+    updateProgressDisplay();
     createBoard();
     resetGame();
     startBackgroundMusic();
+    
+    // Stop background music when leaving page
+    window.addEventListener('beforeunload', stopBackgroundMusic);
   }
 
   // Load best score from localStorage
@@ -100,6 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
     levelDisplay.textContent = gameLevels[currentLevel].name;
   }
 
+  // Update progress display
+  function updateProgressDisplay() {
+    const level = gameLevels[currentLevel];
+    totalPairs.textContent = level.totalPairs;
+    progressCount.textContent = matched;
+    const progressPercentage = (matched / level.totalPairs) * 100;
+    progressFill.style.width = `${progressPercentage}%`;
+  }
+
   // Create game board
   function createBoard() {
     board.innerHTML = '';
@@ -110,18 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
     cards = [...selectedEmojis, ...selectedEmojis];
     cards = shuffle(cards);
     
-    // Set grid template columns and rows for perfect alignment
-    board.style.gridTemplateColumns = `repeat(${level.gridSize}, 85px)`;
-    board.style.gridTemplateRows = `repeat(${level.gridSize}, 85px)`;
-    board.style.justifyContent = 'center';
-    board.style.alignItems = 'center';
+    // Set grid class for CSS styling
+    board.className = `game-board ${currentLevel}`;
     
     cards.forEach((emoji, index) => {
       const card = document.createElement('div');
       card.classList.add('card');
       card.dataset.index = index;
       card.dataset.emoji = emoji;
-      card.innerHTML = '<span class="card-back">❓</span>';
       board.appendChild(card);
 
       card.addEventListener('click', () => flipCard(card));
@@ -139,11 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     moveCount.textContent = moves;
     timer.textContent = '00:00';
+    updateProgressDisplay();
     
     // Reset all cards
     document.querySelectorAll('.card').forEach(card => {
       card.classList.remove('flipped', 'matched');
-      card.innerHTML = '<span class="card-back">❓</span>';
+      card.textContent = '';
     });
     
     stopTimer();
@@ -189,13 +292,60 @@ document.addEventListener('DOMContentLoaded', () => {
     return 0;
   }
 
+  // Calculate performance rating
+  function calculatePerformance(moves, time, level) {
+    const levelData = gameLevels[level];
+    const optimalMoves = levelData.totalPairs * 2; // Minimum moves needed
+    const moveEfficiency = optimalMoves / moves;
+    const timeEfficiency = Math.max(0, 1 - (time / levelData.maxTime));
+    const overallScore = (moveEfficiency + timeEfficiency) / 2;
+    
+    if (overallScore >= 0.9) return 'Perfect';
+    if (overallScore >= 0.8) return 'Excellent';
+    if (overallScore >= 0.7) return 'Great';
+    if (overallScore >= 0.6) return 'Good';
+    return 'Fair';
+  }
+
   // Background music function
   function startBackgroundMusic() {
     if (bgMusic) {
-      bgMusic.volume = 0.2;
+      // Stop all other background music first
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        if (audio !== bgMusic) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+      
+      // Start current background music
       bgMusic.play().catch(() => {
         console.log('Background music autoplay blocked');
       });
+    }
+  }
+
+  // Stop background music when leaving page
+  function stopBackgroundMusic() {
+    if (bgMusic) {
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+  }
+
+  // === Audio Functions ===
+  function playSound(audioId) {
+    try {
+      const audio = document.getElementById(audioId);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          // Ignore autoplay restrictions
+        });
+      }
+    } catch (error) {
+      console.log('Audio playback failed:', error);
     }
   }
 
@@ -207,24 +357,18 @@ document.addEventListener('DOMContentLoaded', () => {
     startTimer();
 
     // Play flip sound
-    if (flipSound) {
-      flipSound.currentTime = 0;
-      flipSound.volume = 0.3;
-      flipSound.play().catch(() => {});
-    }
+    playSound('clickSound');
 
-    // Flip the card
+    // Flip the card immediately
     card.classList.add('flipped');
-    card.innerHTML = `<span class="card-front">${card.dataset.emoji}</span>`;
+    card.textContent = card.dataset.emoji;
     flipped.push(card);
-
-    // Add flip animation
-    card.style.animation = 'flipCard 0.6s ease-in-out';
 
     if (flipped.length === 2) {
       moves++;
       moveCount.textContent = moves;
-      setTimeout(checkMatch, 600);
+      // Check match immediately with a short delay for visual feedback
+      setTimeout(checkMatch, 300);
     }
   }
 
@@ -233,119 +377,119 @@ document.addEventListener('DOMContentLoaded', () => {
     const [a, b] = flipped;
     
     if (a.dataset.emoji === b.dataset.emoji) {
-      // Match found
+      // Match found - keep cards flipped
       a.classList.add('matched');
       b.classList.add('matched');
       matched += 1;
+      updateProgressDisplay();
 
-      // Play match sound only (removed hug sound to avoid double sound)
-      if (matchSound) {
-        matchSound.currentTime = 0;
-        matchSound.volume = 0.4;
-        matchSound.play().catch(() => {});
-      }
+      // Play match sound
+      playSound('matchSound');
 
       // Show match message
       if (matchText) {
-        matchText.innerHTML = `
-          <span class="match-icon">🎉</span>
-          <span class="match-text">Perfect Match!</span>
-        `;
         matchText.classList.remove('hidden');
-        matchText.classList.add('show');
         
         setTimeout(() => {
-          matchText.classList.remove('show');
           matchText.classList.add('hidden');
-        }, 1500);
+        }, 1000);
       }
 
       // Check for win
       const totalPairs = cards.length / 2;
       if (matched === totalPairs) {
-        setTimeout(showWinMessage, 500);
+        // Play win sound
+        playSound('winSound');
+        setTimeout(showWinMessage, 300);
       }
     } else {
-      // No match
+      // No match - flip back after a short delay
       setTimeout(() => {
-        a.innerHTML = '<span class="card-back">❓</span>';
-        b.innerHTML = '<span class="card-back">❓</span>';
+        a.textContent = '';
+        b.textContent = '';
         a.classList.remove('flipped');
         b.classList.remove('flipped');
-        a.style.animation = 'shakeCard 0.5s ease-in-out';
-        b.style.animation = 'shakeCard 0.5s ease-in-out';
-      }, 1000);
+      }, 500);
     }
     
     flipped = [];
   }
 
-  // Show win message
+  // Show win message with enhanced stats
   async function showWinMessage() {
-    gameCompleted = true;
     stopTimer();
     const elapsedTime = getElapsedTime();
+    const performance = calculatePerformance(moves, elapsedTime, currentLevel);
     
-    // Play win sound
-    if (winSound) {
-      winSound.currentTime = 0;
-      winSound.volume = 0.5;
-      winSound.play().catch(() => {});
-    }
+    // Update performance display
+    performance.textContent = performance;
     
-    // Play notification sound for achievement
-    if (notiSound) {
-      setTimeout(() => {
-        notiSound.currentTime = 0;
-        notiSound.volume = 0.4;
-        notiSound.play().catch(() => {});
-      }, 500);
-    }
-
-    // Update final stats
-    finalMoves.textContent = moves;
-    finalTime.textContent = formatTime(elapsedTime);
-    finalLevel.textContent = gameLevels[currentLevel].name;
-
-    // Check for best score and save to cloud
+    // Check for best score and save to cloud first
     const currentScore = `${moves} moves in ${formatTime(elapsedTime)}`;
     const savedBestScore = localStorage.getItem(`memoryBestScore_${currentLevel}`);
     
+    let cloudSaveSuccessful = false;
+    
     if (!savedBestScore || moves < parseInt(savedBestScore.split(' ')[0])) {
-      // Save to synced storage
+      // Try to save to cloud first
       try {
         await ScoreboardService.saveScore(`memory_${currentLevel}`, moves, {
           time: formatTime(elapsedTime),
           level: currentLevel,
           scoreText: currentScore
         });
+        cloudSaveSuccessful = true;
+        console.log('✅ Score saved to cloud successfully');
       } catch (error) {
-        console.error('Error saving score to cloud:', error);
-        // Fallback to localStorage
+        console.error('❌ Error saving score to cloud:', error);
+        // Fallback to localStorage only if cloud save fails
         localStorage.setItem(`memoryBestScore_${currentLevel}`, currentScore);
+        console.log('📱 Score saved to localStorage as fallback');
       }
       bestScore.textContent = currentScore;
     }
 
+    // Only save to localStorage if cloud save failed or internet is not available
+    if (!cloudSaveSuccessful) {
+      try {
+        const scoreData = {
+          score: moves,
+          time: elapsedTime,
+          level: currentLevel,
+          timestamp: Date.now(),
+          performance: performance
+        };
+        
+        // Get existing scores for this level
+        const existingScores = JSON.parse(localStorage.getItem('loveMemoryScores') || '{}');
+        const levelKey = `memory_${currentLevel}`;
+        
+        if (!existingScores[levelKey]) {
+          existingScores[levelKey] = [];
+        }
+        
+        // Add new score
+        existingScores[levelKey].push(scoreData);
+        
+        // Keep only top 10 scores per level
+        existingScores[levelKey] = existingScores[levelKey]
+          .sort((a, b) => a.score - b.score) // Lower score is better for memory match
+          .slice(0, 10);
+        
+        // Save to localStorage
+        localStorage.setItem('loveMemoryScores', JSON.stringify(existingScores));
+        
+        console.log('📱 Score saved to localStorage (no internet available)');
+        
+      } catch (error) {
+        console.error('❌ Error saving score to localStorage:', error);
+      }
+    } else {
+      console.log('☁️ Score saved to cloud, skipping localStorage');
+    }
+
     // Show win message
     winMessage.classList.remove('hidden');
-    winMessage.style.animation = 'fadeInScale 0.8s ease-out';
-
-    // Spawn celebration hearts
-    spawnHearts();
-  }
-
-  // Floating hearts effect
-  function spawnHearts() {
-    for (let i = 0; i < 20; i++) {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDelay = Math.random() * 2 + 's';
-      heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 5000);
-    }
   }
 
   // Event Listeners
@@ -378,6 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     winMessage.classList.add('hidden');
     loadBestScore();
     updateLevelDisplay();
+    updateProgressDisplay();
     createBoard();
     resetGame();
   });
@@ -445,6 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         await loadBestScore();
         updateLevelDisplay();
+        updateProgressDisplay();
         createBoard();
         resetGame();
       }
@@ -452,28 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
       hideLevelModal();
     });
   });
-
-  // Add CSS animations
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes flipCard {
-      0% { transform: rotateY(0deg); }
-      50% { transform: rotateY(90deg); }
-      100% { transform: rotateY(180deg); }
-    }
-    
-    @keyframes shakeCard {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  `;
-  document.head.appendChild(style);
 
   // Initialize game
   initializeGame();

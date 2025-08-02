@@ -828,47 +828,64 @@ input:checked + .slider:before {
 
 /* Dark Mode Theme */
 body.dark-mode {
-  background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+  color: #ffffff;
 }
 
 body.dark-mode .main-title {
   color: #ff69b4;
-  text-shadow: 2px 2px #2d3748, 4px 4px rgba(255, 105, 180, 0.2);
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
 }
 
 body.dark-mode .subtitle {
-  color: #a0aec0;
+  color: #ff8fab;
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .back-button:hover {
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
 }
 
 body.dark-mode .game-container {
-  background: linear-gradient(145deg, #2d3748 0%, #4a5568 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, #1e1e3a 0%, #2a2a4a 100%);
+  border: 1px solid rgba(255, 105, 180, 0.2);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .card-front {
-  background: linear-gradient(145deg, #4a5568, #2d3748);
-  color: #e2e8f0;
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
 }
 
 body.dark-mode .card-back {
-  background: linear-gradient(145deg, #2d3748, #4a5568);
-  color: #e2e8f0;
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
+  color: #ffffff;
   border-color: #ff69b4;
 }
 
 body.dark-mode .stats-container {
-  background: rgba(45, 55, 72, 0.8);
-  border: 1px solid rgba(255, 105, 180, 0.1);
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .stat-item {
-  background: rgba(45, 55, 72, 0.6);
+  background: rgba(26, 26, 46, 0.6);
+  border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .stat-item:hover {
+  background: rgba(26, 26, 46, 0.8);
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
 }
 
 body.dark-mode .stat-label {
-  color: #a0aec0;
+  color: #ff8fab;
 }
 
 body.dark-mode .stat-value {
@@ -878,6 +895,11 @@ body.dark-mode .stat-value {
 body.dark-mode .generate-button {
   background: linear-gradient(145deg, #ff69b4, #ff8fab);
   color: white;
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .generate-button:hover {
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
 }
 
 body.dark-mode .modal {
@@ -885,21 +907,24 @@ body.dark-mode .modal {
 }
 
 body.dark-mode .modal-content {
-  background: linear-gradient(145deg, #2d3748, #4a5568);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   border: 2px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 body.dark-mode .settings-header {
-  background: linear-gradient(145deg, #2d3748, #4a5568);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   border-bottom: 1px solid rgba(255, 105, 180, 0.2);
 }
 
 body.dark-mode .settings-tabs {
-  background: rgba(45, 55, 72, 0.8);
+  background: rgba(26, 26, 46, 0.8);
+  border-bottom: 1px solid rgba(255, 105, 180, 0.2);
 }
 
 body.dark-mode .tab-btn {
-  color: #a0aec0;
+  color: #ff8fab;
+  background: transparent;
 }
 
 body.dark-mode .tab-btn:hover {
@@ -909,10 +934,12 @@ body.dark-mode .tab-btn:hover {
 
 body.dark-mode .tab-btn.active {
   color: #ff69b4;
+  background: rgba(255, 105, 180, 0.1);
+  border-bottom-color: #ff69b4;
 }
 
 body.dark-mode .setting-group {
-  background: rgba(45, 55, 72, 0.6);
+  background: rgba(26, 26, 46, 0.6);
   border: 1px solid rgba(255, 105, 180, 0.1);
 }
 
@@ -921,18 +948,75 @@ body.dark-mode .setting-group h4 {
 }
 
 body.dark-mode .setting-select {
-  background: #4a5568;
-  color: #e2e8f0;
-  border-color: #718096;
+  background: #2a2a4a;
+  color: #ffffff;
+  border-color: rgba(255, 105, 180, 0.3);
 }
 
 body.dark-mode .setting-select:focus {
   border-color: #ff69b4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
 }
 
 body.dark-mode .settings-footer {
-  background: linear-gradient(145deg, #2d3748, #4a5568);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   border-top: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .save-settings-btn {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .save-settings-btn:hover {
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .result-container {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .result-card {
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
+  border: 2px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .result-text {
+  color: #ff69b4;
+}
+
+body.dark-mode .result-description {
+  color: #ff8fab;
+}
+
+body.dark-mode .generate-again-button {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .generate-again-button:hover {
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .close-result-btn {
+  color: #ff8fab;
+}
+
+body.dark-mode .close-result-btn:hover {
+  background: rgba(255, 105, 180, 0.2);
+  color: #ff69b4;
+}
+
+body.dark-mode .close-settings-btn {
+  color: #ff8fab;
+}
+
+body.dark-mode .close-settings-btn:hover {
+  background: rgba(255, 105, 180, 0.2);
+  color: #ff69b4;
 }
 
 /* Responsive Design for Settings */

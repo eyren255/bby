@@ -477,3 +477,223 @@ h1 {
     font-size: 0.9rem;
   }
 }
+
+/* === Dark Mode Support === */
+body.dark-mode {
+  background: linear-gradient(135deg, var(--background-dark) 0%, #16213e 50%, var(--background-dark) 100%);
+  color: var(--text-dark);
+}
+
+body.dark-mode h1 {
+  color: #ff69b4;
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .message-container {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .message-form {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .form-header h2 {
+  color: #ff69b4;
+}
+
+body.dark-mode .form-header p {
+  color: #ffb6c1;
+}
+
+body.dark-mode .input-group label {
+  color: #ffb6c1;
+}
+
+body.dark-mode .input-group input,
+body.dark-mode .input-group textarea {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  color: #ffffff;
+}
+
+body.dark-mode .input-group input:focus,
+body.dark-mode .input-group textarea:focus {
+  border-color: rgba(255, 105, 180, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .char-count {
+  color: #a0aec0;
+}
+
+body.dark-mode .option-group label {
+  color: #ffb6c1;
+}
+
+body.dark-mode .style-btn,
+body.dark-mode .effect-btn {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .style-btn:hover,
+body.dark-mode .effect-btn:hover {
+  background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .style-btn.active,
+body.dark-mode .effect-btn.active {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: #ffffff;
+  border-color: rgba(255, 105, 180, 0.6);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .action-btn {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .action-btn:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .preview-btn {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+}
+
+body.dark-mode .send-btn {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+}
+
+body.dark-mode .message-preview {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .preview-header {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .preview-header h3 {
+  color: #ff69b4;
+}
+
+body.dark-mode .close-btn {
+  background: rgba(45, 55, 72, 0.8);
+  color: #a0aec0;
+}
+
+body.dark-mode .close-btn:hover {
+  background: rgba(255, 105, 180, 0.2);
+  color: #ff69b4;
+}
+
+body.dark-mode .preview-content {
+  color: #ffffff;
+}
+
+body.dark-mode .contact-info {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .contact-info h3 {
+  color: #ff69b4;
+}
+
+body.dark-mode .contact-grid {
+  background: rgba(45, 55, 72, 0.8);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .contact-item {
+  background: rgba(45, 55, 72, 0.6);
+  border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .contact-item:hover {
+  background: rgba(255, 105, 180, 0.1);
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .contact-label {
+  color: #a0aec0;
+}
+
+body.dark-mode .contact-value {
+  color: #ff69b4;
+}
+
+body.dark-mode .contact-note {
+  color: #ffb6c1;
+}
+
+body.dark-mode .message-history {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .message-history h3 {
+  color: #ff69b4;
+}
+
+body.dark-mode .history-subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .message-list {
+  background: rgba(45, 55, 72, 0.8);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .message-item {
+  background: rgba(45, 55, 72, 0.6);
+  border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .message-item:hover {
+  background: rgba(255, 105, 180, 0.1);
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .message-item h4 {
+  color: #ff69b4;
+}
+
+body.dark-mode .message-item p {
+  color: #ffb6c1;
+}
+
+body.dark-mode .message-item .date {
+  color: #a0aec0;
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .back-button:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}

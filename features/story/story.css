@@ -224,3 +224,74 @@ h1 {
     font-size: 0.9rem;
   }
 }
+
+/* === Dark Mode Support === */
+body.dark-mode {
+  background: linear-gradient(135deg, var(--background-dark) 0%, #16213e 50%, var(--background-dark) 100%);
+  color: var(--text-dark);
+}
+
+body.dark-mode h1 {
+  color: #ff69b4;
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .story-container {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .coming-soon {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .coming-soon h2 {
+  color: #ff69b4;
+}
+
+body.dark-mode .coming-soon p {
+  color: #ffb6c1;
+}
+
+body.dark-mode .coming-soon-text {
+  color: #a0aec0;
+}
+
+body.dark-mode .story-preview {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .preview-item {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .preview-item:hover {
+  background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+  border-color: rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .preview-text {
+  color: #ff69b4;
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .back-button:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}

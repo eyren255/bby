@@ -1,5 +1,53 @@
 // 💕 Love Challenge Generator JavaScript
+
+// === Settings Loading ===
+function loadAndApplySettings() {
+  try {
+    const saved = localStorage.getItem('userSettings');
+    if (saved) {
+      const settings = JSON.parse(saved);
+      
+      // Apply theme
+      if (settings.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Apply font size
+      let fontSize = '1rem';
+      switch (settings.fontSize) {
+        case 'small': fontSize = '0.9rem'; break;
+        case 'large': fontSize = '1.2rem'; break;
+      }
+      document.body.style.fontSize = fontSize;
+
+      // Apply animation speed
+      let animationSpeed = '0.6s';
+      switch (settings.animationSpeed) {
+        case 'fast': animationSpeed = '0.3s'; break;
+        case 'slow': animationSpeed = '1.2s'; break;
+      }
+      document.body.style.setProperty('--animation-speed', animationSpeed);
+
+      // Apply volume to all audio elements
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        audio.volume = (settings.volume || 50) / 100;
+      });
+    }
+  } catch (error) {
+    console.error('Error loading settings in challenge:', error);
+  }
+}
+
+// Load settings immediately
+loadAndApplySettings();
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Load settings again to ensure they're applied
+  loadAndApplySettings();
+  
   // === DOM Elements ===
   const generateBtn = document.getElementById('generateBtn');
   const generateAgainBtn = document.getElementById('generateAgainBtn');
@@ -97,18 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
     generateBtn.disabled = true;
     
     // Play flip sound
-    if (flipSound) {
-      flipSound.currentTime = 0;
-      flipSound.volume = 0.4;
-      flipSound.play().catch(() => {});
-    }
+    playSound('flipSound');
     
     // Play click sound
-    if (clickSound) {
-      clickSound.currentTime = 0;
-      clickSound.volume = 0.3;
-      clickSound.play().catch(() => {});
-    }
+    playSound('clickSound');
+    
+    // Play game sound for challenge generation
+    playSound('gameSound');
     
     // Add button animation
     generateBtn.style.transform = 'scale(0.95)';
@@ -140,11 +183,19 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       showResult(selectedChallenge);
       
-      // Reset button state
+      // Play win sound
+      playSound('winSound');
+      
+      // Spawn hearts
+      spawnHearts();
+    }, 1000);
+    
+    // Reset button state
+    setTimeout(() => {
       generateBtn.style.transform = '';
       isGenerating = false;
       generateBtn.disabled = false;
-    }, 800);
+    }, 2000);
   }
 
   // === Save Stats to Local ===
@@ -401,5 +452,39 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Setup global settings listener
     setupGlobalSettingsListener();
+    
+    // Start background music
+    startBackgroundMusic();
+    
+    // Stop background music when leaving page
+    window.addEventListener('beforeunload', stopBackgroundMusic);
   });
-});
+
+  // Background music management
+  function startBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) {
+      // Stop all other background music first
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        if (audio !== bgMusic) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+      
+      // Start current background music
+      bgMusic.play().catch(() => {
+        console.log('Background music autoplay blocked');
+      });
+    }
+  }
+
+  // Stop background music when leaving page
+  function stopBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) {
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+  }

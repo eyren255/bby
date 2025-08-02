@@ -1,5 +1,94 @@
 // 🎨 Enhanced Sticker Wall JavaScript
+console.log('🎨 Sticker Wall JavaScript loaded!');
+
+// === Settings Loading ===
+function loadAndApplySettings() {
+  try {
+    const saved = localStorage.getItem('userSettings');
+    if (saved) {
+      const settings = JSON.parse(saved);
+      
+      // Apply theme
+      if (settings.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Apply font size
+      let fontSize = '1rem';
+      switch (settings.fontSize) {
+        case 'small': fontSize = '0.9rem'; break;
+        case 'large': fontSize = '1.2rem'; break;
+      }
+      document.body.style.fontSize = fontSize;
+
+      // Apply animation speed
+      let animationSpeed = '0.6s';
+      switch (settings.animationSpeed) {
+        case 'fast': animationSpeed = '0.3s'; break;
+        case 'slow': animationSpeed = '1.2s'; break;
+      }
+      document.body.style.setProperty('--animation-speed', animationSpeed);
+
+      // Apply volume to all audio elements
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        audio.volume = (settings.volume || 50) / 100;
+      });
+    }
+  } catch (error) {
+    console.error('Error loading settings in sticker wall:', error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Load settings first
+  loadAndApplySettings();
+  
+  // === Settings Change Listener ===
+  // Listen for settings changes from main menu
+  window.addEventListener('settingsChanged', (e) => {
+    const settings = e.detail;
+    
+    // Apply theme
+    if (settings.theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+
+    // Apply font size
+    let fontSize = '1rem';
+    switch (settings.fontSize) {
+      case 'small': fontSize = '0.9rem'; break;
+      case 'large': fontSize = '1.2rem'; break;
+    }
+    document.body.style.fontSize = fontSize;
+
+    // Apply animation speed
+    let animationSpeed = '0.6s';
+    switch (settings.animationSpeed) {
+      case 'fast': animationSpeed = '0.3s'; break;
+      case 'slow': animationSpeed = '1.2s'; break;
+    }
+    document.body.style.setProperty('--animation-speed', animationSpeed);
+
+    // Apply volume to all audio elements
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
+      audio.volume = (settings.volume || 50) / 100;
+    });
+  });
+
+  // Also listen for storage events (cross-tab communication)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'userSettings' || e.key === 'settingsLastUpdated') {
+      loadAndApplySettings();
+    }
+  });
+  
+  console.log('🎨 DOM Content Loaded!');
   // DOM Elements
   const canvas = document.getElementById('canvas');
   const stickerGrid = document.getElementById('stickerGrid');
@@ -21,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const achievementSound = document.getElementById('achievementSound');
 
   // Canvas context
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas ? canvas.getContext('2d') : null;
   
   // State variables
   let currentCategory = 'love';
@@ -138,6 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     }
   };
+  
+  console.log('🎨 Sticker data initialized:', stickerData);
 
   // Challenges data
   const challenges = {
@@ -147,22 +238,66 @@ document.addEventListener('DOMContentLoaded', () => {
     'save-design': { name: 'Design Saver', description: 'Save your first design!', requirement: 1, type: 'saves' }
   };
 
-  // Initialize the app
+  // Initialize app
   function initApp() {
-    console.log('🎨 Initializing Enhanced Sticker Wall...');
+    console.log('🎨 Initializing Sticker Wall...');
     
-    loadUserProgress();
     setupCanvas();
     setupEventListeners();
+    loadUserProgress();
     loadStickers();
     updateStatistics();
     updateUnlockProgress();
     
+    // Start background music
+    startBackgroundMusic();
+    
+    // Stop background music when leaving page
+    window.addEventListener('beforeunload', stopBackgroundMusic);
+    
     console.log('✅ Sticker Wall initialized successfully!');
+  }
+
+  // Background music management
+  function startBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) {
+      // Stop all other background music first
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        if (audio !== bgMusic) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+      
+      // Start current background music
+      bgMusic.play().catch(() => {
+        console.log('Background music autoplay blocked');
+      });
+    }
+  }
+
+  // Stop background music when leaving page
+  function stopBackgroundMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic) {
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
   }
 
   // Setup canvas
   function setupCanvas() {
+    console.log('🎨 Setting up canvas...');
+    console.log('Canvas:', canvas);
+    console.log('Context:', ctx);
+    
+    if (!canvas || !ctx) {
+      console.error('❌ Canvas or context not available!');
+      return;
+    }
+    
     // Set canvas background
     ctx.fillStyle = '#fff0fb';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -178,6 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseleave', stopDrawing);
+    
+    console.log('✅ Canvas setup complete!');
   }
 
   // Setup event listeners
@@ -226,15 +363,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Load stickers for current category
-  function loadStickers() {
-    if (!stickerGrid) return;
+  window.loadStickers = function() {
+    console.log('🎯 Loading stickers for category:', currentCategory);
+    console.log('Sticker grid:', stickerGrid);
+    
+    if (!stickerGrid) {
+      console.error('❌ Sticker grid not found!');
+      return;
+    }
     
     const categoryData = stickerData[currentCategory];
-    if (!categoryData) return;
+    if (!categoryData) {
+      console.error('❌ Category data not found for:', currentCategory);
+      return;
+    }
     
+    console.log('Category data:', categoryData);
     stickerGrid.innerHTML = '';
     
-    categoryData.stickers.forEach(sticker => {
+    categoryData.stickers.forEach((sticker, index) => {
+      console.log(`Creating sticker ${index + 1}:`, sticker);
       const stickerEl = document.createElement('div');
       stickerEl.className = `sticker-item ${sticker.unlocked ? 'unlocked' : 'locked'}`;
       stickerEl.innerHTML = `
@@ -245,11 +393,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (sticker.unlocked) {
         stickerEl.addEventListener('click', () => {
-          if (stickerSound) {
-            stickerSound.currentTime = 0;
-            stickerSound.volume = 0.3;
-            stickerSound.play().catch(() => {});
-          }
+          playSound('stickerSound');
+          playSound('gameSound');
           
           addStickerToCanvas(sticker.emoji);
         });
@@ -261,9 +406,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add sticker to canvas
   function addStickerToCanvas(emoji) {
+    console.log('🎯 Adding sticker to canvas:', emoji);
+    console.log('Canvas:', canvas);
+    console.log('Context:', ctx);
+    
+    if (!canvas || !ctx) {
+      console.error('❌ Canvas or context not available for adding sticker!');
+      return;
+    }
+    
     const rect = canvas.getBoundingClientRect();
     const x = Math.random() * (canvas.width - 40) + 20;
     const y = Math.random() * (canvas.height - 40) + 20;
+    
+    console.log('Drawing sticker at position:', x, y);
     
     // Add to current design
     currentDesign.push({
@@ -283,6 +439,8 @@ document.addEventListener('DOMContentLoaded', () => {
     stickersPlaced++;
     updateStatistics();
     checkChallenges();
+    
+    console.log('✅ Sticker added successfully!');
   }
 
   // Handle canvas click
@@ -460,11 +618,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show achievement
   function showAchievement(title, description) {
-    if (achievementSound) {
-      achievementSound.currentTime = 0;
-      achievementSound.volume = 0.3;
-      achievementSound.play().catch(() => {});
-    }
+    console.log('🏆 Achievement unlocked:', title);
+    
+    // Play achievement sound
+    playSound('achievementSound');
+    playSound('game1Sound');
     
     achievementDesc.textContent = description;
     achievementModal.style.display = 'flex';

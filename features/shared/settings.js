@@ -1,342 +1,980 @@
-// === Global Settings System ===
-class GlobalSettingsManager {
+// === Enhanced Settings System ===
+// Improved settings management with better functionality
+
+// === Audio Management ===
+// Prevent overlapping background music across pages
+function manageBackgroundMusic() {
+  try {
+    // Stop all background music on other pages
+    const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+    allAudio.forEach(audio => {
+      if (audio !== document.querySelector('#bgMusic')) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+    
+    // Start background music on current page
+    const currentBgMusic = document.querySelector('#bgMusic');
+    if (currentBgMusic) {
+      currentBgMusic.play().catch(() => {
+        console.log('Background music autoplay blocked');
+      });
+    }
+  } catch (error) {
+    console.error('Error managing background music:', error);
+  }
+}
+
+// Stop all background music when leaving page
+function stopAllBackgroundMusic() {
+  try {
+    const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+    allAudio.forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+  } catch (error) {
+    console.error('Error stopping background music:', error);
+  }
+}
+
+class SimpleSettingsManager {
   constructor() {
     this.settings = this.loadSettings();
-    this.initSettings();
+    this.isInitialized = false;
+    this.isModalOpen = false;
+    this.currentTab = 'appearance';
+    this.init();
   }
 
+  // === Core Settings Management ===
   loadSettings() {
-    const defaultSettings = {
-      theme: 'light',
-      bgMusic: true,
-      soundEffects: true,
-      volume: 50,
-      fontSize: 'medium',
-      animationSpeed: 'normal',
-      layout: 'grid',
-      quickAccess: true,
-      progress: true,
-      mood: true,
-      countdown: true,
-      notes: true,
-      sync: true,
-      autoSave: true,
-      performance: false
-    };
-
     try {
       const saved = localStorage.getItem('userSettings');
-      return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
+      return saved ? JSON.parse(saved) : this.getDefaultSettings();
     } catch (error) {
       console.error('Error loading settings:', error);
-      return defaultSettings;
+      this.showNotification('Failed to load settings', 'error');
+      return this.getDefaultSettings();
     }
+  }
+
+  getDefaultSettings() {
+    return {
+      theme: 'light',
+      fontSize: 'medium',
+      layout: 'default',
+      animationSpeed: 'normal',
+      volume: 50,
+      bgMusic: true,
+      soundEffects: true,
+      language: 'en',
+      preferences: {
+        notifications: true,
+        autoSave: true,
+        performanceMode: false
+      }
+    };
   }
 
   saveSettings() {
     try {
+      this.settings.lastModified = Date.now();
       localStorage.setItem('userSettings', JSON.stringify(this.settings));
+      return true;
     } catch (error) {
       console.error('Error saving settings:', error);
+      this.showNotification('Failed to save settings', 'error');
+      return false;
     }
   }
 
-  initSettings() {
-    this.applySettings();
-    this.setupSettingsModal();
+  // === Settings Application ===
+  applySettings() {
+    try {
+      console.log('🔧 Applying settings globally...');
+      
+    // Apply theme
+      this.applyTheme();
+      
+      // Apply font size
+      this.applyFontSize();
+      
+      // Apply layout
+      this.applyLayout();
+      
+      // Apply animation speed
+      this.applyAnimationSpeed();
+      
+      // Apply audio settings
+      this.applyAudioSettings();
+      
+      // Broadcast settings change to all pages
+      this.broadcastSettingsChange();
+      
+      console.log('✅ Settings applied successfully');
+    } catch (error) {
+      console.error('❌ Error applying settings:', error);
+    }
   }
 
-  applySettings() {
-    // Apply theme
+  applyTheme() {
+    try {
+      console.log('🔧 applyTheme() called with theme:', this.settings.theme);
+      console.log('🔧 Current body classes:', document.body.className);
+      
     if (this.settings.theme === 'dark') {
       document.body.classList.add('dark-mode');
+        console.log('🔧 Added dark-mode class to body');
+        console.log('🔧 Body classes after adding:', document.body.className);
     } else {
       document.body.classList.remove('dark-mode');
+        console.log('🔧 Removed dark-mode class from body');
+        console.log('🔧 Body classes after removing:', document.body.className);
+      }
+      
+      // Check if the class was actually applied
+      const hasDarkMode = document.body.classList.contains('dark-mode');
+      console.log('🔧 Body has dark-mode class:', hasDarkMode);
+      console.log('🔧 Applied theme successfully:', this.settings.theme);
+    } catch (error) {
+      console.error('❌ Error applying theme:', error);
     }
+  }
 
-    // Apply font size
-    document.body.style.fontSize = this.getFontSizeValue();
+  applyFontSize() {
+    try {
+      const fontSize = this.getFontSizeValue();
+      document.body.style.fontSize = fontSize;
+      console.log('🔧 Applied font size:', fontSize);
+    } catch (error) {
+      console.error('❌ Error applying font size:', error);
+    }
+  }
 
-    // Apply animation speed
-    document.body.style.setProperty('--animation-speed', this.getAnimationSpeedValue());
+  applyLayout() {
+    try {
+      const layout = this.settings.layout || 'default';
+      document.body.setAttribute('data-layout', layout);
+      console.log('🔧 Applied layout:', layout);
+    } catch (error) {
+      console.error('❌ Error applying layout:', error);
+    }
+  }
 
+  applyAnimationSpeed() {
+    try {
+      const speed = this.getAnimationSpeedValue();
+      document.body.style.setProperty('--animation-speed', speed);
+      console.log('🔧 Applied animation speed:', speed);
+    } catch (error) {
+      console.error('❌ Error applying animation speed:', error);
+    }
+  }
+
+  applyAudioSettings() {
+    try {
     // Apply volume to all audio elements
     const audioElements = document.querySelectorAll('audio');
     audioElements.forEach(audio => {
       audio.volume = this.settings.volume / 100;
     });
-  }
 
-  getFontSizeValue() {
-    switch (this.settings.fontSize) {
-      case 'small': return '0.9rem';
-      case 'large': return '1.2rem';
-      default: return '1rem';
-    }
-  }
-
-  getAnimationSpeedValue() {
-    switch (this.settings.animationSpeed) {
-      case 'fast': return '0.3s';
-      case 'slow': return '1.2s';
-      default: return '0.6s';
-    }
-  }
-
-  setupSettingsModal() {
-    const settingsBtn = document.getElementById('settingsBtn');
-    const settingsModal = document.getElementById('settingsModal');
-    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-
-    // Open settings
-    settingsBtn?.addEventListener('click', () => {
-      this.openSettingsModal();
-    });
-
-    // Close settings
-    closeSettingsBtn?.addEventListener('click', () => {
-      this.closeSettingsModal();
-    });
-
-    // Save settings
-    saveSettingsBtn?.addEventListener('click', () => {
-      this.saveCurrentSettings();
-      this.closeSettingsModal();
-      this.showSaveMessage();
-    });
-
-    // Click outside to close
-    settingsModal?.addEventListener('click', (e) => {
-      if (e.target === settingsModal) {
-        this.closeSettingsModal();
+      // Apply background music settings
+      const bgMusic = document.getElementById('bgMusic');
+      if (bgMusic) {
+        if (this.settings.bgMusic) {
+          bgMusic.play().catch(() => {});
+          console.log('🔧 Background music enabled');
+        } else {
+          bgMusic.pause();
+          console.log('🔧 Background music disabled');
+        }
       }
-    });
 
-    // Setup tabs
-    this.setupTabs();
-    
-    // Setup form controls
-    this.setupFormControls();
+      // Apply sound effects settings
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.volume = this.settings.soundEffects ? this.settings.volume / 100 : 0;
+      }
+
+      console.log('🔧 Applied audio settings - Volume:', this.settings.volume, 'BG Music:', this.settings.bgMusic, 'Sound Effects:', this.settings.soundEffects);
+    } catch (error) {
+      console.error('❌ Error applying audio settings:', error);
+    }
   }
 
-  setupTabs() {
-    const tabBtns = document.querySelectorAll('.tab-btn');
+  broadcastSettingsChange() {
+    try {
+      // Dispatch custom event for other pages to listen to
+      window.dispatchEvent(new CustomEvent('settingsChanged', {
+        detail: this.settings
+      }));
+      
+      // Also use localStorage event for cross-tab communication
+      localStorage.setItem('settingsLastUpdated', Date.now().toString());
+      
+      console.log('🔧 Settings change broadcasted');
+    } catch (error) {
+      console.error('❌ Error broadcasting settings change:', error);
+    }
+  }
 
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tabName = btn.getAttribute('data-tab');
-        this.switchToTab(tabName);
+  // === Modal Management ===
+  setupModal() {
+    try {
+      const settingsBtn = document.getElementById('openSettingsBtn');
+    const settingsModal = document.getElementById('settingsModal');
+      const closeBtn = document.getElementById('closeSettingsBtn');
+      const saveBtn = document.getElementById('saveSettingsBtn');
+
+      // Create modal content if it doesn't exist
+      this.createModalContent();
+
+      if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => { this.openModal(); });
+      }
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => { this.closeModal(); });
+      }
+      
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => { this.saveCurrentSettings(); });
+      }
+      
+      if (settingsModal) {
+        settingsModal.addEventListener('click', (e) => { 
+      if (e.target === settingsModal) {
+            this.closeModal(); 
+          } 
+        });
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (this.isModalOpen) {
+          if (e.key === 'Escape') {
+            this.closeModal();
+          } else if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.saveCurrentSettings();
+          }
+        }
       });
-    });
+
+      console.log('Modal setup completed');
+    } catch (error) {
+      console.error('Error setting up modal:', error);
+    }
+  }
+
+  createModalContent() {
+    try {
+      const modal = document.getElementById('settingsModal');
+      if (modal && !modal.querySelector('.modal-content')) {
+        modal.innerHTML = `
+          <div class="modal-content settings-content">
+            <div class="modal-header">
+              <h2>⚙️ Settings</h2>
+              <button class="modal-close" onclick="window.settingsManager.closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+              <div class="settings-tabs">
+                <button class="tab-btn active" data-tab="general">General</button>
+                <button class="tab-btn" data-tab="appearance">Appearance</button>
+                <button class="tab-btn" data-tab="audio">Audio</button>
+              </div>
+              <div class="settings-content">
+                <div class="tab-content active" id="general">
+                  <div class="setting-group">
+                    <label>Language</label>
+                    <select id="languageSelect">
+                      <option value="en">English</option>
+                      <option value="es">Español</option>
+                      <option value="fr">Français</option>
+                      <option value="de">Deutsch</option>
+                    </select>
+                  </div>
+                  <div class="setting-group">
+                    <label>Notifications</label>
+                    <input type="checkbox" id="notificationsToggle" />
+                  </div>
+                  <div class="setting-group">
+                    <label>Auto Save</label>
+                    <input type="checkbox" id="autoSaveToggle" />
+                  </div>
+                  <div class="setting-group">
+                    <label>Performance Mode</label>
+                    <input type="checkbox" id="performanceToggle" />
+                  </div>
+                </div>
+                <div class="tab-content" id="appearance">
+                  <div class="setting-group">
+                    <label>Theme</label>
+                    <div class="theme-options">
+                      <label><input type="radio" name="theme" value="light"> Light</label>
+                      <label><input type="radio" name="theme" value="dark"> Dark</label>
+                    </div>
+                  </div>
+                  <div class="setting-group">
+                    <label>Font Size</label>
+                    <select id="fontSizeSelect">
+                      <option value="small">Small</option>
+                      <option value="medium">Medium</option>
+                      <option value="large">Large</option>
+                    </select>
+                  </div>
+                  <div class="setting-group">
+                    <label>Animation Speed</label>
+                    <select id="animationSpeedSelect">
+                      <option value="slow">Slow</option>
+                      <option value="normal">Normal</option>
+                      <option value="fast">Fast</option>
+                    </select>
+                  </div>
+                  <div class="setting-group">
+                    <label>Layout</label>
+                    <select id="layoutSelect">
+                      <option value="default">Default</option>
+                      <option value="compact">Compact</option>
+                      <option value="list">List</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="tab-content" id="audio">
+                  <div class="setting-group">
+                    <label>Background Music</label>
+                    <input type="checkbox" id="bgMusicToggle" />
+                  </div>
+                  <div class="setting-group">
+                    <label>Sound Effects</label>
+                    <input type="checkbox" id="soundEffectsToggle" />
+                  </div>
+                  <div class="setting-group">
+                    <label>Volume</label>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="50" />
+                    <span id="volumeValue">50%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="save-btn" onclick="window.settingsManager.saveCurrentSettings()">Save Settings</button>
+            </div>
+          </div>
+        `;
+        console.log('Settings modal content created');
+      }
+    } catch (error) {
+      console.error('Error creating modal content:', error);
+    }
+  }
+
+  openModal() {
+    try {
+      console.log('🔧 openModal() called');
+      const modal = document.getElementById('settingsModal');
+      console.log('🔧 Modal element:', modal);
+      if (modal) {
+        console.log('🔧 Setting modal display to flex');
+        modal.style.display = 'flex';
+        this.isModalOpen = true;
+        
+        // Create modal content if it doesn't exist
+        this.createModalContent();
+        
+        // Set up tabs and form controls after content is created
+    this.setupTabs();
+        this.setupFormControls();
+        
+        // Load current settings into form
+        this.loadSettingsIntoForm();
+        
+        setTimeout(() => {
+          const firstTab = document.querySelector('.tab-btn');
+          if (firstTab) firstTab.focus();
+        }, 100);
+        
+        console.log('✅ Settings modal opened successfully');
+      } else {
+        console.error('❌ Settings modal not found');
+      }
+    } catch (error) {
+      console.error('❌ Error opening modal:', error);
+    }
+  }
+
+  closeModal() {
+    try {
+      const modal = document.getElementById('settingsModal');
+      if (modal) {
+        modal.style.display = 'none';
+        this.isModalOpen = false;
+        console.log('Settings modal closed');
+      }
+    } catch (error) {
+      console.error('Error closing modal:', error);
+    }
+  }
+
+  loadSettingsIntoForm() {
+    try {
+      console.log('🔧 Loading settings into form...');
+      console.log('🔧 Current settings:', this.settings);
+      
+      // Load theme
+      const themeRadios = document.querySelectorAll('input[name="theme"]');
+      console.log('🔧 Found theme radios in loadSettingsIntoForm:', themeRadios.length);
+      themeRadios.forEach((radio, index) => {
+        console.log(`🔧 Theme radio ${index}:`, radio.value, 'current checked:', radio.checked);
+        radio.checked = radio.value === this.settings.theme;
+        console.log(`🔧 Set theme radio ${index} (${radio.value}) to:`, radio.checked);
+      });
+
+      // Load toggles
+      const toggleSelectors = [
+        'bgMusicToggle', 'soundEffectsToggle', 'notificationsToggle', 'autoSaveToggle', 'performanceToggle'
+      ];
+      toggleSelectors.forEach(id => {
+        const toggle = document.getElementById(id);
+        if (toggle) {
+          const value = this.getToggleValue(id);
+          toggle.checked = value;
+          console.log(`🔧 Set ${id} to:`, value);
+        }
+      });
+
+      // Load selects
+      const selectIds = ['fontSizeSelect', 'layoutSelect', 'animationSpeedSelect', 'languageSelect'];
+      selectIds.forEach(id => {
+        const select = document.getElementById(id);
+        if (select) {
+          select.value = this.getSelectValue(id);
+        }
+      });
+
+      // Load volume
+      const volumeSlider = document.getElementById('volumeSlider');
+      const volumeValue = document.getElementById('volumeValue');
+      if (volumeSlider) {
+        volumeSlider.value = this.settings.volume;
+        console.log('🔧 Set volume slider to:', this.settings.volume);
+      }
+      if (volumeValue) {
+        volumeValue.textContent = `${this.settings.volume}%`;
+        console.log('🔧 Set volume value to:', this.settings.volume);
+      }
+
+      console.log('✅ Settings loaded into form');
+    } catch (error) {
+      console.error('❌ Error loading settings into form:', error);
+    }
+  }
+
+  saveCurrentSettings() {
+    try {
+      if (this.saveSettings()) {
+        this.applySettings();
+        this.closeModal();
+        this.showNotification('Settings saved successfully! ✨', 'success');
+        console.log('Settings saved and applied');
+      }
+    } catch (error) {
+      console.error('Error saving current settings:', error);
+      this.showNotification('Failed to save settings', 'error');
+    }
+  }
+
+  // === Tab Management ===
+  setupTabs() {
+    try {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+          this.switchToTab(btn.getAttribute('data-tab'));
+        });
+      });
+      console.log('Tabs setup completed');
+    } catch (error) {
+      console.error('Error setting up tabs:', error);
+    }
   }
 
   switchToTab(tabName) {
-    // Remove active class from all tabs and contents
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    try {
+      console.log(`🔧 Switching to tab: ${tabName}`);
+      
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      });
 
-    // Add active class to selected tab and content
-    document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
-    document.getElementById(`${tabName}Tab`)?.classList.add('active');
+      const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-selected', 'true');
+      }
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      const activeContent = document.getElementById(tabName);
+      if (activeContent) {
+        activeContent.classList.add('active');
+      }
+
+      this.currentTab = tabName;
+      console.log(`✅ Switched to tab: ${tabName}`);
+    } catch (error) {
+      console.error('❌ Error switching tabs:', error);
+    }
   }
 
+  // === Form Controls ===
   setupFormControls() {
-    // Theme radio buttons
-    document.querySelectorAll('input[name="theme"]').forEach(radio => {
-      radio.checked = radio.value === this.settings.theme;
-      radio.addEventListener('change', (e) => {
-        this.settings.theme = e.target.value;
-        this.applySettings();
+    try {
+      console.log('🔧 Setting up form controls...');
+      
+      // Check if elements exist
+      const themeRadios = document.querySelectorAll('input[name="theme"]');
+      const bgMusicToggle = document.getElementById('bgMusicToggle');
+      const soundEffectsToggle = document.getElementById('soundEffectsToggle');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const volumeValue = document.getElementById('volumeValue');
+      const fontSizeSelect = document.getElementById('fontSizeSelect');
+      const animationSpeedSelect = document.getElementById('animationSpeedSelect');
+      const layoutSelect = document.getElementById('layoutSelect');
+      const languageSelect = document.getElementById('languageSelect');
+      const notificationsToggle = document.getElementById('notificationsToggle');
+      const autoSaveToggle = document.getElementById('autoSaveToggle');
+      const performanceToggle = document.getElementById('performanceToggle');
+      
+      console.log('🔧 Found elements:', {
+        themeRadios: themeRadios.length,
+        bgMusicToggle: !!bgMusicToggle,
+        soundEffectsToggle: !!soundEffectsToggle,
+        volumeSlider: !!volumeSlider,
+        volumeValue: !!volumeValue,
+        fontSizeSelect: !!fontSizeSelect,
+        animationSpeedSelect: !!animationSpeedSelect,
+        layoutSelect: !!layoutSelect,
+        languageSelect: !!languageSelect,
+        notificationsToggle: !!notificationsToggle,
+        autoSaveToggle: !!autoSaveToggle,
+        performanceToggle: !!performanceToggle
       });
-    });
+      
+      // Log each element individually for debugging
+      if (themeRadios.length > 0) {
+        themeRadios.forEach((radio, index) => {
+          console.log(`🔧 Theme radio ${index}:`, radio.value, 'checked:', radio.checked);
+        });
+      }
+      
+      if (bgMusicToggle) console.log('🔧 bgMusicToggle found:', bgMusicToggle.checked);
+      if (soundEffectsToggle) console.log('🔧 soundEffectsToggle found:', soundEffectsToggle.checked);
+      if (volumeSlider) console.log('🔧 volumeSlider found:', volumeSlider.value);
+      if (volumeValue) console.log('🔧 volumeValue found:', volumeValue.textContent);
+      if (fontSizeSelect) console.log('🔧 fontSizeSelect found:', fontSizeSelect.value);
+      if (animationSpeedSelect) console.log('🔧 animationSpeedSelect found:', animationSpeedSelect.value);
+      if (layoutSelect) console.log('🔧 layoutSelect found:', layoutSelect.value);
+      if (languageSelect) console.log('🔧 languageSelect found:', languageSelect.value);
+      if (notificationsToggle) console.log('🔧 notificationsToggle found:', notificationsToggle.checked);
+      if (autoSaveToggle) console.log('🔧 autoSaveToggle found:', autoSaveToggle.checked);
+      if (performanceToggle) console.log('🔧 performanceToggle found:', performanceToggle.checked);
+      
+      this.setupThemeControls();
+      this.setupToggleControls();
+      this.setupSliderControls();
+      this.setupSelectControls();
+      console.log('✅ Form controls setup completed');
+    } catch (error) {
+      console.error('❌ Error setting up form controls:', error);
+    }
+  }
 
-    // Toggle switches
+  setupThemeControls() {
+    try {
+      console.log('🔧 setupThemeControls() called');
+      const themeRadios = document.querySelectorAll('input[name="theme"]');
+      console.log('🔧 Found theme radio buttons:', themeRadios.length);
+      
+      themeRadios.forEach((radio, index) => {
+        console.log(`🔧 Radio ${index}:`, radio.value, 'checked:', radio.checked);
+      radio.checked = radio.value === this.settings.theme;
+        console.log(`🔧 Set radio ${index} (${radio.value}) to:`, radio.checked);
+        
+      radio.addEventListener('change', (e) => {
+          console.log('🔧 Theme radio changed to:', e.target.value);
+          console.log('🔧 Previous theme setting:', this.settings.theme);
+        this.settings.theme = e.target.value;
+          console.log('🔧 New theme setting:', this.settings.theme);
+        this.applySettings();
+          this.saveSettings();
+          this.showNotification(`Theme changed to ${e.target.value} mode! ✨`, 'success');
+        });
+      });
+      console.log('✅ Theme controls setup completed');
+    } catch (error) {
+      console.error('❌ Error setting up theme controls:', error);
+    }
+  }
+
+  setupToggleControls() {
+    try {
     const toggles = {
       'bgMusicToggle': 'bgMusic',
       'soundEffectsToggle': 'soundEffects',
-      'quickAccessToggle': 'quickAccess',
-      'progressToggle': 'progress',
-      'moodToggle': 'mood',
-      'countdownToggle': 'countdown',
-      'notesToggle': 'notes',
-      'syncToggle': 'sync',
+      'notificationsToggle': 'notifications',
       'autoSaveToggle': 'autoSave',
-      'performanceToggle': 'performance'
+      'performanceToggle': 'performanceMode'
     };
 
     Object.entries(toggles).forEach(([toggleId, settingKey]) => {
       const toggle = document.getElementById(toggleId);
       if (toggle) {
+        // Set initial value based on settings
+        if (settingKey === 'notifications' || settingKey === 'autoSave' || settingKey === 'performanceMode') {
+          toggle.checked = this.settings.preferences?.[settingKey] || false;
+        } else {
         toggle.checked = this.settings[settingKey];
+        }
+        
         toggle.addEventListener('change', (e) => {
+            console.log(`🔧 ${settingKey} changed to:`, e.target.checked);
+          
+          // Update settings based on the toggle type
+          if (settingKey === 'notifications' || settingKey === 'autoSave' || settingKey === 'performanceMode') {
+            if (!this.settings.preferences) this.settings.preferences = {};
+            this.settings.preferences[settingKey] = e.target.checked;
+          } else {
           this.settings[settingKey] = e.target.checked;
+          }
+          
           this.applySettings();
+            this.saveSettings();
+            this.showNotification(`${this.getToggleLabel(toggleId)} ${e.target.checked ? 'enabled' : 'disabled'}! ✨`, 'success');
         });
       }
     });
+      console.log('✅ Toggle controls setup completed');
+    } catch (error) {
+      console.error('❌ Error setting up toggle controls:', error);
+    }
+  }
 
-    // Volume slider
+  getToggleValue(id) {
+    const settingMap = {
+      'bgMusicToggle': this.settings.bgMusic,
+      'soundEffectsToggle': this.settings.soundEffects,
+      'notificationsToggle': this.settings.preferences?.notifications || false,
+      'autoSaveToggle': this.settings.preferences?.autoSave || false,
+      'performanceToggle': this.settings.preferences?.performanceMode || false
+    };
+    return settingMap[id] || false;
+  }
+
+  getToggleLabel(id) {
+    const labelMap = {
+      'bgMusicToggle': 'Background music',
+      'soundEffectsToggle': 'Sound effects',
+      'notificationsToggle': 'Notifications',
+      'autoSaveToggle': 'Auto save',
+      'performanceToggle': 'Performance mode'
+    };
+    return labelMap[id] || 'Setting';
+  }
+
+  updateToggleSetting(id, value) {
+    const settingMap = {
+      'bgMusicToggle': () => this.settings.bgMusic = value,
+      'soundEffectsToggle': () => this.settings.soundEffects = value,
+      'notificationsToggle': () => {
+        if (!this.settings.preferences) this.settings.preferences = {};
+        this.settings.preferences.notifications = value;
+      },
+      'autoSaveToggle': () => {
+        if (!this.settings.preferences) this.settings.preferences = {};
+        this.settings.preferences.autoSave = value;
+      },
+      'performanceToggle': () => {
+        if (!this.settings.preferences) this.settings.preferences = {};
+        this.settings.preferences.performanceMode = value;
+      }
+    };
+    
+    if (settingMap[id]) {
+      settingMap[id]();
+    }
+  }
+
+  setupSliderControls() {
+    try {
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeValue = document.getElementById('volumeValue');
     if (volumeSlider && volumeValue) {
       volumeSlider.value = this.settings.volume;
       volumeValue.textContent = `${this.settings.volume}%`;
       volumeSlider.addEventListener('input', (e) => {
-        this.settings.volume = e.target.value;
-        volumeValue.textContent = `${e.target.value}%`;
+          const newVolume = parseInt(e.target.value);
+          console.log('🔧 Volume changed to:', newVolume);
+          this.settings.volume = newVolume;
+          volumeValue.textContent = `${newVolume}%`;
         this.applySettings();
+          this.saveSettings();
       });
+      }
+      console.log('✅ Slider controls setup completed');
+    } catch (error) {
+      console.error('❌ Error setting up slider controls:', error);
+    }
     }
 
-    // Select dropdowns
+  setupSelectControls() {
+    try {
     const selects = {
       'fontSizeSelect': 'fontSize',
       'animationSpeedSelect': 'animationSpeed',
-      'layoutSelect': 'layout'
+      'layoutSelect': 'layout',
+      'languageSelect': 'language'
     };
 
     Object.entries(selects).forEach(([selectId, settingKey]) => {
       const select = document.getElementById(selectId);
       if (select) {
+        // Set initial value based on settings
+        if (settingKey === 'language') {
+          select.value = this.settings.language || 'en';
+        } else {
         select.value = this.settings[settingKey];
+        }
+        
         select.addEventListener('change', (e) => {
+            console.log(`🔧 ${settingKey} changed to:`, e.target.value);
+          
+          // Update settings based on the select type
+          if (settingKey === 'language') {
+            this.settings.language = e.target.value;
+            this.showNotification(`Language changed to ${e.target.value}! ✨`, 'success');
+          } else {
           this.settings[settingKey] = e.target.value;
           this.applySettings();
+            this.showNotification(`${this.getSelectLabel(selectId)} changed to ${e.target.value}! ✨`, 'success');
+          }
+          
+          this.saveSettings();
         });
       }
     });
-
-    // Action buttons
-    document.getElementById('exportDataBtn')?.addEventListener('click', () => {
-      this.exportData();
-    });
-
-    document.getElementById('importDataBtn')?.addEventListener('click', () => {
-      this.importData();
-    });
-
-    document.getElementById('resetSettingsBtn')?.addEventListener('click', () => {
-      this.resetSettings();
-    });
-  }
-
-  openSettingsModal() {
-    const settingsModal = document.getElementById('settingsModal');
-    if (settingsModal) {
-      settingsModal.style.display = 'flex';
-      // Play click sound
-      const clickSound = document.getElementById('clickSound');
-      if (clickSound && this.settings.soundEffects) {
-        clickSound.currentTime = 0;
-        clickSound.volume = this.settings.volume / 100;
-        clickSound.play().catch(() => {});
-      }
+      console.log('✅ Select controls setup completed');
+    } catch (error) {
+      console.error('❌ Error setting up select controls:', error);
     }
   }
 
-  closeSettingsModal() {
-    const settingsModal = document.getElementById('settingsModal');
-    if (settingsModal) {
-      settingsModal.style.display = 'none';
-    }
-  }
-
-  saveCurrentSettings() {
-    this.saveSettings();
-    this.applySettings();
-  }
-
-  resetSettings() {
-    if (confirm('Are you sure you want to reset all settings to default?')) {
-      localStorage.removeItem('userSettings');
-      this.settings = this.loadSettings();
-      this.applySettings();
-      this.setupFormControls();
-      this.showSaveMessage('Settings reset to default!');
-    }
-  }
-
-  exportData() {
-    const data = {
-      settings: this.settings,
-      messages: localStorage.getItem('allLoveMessages'),
-      scores: localStorage.getItem('gameScores'),
-      notes: localStorage.getItem('personalNotes'),
-      mood: localStorage.getItem('moodData'),
-      progress: localStorage.getItem('progressData')
+  getSelectValue(id) {
+    const valueMap = {
+      'fontSizeSelect': this.settings.fontSize,
+      'layoutSelect': this.settings.layout,
+      'animationSpeedSelect': this.settings.animationSpeed,
+      'languageSelect': this.settings.language || 'en'
     };
+    return valueMap[id] || '';
+  }
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'baby-love-data.json';
-    a.click();
-    URL.revokeObjectURL(url);
+  getSelectLabel(id) {
+    const labelMap = {
+      'fontSizeSelect': 'Font size',
+      'layoutSelect': 'Layout style',
+      'animationSpeedSelect': 'Animation speed',
+      'languageSelect': 'Language'
+    };
+    return labelMap[id] || 'Setting';
+  }
+
+  updateSelectSetting(id, value) {
+    const settingMap = {
+      'fontSizeSelect': () => { this.settings.fontSize = value; this.applyFontSize(); },
+      'layoutSelect': () => { this.settings.layout = value; this.applyLayout(); },
+      'animationSpeedSelect': () => { this.settings.animationSpeed = value; this.applyAnimationSpeed(); },
+      'languageSelect': () => { this.settings.language = value; }
+    };
     
-    this.showSaveMessage('Data exported successfully!');
+    if (settingMap[id]) {
+      settingMap[id]();
+    }
   }
 
-  importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const data = JSON.parse(e.target.result);
-            if (data.settings) {
-              this.settings = { ...this.settings, ...data.settings };
-              this.saveSettings();
-              this.applySettings();
-              this.setupFormControls();
-              this.showSaveMessage('Data imported successfully!');
-            }
-          } catch (error) {
-            alert('Error importing data. Please check the file format.');
-          }
-        };
-        reader.readAsText(file);
-      }
-    };
-    input.click();
-  }
-
-  showSaveMessage(message = 'Settings saved successfully!') {
+  // === Utility Methods ===
+  showNotification(message, type = 'info') {
+    try {
     const notification = document.createElement('div');
-    notification.className = 'save-notification';
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(145deg, #28a745, #20c997);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 25px;
-      font-weight: bold;
-      z-index: 10001;
-      animation: slideInDown 0.5s ease;
+      notification.className = `notification notification-${type}`;
+      notification.innerHTML = `
+        <span class="notification-icon">${this.getNotificationIcon(type)}</span>
+        <span class="notification-message">${message}</span>
     `;
     
     document.body.appendChild(notification);
     
     setTimeout(() => {
-      notification.style.animation = 'slideOutUp 0.5s ease';
+        notification.classList.add('show');
+      }, 100);
+      
       setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 500);
-    }, 2000);
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    } catch (error) {
+      console.error('Error showing notification:', error);
+    }
+  }
+
+  getNotificationIcon(type) {
+    const iconMap = {
+      'success': '✅',
+      'error': '❌',
+      'warning': '⚠️',
+      'info': 'ℹ️'
+    };
+    return iconMap[type] || 'ℹ️';
+  }
+
+  // === Initialization ===
+  init() {
+    if (this.isInitialized) return;
+    console.log('⚙️ Initializing Enhanced Settings Manager...');
+    console.log('⚙️ Current settings:', this.settings);
+    console.log('⚙️ Applying settings on initialization...');
+    this.applySettings();
+    this.setupModal();
+    this.addNotificationStyles();
+    this.isInitialized = true;
+    console.log('⚙️ Enhanced Settings Manager initialized successfully');
+  }
+
+  addNotificationStyles() {
+    try {
+      const style = document.createElement('style');
+      style.textContent = `
+        .notification {
+          position: fixed;
+          top: 2rem;
+          right: 2rem;
+          background: linear-gradient(135deg, #ff69b4, #ff8fab);
+          color: white;
+          padding: 1rem 1.5rem;
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(255, 105, 180, 0.3);
+          z-index: 10000;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          transform: translateX(100%);
+          transition: transform 0.3s ease;
+          max-width: 300px;
+        }
+        
+        .notification.show {
+          transform: translateX(0);
+        }
+        
+        .notification-icon {
+          font-size: 1.2rem;
+        }
+        
+        .notification-message {
+          font-weight: 500;
+        }
+      `;
+      document.head.appendChild(style);
+    } catch (error) {
+      console.error('Error adding notification styles:', error);
+    }
+  }
+
+  getFontSizeValue() {
+    const sizes = {
+      'small': '14px',
+      'medium': '16px',
+      'large': '18px'
+    };
+    return sizes[this.settings.fontSize] || '16px';
+  }
+
+  getAnimationSpeedValue() {
+    const speeds = {
+      'slow': '0.8s',
+      'normal': '0.3s',
+      'fast': '0.1s'
+    };
+    return speeds[this.settings.animationSpeed] || '0.3s';
+  }
+
+  // === Testing Functions ===
+  testTheme() {
+    console.log('🧪 Testing theme functionality...');
+    console.log('🧪 Current theme setting:', this.settings.theme);
+    console.log('🧪 Current body classes:', document.body.className);
+    console.log('🧪 Has dark-mode class:', document.body.classList.contains('dark-mode'));
+    
+    // Test switching to dark theme
+    console.log('🧪 Testing dark theme...');
+    this.settings.theme = 'dark';
+    this.applyTheme();
+    console.log('🧪 After dark theme - body classes:', document.body.className);
+    console.log('🧪 Has dark-mode class:', document.body.classList.contains('dark-mode'));
+    
+    // Test switching to light theme
+    console.log('🧪 Testing light theme...');
+    this.settings.theme = 'light';
+    this.applyTheme();
+    console.log('🧪 After light theme - body classes:', document.body.className);
+    console.log('🧪 Has dark-mode class:', document.body.classList.contains('dark-mode'));
+    
+    console.log('🧪 Theme test completed');
   }
 }
 
-// Initialize settings when DOM is loaded
+// === Global Settings Instance ===
+let settingsManager = null;
+function initializeSettings() {
+  console.log('🔧 initializeSettings() called');
+  if (!settingsManager) {
+    console.log('🔧 Creating new SimpleSettingsManager...');
+    settingsManager = new SimpleSettingsManager();
+    window.settingsManager = settingsManager;
+    console.log('🔧 Settings manager assigned to window.settingsManager:', window.settingsManager);
+  } else {
+    console.log('🔧 Settings manager already exists');
+  }
+  return settingsManager;
+}
+
+console.log('🔧 Settings.js loaded, document.readyState:', document.readyState);
+
+// Global test function
+window.testThemeFunction = function() {
+  if (window.settingsManager) {
+    window.settingsManager.testTheme();
+  } else {
+    console.error('❌ Settings manager not available');
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize global settings
-  window.settingsManager = new GlobalSettingsManager();
-}); 
+  console.log('🔧 DOMContentLoaded fired, initializing settings...');
+  initializeSettings(); 
+});
+if (document.readyState === 'loading') {
+  console.log('🔧 Document still loading, waiting for DOMContentLoaded...');
+  document.addEventListener('DOMContentLoaded', initializeSettings);
+} else {
+  console.log('🔧 Document already loaded, initializing immediately...');
+  initializeSettings();
+} 

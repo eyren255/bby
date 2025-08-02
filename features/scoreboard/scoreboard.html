@@ -28,24 +28,30 @@
   <!-- Stats Overview -->
   <div class="stats-overview">
     <div class="stat-card total-games">
-      <div class="stat-icon">🎮</div>
       <div class="stat-content">
-        <div class="stat-number" id="totalGames">0</div>
-        <div class="stat-label">Total Games</div>
+        <div class="stat-icon">🎮</div>
+        <div class="stat-info">
+          <div class="stat-number" id="totalGames">0</div>
+          <div class="stat-label">Total Games</div>
+        </div>
       </div>
     </div>
     <div class="stat-card total-points">
-      <div class="stat-icon">⭐</div>
       <div class="stat-content">
-        <div class="stat-number" id="totalPoints">0</div>
-        <div class="stat-label">Total Points</div>
+        <div class="stat-icon">⭐</div>
+        <div class="stat-info">
+          <div class="stat-number" id="totalPoints">0</div>
+          <div class="stat-label">Total Points</div>
+        </div>
       </div>
     </div>
     <div class="stat-card best-score">
-      <div class="stat-icon">🏆</div>
       <div class="stat-content">
-        <div class="stat-number" id="bestScore">0</div>
-        <div class="stat-label">Best Score</div>
+        <div class="stat-icon">🏆</div>
+        <div class="stat-info">
+          <div class="stat-number" id="bestScore">0</div>
+          <div class="stat-label">Best Score</div>
+        </div>
       </div>
     </div>
   </div>
@@ -111,7 +117,7 @@
   <audio id="achievementSound" src="../../assets/audio/achievement.mp3" preload="auto"></audio>
 
   <!-- Global Settings System -->
-  <script src="../shared/global-settings.js"></script>
+  <script src="../shared/settings.js"></script>
   <!-- Global Messaging System -->
   <script src="../message/global-message.js"></script>
   <script src="scoreboard.js"></script>

@@ -410,301 +410,7 @@ function showMessageNotification(count) {
   }
 }
 
-  // === Settings System ===
-  class SettingsManager {
-    constructor() {
-      this.settings = this.loadSettings();
-      this.initSettings();
-      this.setupGlobalListener();
-    }
 
-    loadSettings() {
-      const defaultSettings = {
-        theme: 'light',
-        bgMusic: true,
-        soundEffects: true,
-        volume: 50,
-        fontSize: 'medium',
-        animationSpeed: 'normal'
-      };
-
-      try {
-        const saved = localStorage.getItem('userSettings');
-        return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
-      } catch (error) {
-        console.error('Error loading settings:', error);
-        return defaultSettings;
-      }
-    }
-
-    saveSettings() {
-      try {
-        localStorage.setItem('userSettings', JSON.stringify(this.settings));
-        // Broadcast settings change to all pages
-        this.broadcastSettingsChange();
-      } catch (error) {
-        console.error('Error saving settings:', error);
-      }
-    }
-
-    // Broadcast settings change to all open pages
-    broadcastSettingsChange() {
-      console.log('🔧 SettingsManager: Broadcasting settings change:', this.settings);
-      
-      // Dispatch custom event for other pages to listen to
-      window.dispatchEvent(new CustomEvent('settingsChanged', {
-        detail: this.settings
-      }));
-      
-      // Also use localStorage event for cross-tab communication
-      localStorage.setItem('settingsLastUpdated', Date.now().toString());
-      
-      console.log('🔧 SettingsManager: Settings broadcast completed');
-    }
-
-    // Setup global listener for settings changes
-    setupGlobalListener() {
-      // Listen for settings changes from other pages
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'userSettings' || e.key === 'settingsLastUpdated') {
-          this.settings = this.loadSettings();
-          this.applySettings();
-        }
-      });
-
-      // Listen for custom settings change events
-      window.addEventListener('settingsChanged', (e) => {
-        this.settings = e.detail;
-        this.applySettings();
-      });
-    }
-
-    initSettings() {
-      this.applySettings();
-      this.setupSettingsModal();
-    }
-
-    applySettings() {
-      // Apply theme
-      if (this.settings.theme === 'dark') {
-        document.body.classList.add('dark-mode');
-      } else {
-        document.body.classList.remove('dark-mode');
-      }
-
-      // Apply font size
-      document.body.style.fontSize = this.getFontSizeValue();
-
-      // Apply animation speed
-      document.body.style.setProperty('--animation-speed', this.getAnimationSpeedValue());
-
-      // Apply volume to all audio elements
-      const audioElements = document.querySelectorAll('audio');
-      audioElements.forEach(audio => {
-        audio.volume = this.settings.volume / 100;
-      });
-
-      // Apply background music settings
-      const bgMusic = document.getElementById('bgMusic');
-      if (bgMusic) {
-        if (this.settings.bgMusic) {
-          bgMusic.play().catch(() => {});
-        } else {
-          bgMusic.pause();
-        }
-      }
-    }
-
-    getFontSizeValue() {
-      switch (this.settings.fontSize) {
-        case 'small': return '0.9rem';
-        case 'large': return '1.2rem';
-        default: return '1rem';
-      }
-    }
-
-    getAnimationSpeedValue() {
-      switch (this.settings.animationSpeed) {
-        case 'fast': return '0.3s';
-        case 'slow': return '1.2s';
-        default: return '0.6s';
-      }
-    }
-
-    setupSettingsModal() {
-      const openSettingsBtn = document.getElementById('openSettingsBtn');
-      const settingsModal = document.getElementById('settingsModal');
-      const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-      const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-
-      // Open settings
-      openSettingsBtn?.addEventListener('click', () => {
-        this.openSettingsModal();
-      });
-
-      // Close settings
-      closeSettingsBtn?.addEventListener('click', () => {
-        this.closeSettingsModal();
-      });
-
-      // Save settings
-      saveSettingsBtn?.addEventListener('click', () => {
-        this.saveCurrentSettings();
-        this.closeSettingsModal();
-        this.showSaveMessage();
-      });
-
-      // Click outside to close
-      settingsModal?.addEventListener('click', (e) => {
-        if (e.target === settingsModal) {
-          this.closeSettingsModal();
-        }
-      });
-
-      // Setup tabs
-      this.setupTabs();
-      
-      // Setup form controls
-      this.setupFormControls();
-    }
-
-    setupTabs() {
-      const tabBtns = document.querySelectorAll('.tab-btn');
-
-      tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tabName = btn.getAttribute('data-tab');
-          this.switchToTab(tabName);
-        });
-      });
-    }
-
-    switchToTab(tabName) {
-      // Remove active class from all tabs and contents
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-      // Add active class to selected tab and content
-      document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
-      document.getElementById(`${tabName}Tab`)?.classList.add('active');
-    }
-
-    setupFormControls() {
-      // Theme radio buttons
-      document.querySelectorAll('input[name="theme"]').forEach(radio => {
-        radio.checked = radio.value === this.settings.theme;
-        radio.addEventListener('change', (e) => {
-          this.settings.theme = e.target.value;
-          this.applySettings();
-          this.saveSettings(); // Save immediately on change
-        });
-      });
-
-      // Toggle switches
-      const toggles = {
-        'bgMusicToggle': 'bgMusic',
-        'soundEffectsToggle': 'soundEffects'
-      };
-
-      Object.entries(toggles).forEach(([toggleId, settingKey]) => {
-        const toggle = document.getElementById(toggleId);
-        if (toggle) {
-          toggle.checked = this.settings[settingKey];
-          toggle.addEventListener('change', (e) => {
-            this.settings[settingKey] = e.target.checked;
-            this.applySettings();
-            this.saveSettings(); // Save immediately on change
-          });
-        }
-      });
-
-      // Volume slider
-      const volumeSlider = document.getElementById('volumeSlider');
-      const volumeValue = document.getElementById('volumeValue');
-      if (volumeSlider && volumeValue) {
-        volumeSlider.value = this.settings.volume;
-        volumeValue.textContent = `${this.settings.volume}%`;
-        volumeSlider.addEventListener('input', (e) => {
-          this.settings.volume = e.target.value;
-          volumeValue.textContent = `${e.target.value}%`;
-          this.applySettings();
-          this.saveSettings(); // Save immediately on change
-        });
-      }
-
-      // Select dropdowns
-      const selects = {
-        'fontSizeSelect': 'fontSize',
-        'animationSpeedSelect': 'animationSpeed'
-      };
-
-      Object.entries(selects).forEach(([selectId, settingKey]) => {
-        const select = document.getElementById(selectId);
-        if (select) {
-          select.value = this.settings[settingKey];
-          select.addEventListener('change', (e) => {
-            this.settings[settingKey] = e.target.value;
-            this.applySettings();
-            this.saveSettings(); // Save immediately on change
-          });
-        }
-      });
-    }
-
-    openSettingsModal() {
-      const settingsModal = document.getElementById('settingsModal');
-      if (settingsModal) {
-        settingsModal.style.display = 'flex';
-        // Play click sound
-        const clickSound = document.getElementById('clickSound');
-        if (clickSound && this.settings.soundEffects) {
-          clickSound.currentTime = 0;
-          clickSound.volume = this.settings.volume / 100;
-          clickSound.play().catch(() => {});
-        }
-      }
-    }
-
-    closeSettingsModal() {
-      const settingsModal = document.getElementById('settingsModal');
-      if (settingsModal) {
-        settingsModal.style.display = 'none';
-      }
-    }
-
-    saveCurrentSettings() {
-      this.saveSettings();
-      this.applySettings();
-    }
-
-    showSaveMessage(message = 'Settings saved successfully!') {
-      const notification = document.createElement('div');
-      notification.className = 'save-notification';
-      notification.textContent = message;
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(145deg, #28a745, #20c997);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 25px;
-        font-weight: bold;
-        z-index: 10001;
-        animation: slideInDown 0.5s ease;
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.animation = 'slideOutUp 0.5s ease';
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 500);
-      }, 2000);
-    }
-  }
 
   // === Global Settings Loader ===
   // This ensures settings are applied to all pages automatically
@@ -748,8 +454,75 @@ function showMessageNotification(count) {
     }
   }
 
+  // === Background Music Management ===
+  function manageBackgroundMusic() {
+    try {
+      // Stop all background music on other pages
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        if (audio !== document.querySelector('#bgMusic')) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+      
+      // Start background music on current page
+      const currentBgMusic = document.querySelector('#bgMusic');
+      if (currentBgMusic) {
+        currentBgMusic.play().catch(() => {
+          console.log('Background music autoplay blocked');
+        });
+      }
+    } catch (error) {
+      console.error('Error managing background music:', error);
+    }
+  }
+
+  // Stop all background music when leaving page
+  function stopAllBackgroundMusic() {
+    try {
+      const allAudio = document.querySelectorAll('audio[id="bgMusic"]');
+      allAudio.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    } catch (error) {
+      console.error('Error stopping background music:', error);
+    }
+  }
+
   // Apply settings immediately when script loads
   loadAndApplyGlobalSettings();
+  manageBackgroundMusic();
+
+  // === Settings Change Broadcaster ===
+  // This function broadcasts settings changes to all pages
+  function broadcastSettingsChange() {
+    try {
+      const saved = localStorage.getItem('userSettings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        
+        // Dispatch custom event for other pages to listen to
+        window.dispatchEvent(new CustomEvent('settingsChanged', {
+          detail: settings
+        }));
+        
+        // Also trigger storage event for cross-tab communication
+        localStorage.setItem('settingsLastUpdated', Date.now().toString());
+        
+        console.log('📡 Settings change broadcasted to all pages');
+      }
+    } catch (error) {
+      console.error('Error broadcasting settings change:', error);
+    }
+  }
+
+  // Listen for settings changes from settings modal
+  window.addEventListener('settingsUpdated', () => {
+    loadAndApplyGlobalSettings();
+    broadcastSettingsChange();
+  });
 
   // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -757,10 +530,445 @@ document.addEventListener('DOMContentLoaded', () => {
   createFloatingHearts();
   checkForNewMessages();
   
-  // Initialize settings
-  window.settingsManager = new SettingsManager();
-  
   // Check for new messages every 30 seconds
   setInterval(checkForNewMessages, 30000);
+});
+
+// Virtual Effects and Animations
+function createParticle() {
+  const particle = document.createElement('div');
+  particle.className = 'particle';
+  particle.style.left = Math.random() * window.innerWidth + 'px';
+  particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+  particle.style.animationDelay = Math.random() * 2 + 's';
+  document.body.appendChild(particle);
+  
+  // Remove particle after animation
+  setTimeout(() => {
+    if (particle.parentNode) {
+      particle.parentNode.removeChild(particle);
+    }
+  }, 8000);
+}
+
+function createFloatingHeart() {
+  const heart = document.createElement('div');
+  heart.innerHTML = '💖';
+  heart.style.position = 'fixed';
+  heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+  heart.style.left = Math.random() * window.innerWidth + 'px';
+  heart.style.top = window.innerHeight + 'px';
+  heart.style.zIndex = '-1';
+  heart.style.pointerEvents = 'none';
+  heart.style.opacity = '0.6';
+  heart.style.animation = 'fall 6s linear';
+  document.body.appendChild(heart);
+  
+  // Remove heart after animation
+  setTimeout(() => {
+    if (heart.parentNode) {
+      heart.parentNode.removeChild(heart);
+    }
+  }, 6000);
+}
+
+function createSparkle() {
+  const sparkle = document.createElement('div');
+  sparkle.innerHTML = '✨';
+  sparkle.style.position = 'fixed';
+  sparkle.style.fontSize = '20px';
+  sparkle.style.left = Math.random() * window.innerWidth + 'px';
+  sparkle.style.top = Math.random() * window.innerHeight + 'px';
+  sparkle.style.zIndex = '-1';
+  sparkle.style.pointerEvents = 'none';
+  sparkle.style.animation = 'sparkle 2s ease-in-out';
+  document.body.appendChild(sparkle);
+  
+  // Remove sparkle after animation
+  setTimeout(() => {
+    if (sparkle.parentNode) {
+      sparkle.parentNode.removeChild(sparkle);
+    }
+  }, 2000);
+}
+
+// Add sparkle animation to CSS
+const sparkleStyle = document.createElement('style');
+sparkleStyle.textContent = `
+  @keyframes sparkle {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1) rotate(180deg); opacity: 1; }
+    100% { transform: scale(0) rotate(360deg); opacity: 0; }
+  }
+`;
+document.head.appendChild(sparkleStyle);
+
+// Interactive button effects
+function addButtonEffects() {
+  const buttons = document.querySelectorAll('.menu-button, .quick-message-btn, .reveal-button');
+  
+  buttons.forEach(button => {
+    button.addEventListener('mouseenter', () => {
+      createSparkle();
+      createSparkle();
+    });
+    
+    button.addEventListener('click', () => {
+      // Create multiple sparkles on click
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => createSparkle(), i * 100);
+      }
+    });
+  });
+}
+
+// Background particle system
+function startParticleSystem() {
+  // Create particles periodically
+  setInterval(() => {
+    if (Math.random() > 0.7) { // 30% chance
+      createParticle();
+    }
+  }, 2000);
+  
+  // Create floating hearts periodically
+  setInterval(() => {
+    if (Math.random() > 0.8) { // 20% chance
+      createFloatingHeart();
+    }
+  }, 3000);
+}
+
+// Enhanced tap to start with effects
+function enhanceTapToStart() {
+  const tapOverlay = document.getElementById('tapToStart');
+  if (tapOverlay) {
+    tapOverlay.addEventListener('click', () => {
+      // Create explosion of sparkles
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => createSparkle(), i * 50);
+      }
+      
+      // Create floating hearts
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => createFloatingHeart(), i * 200);
+      }
+    });
+  }
+}
+
+// Section reveal animations
+function addSectionAnimations() {
+  const sections = document.querySelectorAll('.menu-section');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'sectionReveal 0.8s ease-out';
+        createSparkle();
+        createSparkle();
+      }
+    });
+  }, { threshold: 0.3 });
+  
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+}
+
+// Add section reveal animation to CSS
+const sectionRevealStyle = document.createElement('style');
+sectionRevealStyle.textContent = `
+  @keyframes sectionReveal {
+    0% { 
+      opacity: 0; 
+      transform: translateY(30px) scale(0.95); 
+    }
+    100% { 
+      opacity: 1; 
+      transform: translateY(0) scale(1); 
+    }
+  }
+`;
+document.head.appendChild(sectionRevealStyle);
+
+// Mouse trail effect
+function addMouseTrail() {
+  let mouseX = 0;
+  let mouseY = 0;
+  
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Occasionally create sparkles at mouse position
+    if (Math.random() > 0.95) {
+      const sparkle = document.createElement('div');
+      sparkle.innerHTML = '✨';
+      sparkle.style.position = 'fixed';
+      sparkle.style.left = mouseX + 'px';
+      sparkle.style.top = mouseY + 'px';
+      sparkle.style.fontSize = '15px';
+      sparkle.style.pointerEvents = 'none';
+      sparkle.style.zIndex = '1000';
+      sparkle.style.animation = 'sparkle 1s ease-in-out';
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        if (sparkle.parentNode) {
+          sparkle.parentNode.removeChild(sparkle);
+        }
+      }, 1000);
+    }
+  });
+}
+
+// Initialize all effects when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Start particle system
+  startParticleSystem();
+  
+  // Add button effects
+  addButtonEffects();
+  
+  // Enhance tap to start
+  enhanceTapToStart();
+  
+  // Add section animations
+  addSectionAnimations();
+  
+  // Add mouse trail effect
+  addMouseTrail();
+  
+  // Create initial sparkles
+  setTimeout(() => {
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => createSparkle(), i * 500);
+    }
+  }, 1000);
+});
+
+// Enhanced reveal button functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const revealBtn = document.getElementById('revealBtn');
+  const surpriseSection = document.querySelector('.surprise');
+  
+  if (revealBtn && surpriseSection) {
+    revealBtn.addEventListener('click', () => {
+      // Create magical effect
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => createSparkle(), i * 100);
+      }
+      
+      // Create floating hearts
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => createFloatingHeart(), i * 150);
+      }
+      
+      // Toggle surprise section with animation
+      if (surpriseSection.classList.contains('hidden')) {
+        surpriseSection.classList.remove('hidden');
+        surpriseSection.style.animation = 'sectionReveal 0.8s ease-out';
+        
+        // Update button text and icon
+        const revealText = revealBtn.querySelector('.reveal-text');
+        const revealIcon = revealBtn.querySelector('.reveal-icon');
+        if (revealText) revealText.textContent = 'Surprise revealed!';
+        if (revealIcon) revealIcon.textContent = '🎉';
+        
+        // Update aria-expanded
+        revealBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        surpriseSection.classList.add('hidden');
+        
+        // Reset button
+        const revealText = revealBtn.querySelector('.reveal-text');
+        const revealIcon = revealBtn.querySelector('.reveal-icon');
+        if (revealText) revealText.textContent = 'I want a surprise!';
+        if (revealIcon) revealIcon.textContent = '👀';
+        
+        // Update aria-expanded
+        revealBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+});
+
+// Show changelog modal
+function showWhatsNew() {
+  console.log('🔍 showWhatsNew() called');
+  try {
+    const modal = document.getElementById('changelogModal');
+    console.log('🔍 Modal element:', modal);
+    if (modal) {
+      // Remove hidden class and set display to flex
+      modal.classList.remove('hidden');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      console.log('✅ Changelog modal opened successfully');
+      
+      // Play sound if available
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.volume = 0.3;
+        clickSound.play().catch(() => {});
+      }
+    } else {
+      console.error('❌ Changelog modal not found');
+    }
+  } catch (error) {
+    console.error('❌ Error showing changelog:', error);
+  }
+}
+
+// Hide changelog modal
+function hideWhatsNew() {
+  console.log('🔍 hideWhatsNew() called');
+  try {
+    const modal = document.getElementById('changelogModal');
+    if (modal) {
+      // Add hidden class and set display to none
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+      console.log('✅ Changelog modal closed successfully');
+      
+      // Play sound if available
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.volume = 0.3;
+        clickSound.play().catch(() => {});
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error hiding changelog:', error);
+  }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', (e) => {
+  const changelogModal = document.getElementById('changelogModal');
+  if (e.target === changelogModal) {
+    hideWhatsNew();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    hideWhatsNew();
+  }
+});
+
+// Settings manager fallback
+function openSettings() {
+  console.log('🔍 openSettings() called');
+  console.log('🔍 Current time:', new Date().toISOString());
+  
+  try {
+    // Check if settings manager exists immediately
+    console.log('🔍 Immediate check - window.settingsManager:', window.settingsManager);
+    console.log('🔍 Immediate check - typeof window.settingsManager:', typeof window.settingsManager);
+    
+    if (window.settingsManager) {
+      console.log('🔍 Settings manager properties:', Object.keys(window.settingsManager));
+      console.log('🔍 openModal function exists:', typeof window.settingsManager.openModal);
+    }
+    
+    // Wait a bit for the settings manager to initialize
+    setTimeout(() => {
+      console.log('🔍 Delayed check - window.settingsManager:', window.settingsManager);
+      console.log('🔍 Delayed check - typeof window.settingsManager?.openModal:', typeof window.settingsManager?.openModal);
+      
+      if (window.settingsManager && typeof window.settingsManager.openModal === 'function') {
+        console.log('✅ Settings manager found, calling openModal...');
+        try {
+          window.settingsManager.openModal();
+          console.log('✅ openModal() called successfully');
+        } catch (modalError) {
+          console.error('❌ Error calling openModal:', modalError);
+        }
+      } else {
+        console.error('❌ Settings manager not available');
+        console.log('🔍 Available window properties:', Object.keys(window).filter(key => key.includes('settings')));
+        
+        // Try to manually create settings manager
+        console.log('🔍 Attempting to create settings manager manually...');
+        try {
+          if (typeof SimpleSettingsManager !== 'undefined') {
+            window.settingsManager = new SimpleSettingsManager();
+            console.log('✅ Created settings manager manually');
+            window.settingsManager.openModal();
+          } else {
+            console.error('❌ SimpleSettingsManager not defined');
+          }
+        } catch (createError) {
+          console.error('❌ Error creating settings manager:', createError);
+        }
+        
+        // Show a simple alert as fallback
+        alert('Settings feature is currently unavailable. Please try refreshing the page.');
+      }
+    }, 100);
+  } catch (error) {
+    console.error('❌ Error in openSettings:', error);
+    alert('Settings feature is currently unavailable. Please try refreshing the page.');
+  }
+}
+
+// Test function to verify button functionality
+function testButtons() {
+  console.log('🧪 Testing button functionality...');
+  
+  // Test showWhatsNew
+  console.log('🧪 Testing showWhatsNew function...');
+  showWhatsNew();
+  
+  // Test settings manager
+  console.log('🧪 Testing settings manager...');
+  console.log('🧪 window.settingsManager:', window.settingsManager);
+  console.log('🧪 typeof window.settingsManager?.openModal:', typeof window.settingsManager?.openModal);
+  
+  // Test openSettings
+  console.log('🧪 Testing openSettings function...');
+  openSettings();
+}
+
+// Add a simple test to check settings manager
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    console.log('🧪 Checking settings manager after DOM loaded...');
+    console.log('🧪 window.settingsManager:', window.settingsManager);
+    if (window.settingsManager) {
+      console.log('✅ Settings manager is available');
+      console.log('🧪 openModal function:', typeof window.settingsManager.openModal);
+    } else {
+      console.error('❌ Settings manager is not available');
+    }
+    
+    // Add a test button for debugging
+    const testBtn = document.createElement('button');
+    testBtn.textContent = '🧪 Test Settings';
+    testBtn.style.cssText = `
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 10000;
+      background: blue;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    `;
+    testBtn.onclick = () => {
+      console.log('🧪 Test button clicked');
+      openSettings();
+    };
+    document.body.appendChild(testBtn);
+    console.log('🧪 Test button added');
+  }, 1000);
 });
 

@@ -1,5 +1,91 @@
 // Message configuration
 
+// === Settings Loading ===
+function loadAndApplySettings() {
+  try {
+    const saved = localStorage.getItem('userSettings');
+    if (saved) {
+      const settings = JSON.parse(saved);
+      
+      // Apply theme
+      if (settings.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Apply font size
+      let fontSize = '1rem';
+      switch (settings.fontSize) {
+        case 'small': fontSize = '0.9rem'; break;
+        case 'large': fontSize = '1.2rem'; break;
+      }
+      document.body.style.fontSize = fontSize;
+
+      // Apply animation speed
+      let animationSpeed = '0.6s';
+      switch (settings.animationSpeed) {
+        case 'fast': animationSpeed = '0.3s'; break;
+        case 'slow': animationSpeed = '1.2s'; break;
+      }
+      document.body.style.setProperty('--animation-speed', animationSpeed);
+
+      // Apply volume to all audio elements
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        audio.volume = (settings.volume || 50) / 100;
+      });
+    }
+  } catch (error) {
+    console.error('Error loading settings in message:', error);
+  }
+}
+
+// Load settings when page loads
+document.addEventListener('DOMContentLoaded', loadAndApplySettings);
+
+// === Settings Change Listener ===
+// Listen for settings changes from main menu
+window.addEventListener('settingsChanged', (e) => {
+  const settings = e.detail;
+  
+  // Apply theme
+  if (settings.theme === 'dark') {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+
+  // Apply font size
+  let fontSize = '1rem';
+  switch (settings.fontSize) {
+    case 'small': fontSize = '0.9rem'; break;
+    case 'large': fontSize = '1.2rem'; break;
+  }
+  document.body.style.fontSize = fontSize;
+
+  // Apply animation speed
+  let animationSpeed = '0.6s';
+  switch (settings.animationSpeed) {
+    case 'fast': animationSpeed = '0.3s'; break;
+    case 'slow': animationSpeed = '1.2s'; break;
+  }
+  document.body.style.setProperty('--animation-speed', animationSpeed);
+
+  // Apply volume to all audio elements
+  const audioElements = document.querySelectorAll('audio');
+  audioElements.forEach(audio => {
+    audio.volume = (settings.volume || 50) / 100;
+  });
+});
+
+// Also listen for storage events (cross-tab communication)
+window.addEventListener('storage', (e) => {
+  if (e.key === 'userSettings' || e.key === 'settingsLastUpdated') {
+    loadAndApplySettings();
+  }
+});
+
 // Message configuration
 const messageStyles = {
   romantic: {

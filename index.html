@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>For My Baby 💕</title>
   
-
-  
   <!-- Styles and Scripts -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="features/shared/settings.css" />
-  <script defer src="script.js"></script>
   <!-- Global Settings System -->
-  <script src="features/shared/global-settings.js"></script>
+  <script src="features/shared/settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="features/message/global-message.js"></script>
   <!-- Supabase Client -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="features/message/supabase-config.js"></script>
-
+  <script defer src="script.js"></script>
 </head>
+
 <!-- Modular scripts -->
 <script type="module" src="./firebase.js"></script>
 <script type="module" src="./firebase-upload.js"></script>
@@ -27,33 +27,34 @@
 <body>
   <!-- Header Section -->
   <header class="main-header">
-    <h1 class="main-title">Welcome, My Honey Bun 💖</h1>
-    <p class="main-subtitle">Pick something cute to do today 💕</p>
-    <!-- Quick Message Button -->
-    <button id="quickMessageBtn" class="quick-message-btn" aria-label="Quick Message">
-      <span class="quick-message-icon">💌</span>
-      <span class="quick-message-text">Quick Message</span>
-    </button>
-    <!-- Settings Button -->
-    <button id="openSettingsBtn" class="settings-btn" aria-label="Settings">
-      <span class="settings-icon">⚙️</span>
-    </button>
-
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="main-title">Welcome, My Honey Bun 💖</h1>
+        <p class="main-subtitle">Pick something cute to do today 💕</p>
+      </div>
+      
+      <div class="header-actions">
+        <button id="quickMessageBtn" class="quick-message-btn" aria-label="Quick message">
+          <span class="quick-message-icon" aria-hidden="true">💌</span>
+          <span class="quick-message-text">Quick Message</span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <!-- Floating Message Notification -->
-  <div id="messageNotification" class="message-notification hidden">
+  <div id="messageNotification" class="message-notification hidden" role="alert" aria-live="polite">
     <div class="notification-content">
-      <span class="notification-icon">💌</span>
+      <span class="notification-icon" aria-hidden="true">💌</span>
       <span class="notification-text">New love message!</span>
-      <button class="notification-close">×</button>
+      <button class="notification-close" aria-label="Close notification">×</button>
     </div>
   </div>
 
   <!-- Tap to Start Section -->
-  <div id="tapToStart" class="tap-overlay">
+  <div id="tapToStart" class="tap-overlay" role="button" tabindex="0" aria-label="Tap to start">
     <div class="overlay-content">
-      <div class="heart-icon">💖</div>
+      <div class="heart-icon" aria-hidden="true">💖</div>
       <div class="overlay-text">Tap anywhere to begin...</div>
       <div class="tap-hint">✨ Click to start your adventure ✨</div>
     </div>
@@ -64,196 +65,209 @@
   <audio id="clickSound" src="assets/audio/click.wav" preload="auto"></audio>
 
   <!-- Main Menu -->
-  <main class="menu" style="display: none;">
-    <!-- Cute Things to Play Section -->
-    <section class="menu-section" data-category="games">
+  <main class="menu" style="display: none;" role="main">
+    <!-- Fun Activities Section -->
+    <section class="menu-section" data-category="activities" aria-labelledby="activities-title">
       <div class="section-header">
-        <h2 class="section-title">💘 Cute Things to Play</h2>
-        <p class="section-description">Fun activities just for us</p>
+        <h2 id="activities-title" class="section-title">🎮 Fun Activities</h2>
+        <p class="section-description">Let's have some fun together!</p>
       </div>
-      <div class="button-grid">
-        <a href="features/hug/hug.html" class="menu-button btn-hug" aria-label="Virtual Hug">
+      <div class="button-grid" role="grid" aria-label="Fun activities">
+        <button class="menu-button" onclick="window.location.href='features/quiz/quiz.html'">
+          <span class="button-icon">❓</span>
+          <span class="button-text">Love Quiz</span>
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/challenge/challenge.html'">
+          <span class="button-icon">🎯</span>
+          <span class="button-text">Love Challenge</span>
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/memory-match/memory.html'">
+          <span class="button-icon">🧠</span>
+          <span class="button-text">Memory Match</span>
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/dress-bunny/dress.html'">
+          <span class="button-icon">👗</span>
+          <span class="button-text">Dress Bunny</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Love & Romance Section -->
+    <section class="menu-section" data-category="romance" aria-labelledby="romance-title">
+      <div class="section-header">
+        <h2 id="romance-title" class="section-title">💕 Love & Romance</h2>
+        <p class="section-description">Special moments just for us</p>
+      </div>
+      <div class="button-grid" role="grid" aria-label="Romance features">
+        <button class="menu-button" onclick="window.location.href='features/hug/hug.html'">
           <span class="button-icon">🤗</span>
           <span class="button-text">Virtual Hug</span>
-        </a>
-        <a href="features/quiz/quiz.html" class="menu-button btn-quiz" aria-label="Know Me Quiz">
-          <span class="button-icon">❓</span>
-          <span class="button-text">Know Me Quiz</span>
-        </a>
-        <a href="features/memory-match/memory.html" class="menu-button btn-memory" aria-label="Memory Match">
-          <span class="button-icon">🃏</span>
-          <span class="button-text">Memory Match</span>
-        </a>
-        <a href="features/dress-bunny/dress.html" class="menu-button btn-bunny" aria-label="Dress the Bunny">
-          <span class="button-icon">🧸</span>
-          <span class="button-text">Dress the Bunny</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- Random & Fun Section -->
-    <section class="menu-section" data-category="fun">
-      <div class="section-header">
-        <h2 class="section-title">🔮 Random & Fun</h2>
-        <p class="section-description">Surprise yourself with something special</p>
-      </div>
-      <div class="button-grid">
-        <a href="features/challenge/challenge.html" class="menu-button btn-challenge" aria-label="Love Challenge Generator">
-          <span class="button-icon">💕</span>
-          <span class="button-text">Love Challenge Generator</span>
-        </a>
-        <a href="features/fortune/fortune.html" class="menu-button btn-fortune" aria-label="Daily Fortune">
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/fortune/fortune.html'">
           <span class="button-icon">🔮</span>
-          <span class="button-text">Daily Fortune</span>
-        </a>
+          <span class="button-text">Love Fortune</span>
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/message/message.html'">
+          <span class="button-icon">💌</span>
+          <span class="button-text">Send Message</span>
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/sticker-wall/sticker.html'">
+          <span class="button-icon">🏷️</span>
+          <span class="button-text">Sticker Wall</span>
+        </button>
       </div>
     </section>
 
-    <!-- Sweet Memories Section -->
-    <section class="menu-section" data-category="memories">
+    <!-- Memories & Stories Section -->
+    <section class="menu-section" data-category="memories" aria-labelledby="memories-title">
       <div class="section-header">
-        <h2 class="section-title">📖 Sweet Memories</h2>
+        <h2 id="memories-title" class="section-title">📖 Memories & Stories</h2>
         <p class="section-description">Relive our beautiful moments together</p>
       </div>
-      <div class="button-grid">
-        <a href="features/story/story.html" class="menu-button btn-story" aria-label="Our Story">
+      <div class="button-grid" role="grid" aria-label="Memory features">
+        <button class="menu-button" onclick="window.location.href='features/story/story.html'">
           <span class="button-icon">📖</span>
           <span class="button-text">Our Story</span>
-        </a>
-        <a href="features/message/message.html" class="menu-button btn-message" aria-label="Send Me a Message">
-          <span class="button-icon">💌</span>
-          <span class="button-text">Send Me a Message</span>
-        </a>
-        <a href="features/scoreboard/scoreboard.html" class="menu-button btn-scoreboard" aria-label="Scoreboard">
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/scoreboard/scoreboard.html'">
           <span class="button-icon">🏆</span>
           <span class="button-text">Scoreboard</span>
-        </a>
+        </button>
+        
+        <button class="menu-button" onclick="window.location.href='features/unlock-note/unlock.html'">
+          <span class="button-icon">🔓</span>
+          <span class="button-text">Secret Note</span>
+        </button>
+        
+        <!-- Settings Button -->
+        <button class="menu-button openSettingsBtn" onclick="openSettings()">
+          <span class="button-icon">⚙️</span>
+          <span class="button-text">Settings</span>
+        </button>
+
+        <!-- What's New Button -->
+        <button class="menu-button" onclick="showWhatsNew()">
+          <span class="button-icon">🆕</span>
+          <span class="button-text">What's New</span>
+        </button>
       </div>
     </section>
-
-    <!-- Surprise Section (Hidden by Default) -->
-    <section class="menu-section surprise hidden" data-category="surprise">
-      <div class="section-header">
-        <h2 class="section-title">🎁 Surprise</h2>
-        <p class="section-description">Special treats just for you</p>
-      </div>
-      <div class="button-grid">
-        <a href="features/unlock-note/unlock.html" class="menu-button btn-note" aria-label="Secret Love Note">
-          <span class="button-icon">🔐</span>
-          <span class="button-text">Secret Love Note</span>
-        </a>
-        <a href="features/sticker-wall/sticker.html" class="menu-button btn-sticker" aria-label="Sticker Wall">
-          <span class="button-icon">🎀</span>
-          <span class="button-text">Sticker Wall</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- Reveal Button -->
-    <div class="reveal-container">
-      <button id="revealBtn" class="reveal-button" aria-label="Reveal surprise section">
-        <span class="reveal-icon">👀</span>
-        <span class="reveal-text">I want a surprise!</span>
-      </button>
-    </div>
   </main>
 
   <!-- Password Modal -->
-  <div id="passwordModal" class="modal">
+  <div id="passwordModal" class="modal" role="dialog" aria-labelledby="password-title" aria-describedby="password-description">
     <div class="modal-content">
-      <h3 class="modal-title">🔐 Enter Password</h3>
-      <p class="modal-description">Enter the password to continue 💖</p>
-      <div class="password-input-container">
-        <input type="password" id="passwordInput" placeholder="Password..." aria-label="Enter password" />
-        <button id="submitPassword" class="submit-btn">Unlock</button>
-      </div>
+      <h3 id="password-title" class="modal-title">🔐 Enter Password</h3>
+      <p id="password-description" class="modal-description">Enter the password to continue 💖</p>
+      <form class="password-form" onsubmit="return false;">
+        <div class="password-input-container">
+          <input type="password" id="passwordInput" placeholder="Password..." aria-label="Enter password" required />
+          <button type="submit" id="submitPassword" class="submit-btn">Unlock</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- Settings Modal -->
-  <div id="settingsModal" class="modal settings-modal">
-    <div class="modal-content settings-content">
-      <div class="settings-header">
-        <h3 class="modal-title">⚙️ Settings</h3>
-        <button id="closeSettingsBtn" class="close-settings-btn" aria-label="Close settings">
-          <span class="close-icon">×</span>
-        </button>
-      </div>
-      
-      <div class="settings-tabs">
-        <button class="tab-btn active" data-tab="theme">🎨 Theme</button>
-        <button class="tab-btn" data-tab="sound">🔊 Sound</button>
-        <button class="tab-btn" data-tab="display">📱 Display</button>
-      </div>
+  <div id="settingsModal" class="modal hidden">
+    <!-- Settings content will be loaded here -->
+  </div>
 
-      <div class="settings-content">
-        <!-- Theme Tab -->
-        <div id="themeTab" class="tab-content active">
-          <div class="setting-group">
-            <h4>Theme Mode</h4>
-            <div class="theme-options">
-              <label class="theme-option">
-                <input type="radio" name="theme" value="light" checked>
-                <span class="theme-preview light-theme">Light Mode</span>
-              </label>
-              <label class="theme-option">
-                <input type="radio" name="theme" value="dark">
-                <span class="theme-preview dark-theme">Dark Mode</span>
-              </label>
-            </div>
+  <!-- Changelog Modal -->
+  <div id="changelogModal" class="modal hidden">
+    <div class="modal-content changelog-content">
+      <div class="modal-header">
+        <h2>🆕 What's New</h2>
+        <button class="modal-close" onclick="hideWhatsNew()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="changelog-section">
+          <h3>🎨 Version 2.0.0 - Modern UI Overhaul</h3>
+          <div class="changelog-item">
+            <h4>🏆 Scoreboard Redesign</h4>
+            <ul>
+              <li>Modern glassmorphism design with enhanced animations</li>
+              <li>Smart storage strategy (cloud-first with localStorage fallback)</li>
+              <li>Achievement system with unlockable badges</li>
+              <li>Real-time stats from memory match games</li>
+              <li>Difficulty tabs for Easy/Medium/Hard levels</li>
+            </ul>
+          </div>
+          
+          <div class="changelog-item">
+            <h4>🧠 Memory Match Improvements</h4>
+            <ul>
+              <li>Faster card flips for better responsiveness</li>
+              <li>Mobile optimization with compact status cards</li>
+              <li>Progress bar for visual tracking</li>
+              <li>Performance calculation system</li>
+              <li>Cloud sync when internet is available</li>
+            </ul>
+          </div>
+          
+          <div class="changelog-item">
+            <h4>⚙️ Settings System Overhaul</h4>
+            <ul>
+              <li>Simplified interface with card-based layout</li>
+              <li>Theme support (light/dark mode)</li>
+              <li>Audio controls for all sound effects</li>
+              <li>Layout customization options</li>
+              <li>Data management features</li>
+            </ul>
+          </div>
+          
+          <div class="changelog-item">
+            <h4>📱 Mobile Enhancements</h4>
+            <ul>
+              <li>Responsive design for all screen sizes</li>
+              <li>Touch-friendly interfaces</li>
+              <li>Performance optimizations</li>
+              <li>Compact layouts for small screens</li>
+            </ul>
+          </div>
+          
+          <div class="changelog-item">
+            <h4>🎮 Quiz Feature Enhancement</h4>
+            <ul>
+              <li>Modern card-based design</li>
+              <li>Dark mode support</li>
+              <li>Progress tracking indicators</li>
+              <li>Responsive mobile layout</li>
+            </ul>
           </div>
         </div>
-
-        <!-- Sound Tab -->
-        <div id="soundTab" class="tab-content">
-          <div class="setting-group">
-            <h4>Background Music</h4>
-            <label class="toggle-switch">
-              <input type="checkbox" id="bgMusicToggle" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="setting-group">
-            <h4>Sound Effects</h4>
-            <label class="toggle-switch">
-              <input type="checkbox" id="soundEffectsToggle" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="setting-group">
-            <h4>Volume</h4>
-            <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider">
-            <span id="volumeValue">50%</span>
-          </div>
+        
+        <div class="changelog-section">
+          <h3>🔧 Technical Improvements</h3>
+          <ul>
+            <li>Comprehensive error handling throughout</li>
+            <li>Optimized loading and animations</li>
+            <li>Browser compatibility improvements</li>
+            <li>Better code organization and modularity</li>
+          </ul>
         </div>
-
-        <!-- Display Tab -->
-        <div id="displayTab" class="tab-content">
-          <div class="setting-group">
-            <h4>Font Size</h4>
-            <select id="fontSizeSelect" class="setting-select">
-              <option value="small">Small</option>
-              <option value="medium" selected>Medium</option>
-              <option value="large">Large</option>
-            </select>
-          </div>
-          <div class="setting-group">
-            <h4>Animation Speed</h4>
-            <select id="animationSpeedSelect" class="setting-select">
-              <option value="fast">Fast</option>
-              <option value="normal" selected>Normal</option>
-              <option value="slow">Slow</option>
-            </select>
-          </div>
+        
+        <div class="changelog-section">
+          <h3>🐛 Bug Fixes</h3>
+          <ul>
+            <li>Fixed scoreboard loading issues</li>
+            <li>Resolved memory match card flip timing</li>
+            <li>Fixed mobile layout problems</li>
+            <li>Corrected settings synchronization</li>
+          </ul>
         </div>
       </div>
-
-      <div class="settings-footer">
-        <button id="saveSettingsBtn" class="save-settings-btn">Save Settings</button>
+      <div class="modal-footer">
+        <button class="modal-btn" onclick="hideWhatsNew()">Got it! 💕</button>
       </div>
     </div>
   </div>
-
-
 </body>
 </html>

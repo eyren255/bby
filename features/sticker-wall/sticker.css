@@ -661,3 +661,278 @@ body {
 .sticker-grid::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 105, 180, 0.5);
 }
+
+/* === Dark Mode Support === */
+body.dark-mode {
+  background: linear-gradient(135deg, var(--background-dark) 0%, #16213e 50%, var(--background-dark) 100%);
+  color: var(--text-dark);
+}
+
+body.dark-mode .sticker-header {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .main-title {
+  color: #ff69b4;
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .back-button:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .sticker-container {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .canvas-section {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .canvas-header h2 {
+  color: #ff69b4;
+}
+
+body.dark-mode .tool-btn {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .tool-btn:hover {
+  background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .canvas-wrapper {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 2px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode #canvas {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode #canvas:hover {
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .canvas-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .canvas-info {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  color: #ffffff;
+}
+
+body.dark-mode .sticker-panel {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .panel-header h3 {
+  color: #ff69b4;
+}
+
+body.dark-mode .unlock-progress {
+  background: rgba(45, 55, 72, 0.8);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .progress-text {
+  color: #ffb6c1;
+}
+
+body.dark-mode .progress-bar {
+  background: rgba(45, 55, 72, 0.8);
+}
+
+body.dark-mode .progress-fill {
+  background: linear-gradient(90deg, #ff69b4, #ff8fab);
+}
+
+body.dark-mode .category-tabs {
+  background: rgba(45, 55, 72, 0.8);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .category-btn {
+  background: rgba(45, 55, 72, 0.6);
+  color: #a0aec0;
+  border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .category-btn:hover {
+  background: rgba(255, 105, 180, 0.1);
+  color: #ff69b4;
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .category-btn.active {
+  background: rgba(255, 105, 180, 0.2);
+  color: #ff69b4;
+  border-color: rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .sticker-grid {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .sticker-item {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .sticker-item:hover {
+  background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+  border-color: rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .sticker-item.locked {
+  background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.6;
+}
+
+body.dark-mode .sticker-item.locked:hover {
+  background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .sticker-name {
+  color: #ffb6c1;
+}
+
+body.dark-mode .lock-icon {
+  color: #a0aec0;
+}
+
+body.dark-mode .unlock-section {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .unlock-section h4 {
+  color: #ff69b4;
+}
+
+body.dark-mode .unlock-challenges {
+  background: rgba(45, 55, 72, 0.8);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .challenge-item {
+  background: rgba(45, 55, 72, 0.6);
+  border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .challenge-item:hover {
+  background: rgba(255, 105, 180, 0.1);
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .challenge-item.completed {
+  background: rgba(255, 105, 180, 0.2);
+  border-color: rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .challenge-text {
+  color: #ffb6c1;
+}
+
+body.dark-mode .challenge-status {
+  color: #a0aec0;
+}
+
+body.dark-mode .stats-panel {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .stat-item {
+  background: rgba(45, 55, 72, 0.6);
+  border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .stat-item:hover {
+  background: rgba(255, 105, 180, 0.1);
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .stat-label {
+  color: #a0aec0;
+}
+
+body.dark-mode .stat-value {
+  color: #ff69b4;
+}
+
+body.dark-mode .achievement-modal {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .achievement-content {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 2px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .achievement-title {
+  color: #ff69b4;
+}
+
+body.dark-mode .achievement-description {
+  color: #ffb6c1;
+}
+
+body.dark-mode .achievement-btn {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .achievement-btn:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .message-popup {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  color: #ffffff;
+}
+
+body.dark-mode .sticker-grid::-webkit-scrollbar-track {
+  background: rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .sticker-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .sticker-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 105, 180, 0.5);
+}

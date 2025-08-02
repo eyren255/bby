@@ -95,12 +95,12 @@
     </div>
   </div>
 
-  <!-- Global Settings System -->
-  <script src="features/shared/global-settings.js"></script>
+  <!-- Modern Settings System -->
+  <script src="features/shared/settings.js"></script>
   
   <script>
     function updateSettingsDisplay() {
-      const settings = window.globalSettingsManager ? window.globalSettingsManager.settings : 'Not loaded';
+      const settings = window.settingsManager ? window.settingsManager.settings : 'Not loaded';
       document.getElementById('currentSettings').innerHTML = `
         <pre>${JSON.stringify(settings, null, 2)}</pre>
       `;
@@ -108,7 +108,7 @@
     
     function updateDebugInfo() {
       const debugInfo = {
-        globalSettingsManager: !!window.globalSettingsManager,
+        settingsManager: !!window.settingsManager,
         localStorage: localStorage.getItem('userSettings'),
         bodyClasses: document.body.className,
         fontSize: document.body.style.fontSize,
@@ -193,9 +193,9 @@
     }
     
     function refreshSettings() {
-      if (window.globalSettingsManager) {
-        window.globalSettingsManager.settings = window.globalSettingsManager.loadSettings();
-        window.globalSettingsManager.applySettings();
+      if (window.settingsManager) {
+        window.settingsManager.settings = window.settingsManager.loadSettings();
+        window.settingsManager.applySettings();
       }
       updateSettingsDisplay();
       updateDebugInfo();

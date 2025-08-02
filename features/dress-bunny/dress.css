@@ -288,3 +288,123 @@ h1 {
     max-width: 200px;
   }
 }
+
+/* === Dark Mode Support === */
+body.dark-mode {
+  background: linear-gradient(135deg, var(--background-dark) 0%, #16213e 50%, var(--background-dark) 100%);
+  color: var(--text-dark);
+}
+
+body.dark-mode h1 {
+  color: #ff69b4;
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .game-container {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .bunny-section {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .bunny-display {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 2px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .bunny-image {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 2px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .bunny-image:hover {
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+  border-color: rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .bunny-name {
+  color: #ff69b4;
+}
+
+body.dark-mode .outfit-display {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .outfit-item {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  color: #ffffff;
+}
+
+body.dark-mode .clothes-section {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .clothes-section h3 {
+  color: #ff69b4;
+}
+
+body.dark-mode .category {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .category h4 {
+  color: #ffb6c1;
+}
+
+body.dark-mode .clothing-btn {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .clothing-btn:hover {
+  background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+  border-color: rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .clothing-btn.selected {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: #ffffff;
+  border-color: rgba(255, 105, 180, 0.6);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .control-btn {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .control-btn:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .back-button:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}

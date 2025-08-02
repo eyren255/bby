@@ -561,17 +561,17 @@ button:disabled {
 
 /* Dark Mode Styles */
 body.dark-mode {
-  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
   color: #ffffff;
 }
 
 body.dark-mode .hug-container {
-  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
 }
 
 body.dark-mode .hug-title {
   color: #ff69b4;
-  text-shadow: 2px 2px #1a1a1a, 4px 4px rgba(255, 105, 180, 0.3);
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
 }
 
 body.dark-mode .hug-subtitle {
@@ -579,12 +579,12 @@ body.dark-mode .hug-subtitle {
 }
 
 body.dark-mode .hug-stats {
-  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .stat {
-  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -597,24 +597,24 @@ body.dark-mode .stat-label {
 }
 
 body.dark-mode .control-btn {
-  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .control-btn:hover {
-  background: linear-gradient(145deg, #3a3a3a, #4a4a4a);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 body.dark-mode .back-button {
-  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .back-button:hover {
-  background: linear-gradient(145deg, #3a3a3a, #4a4a4a);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -623,7 +623,7 @@ body.dark-mode .modal {
 }
 
 body.dark-mode .modal-content {
-  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
@@ -636,7 +636,7 @@ body.dark-mode .setting-group label {
 }
 
 body.dark-mode .setting-group select {
-  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
   color: #ffffff;
   border: 1px solid rgba(255, 105, 180, 0.3);
 }
@@ -647,6 +647,6 @@ body.dark-mode .close-btn {
 
 body.dark-mode .hug-message {
   color: #ffffff;
-  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  background: linear-gradient(145deg, #1e1e3a, #2a2a4a);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }

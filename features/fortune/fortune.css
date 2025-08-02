@@ -269,3 +269,96 @@ h1 {
     font-size: 1rem;
   }
 }
+
+/* === Dark Mode Support === */
+body.dark-mode {
+  background: linear-gradient(135deg, var(--background-dark) 0%, #16213e 50%, var(--background-dark) 100%);
+  color: var(--text-dark);
+}
+
+body.dark-mode h1 {
+  color: #ff69b4;
+  text-shadow: 2px 2px #1a1a2e, 4px 4px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .fortune-container {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .crystal-ball {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  border: 2px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .crystal-ball:hover {
+  box-shadow: 0 12px 35px rgba(255, 105, 180, 0.4);
+  border-color: rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .crystal-glow {
+  background: radial-gradient(circle, rgba(255, 105, 180, 0.3) 0%, transparent 70%);
+}
+
+body.dark-mode .crystal-content {
+  color: #ffffff;
+}
+
+body.dark-mode .fortune-text p {
+  color: #ffb6c1;
+}
+
+body.dark-mode .fortune-btn, 
+body.dark-mode .reset-btn {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .fortune-btn:hover, 
+body.dark-mode .reset-btn:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .fortune-result {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .result-content {
+  color: #ffffff;
+}
+
+body.dark-mode #fortuneMessage {
+  color: #ff69b4;
+}
+
+body.dark-mode #fortuneAdvice {
+  color: #ffb6c1;
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .back-button:hover {
+  background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .sparkle {
+  background: #ff69b4;
+  box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}

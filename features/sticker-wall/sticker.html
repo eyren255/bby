@@ -30,11 +30,12 @@
     <div class="canvas-section">
       <div class="canvas-header">
         <h2>🎨 Your Canvas</h2>
-        <div class="canvas-tools">
-          <button id="clearBtn" class="tool-btn">🗑️ Clear</button>
-          <button id="saveBtn" class="tool-btn">💾 Save</button>
-          <button id="exportBtn" class="tool-btn">📤 Export</button>
-        </div>
+              <div class="canvas-tools">
+        <button id="clearBtn" class="tool-btn">🗑️ Clear</button>
+        <button id="saveBtn" class="tool-btn">💾 Save</button>
+        <button id="exportBtn" class="tool-btn">📤 Export</button>
+        <button id="testBtn" class="tool-btn" onclick="console.log('Test button clicked!'); loadStickers();">🧪 Test</button>
+      </div>
       </div>
       
       <div class="canvas-wrapper">
@@ -134,10 +135,12 @@
   <div id="floatingHearts" class="floating-hearts"></div>
 
   <!-- Audio Elements -->
-  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" loop></audio>
   <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
   <audio id="stickerSound" src="../../assets/audio/pop.mp3" preload="auto"></audio>
   <audio id="achievementSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+  <audio id="gameSound" src="../../assets/audio/game.mp3" preload="auto"></audio>
+  <audio id="game1Sound" src="../../assets/audio/game1.mp3" preload="auto"></audio>
 
   <!-- Global Settings System -->
   <script src="../shared/global-settings.js"></script>
