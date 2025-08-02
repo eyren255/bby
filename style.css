@@ -60,6 +60,47 @@ body {
   margin-top: 15px;
 }
 
+/* PWA Install Button */
+.pwa-install-btn {
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  animation: pulse 2s infinite;
+}
+
+.pwa-install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  background: linear-gradient(145deg, #45a049, #4CAF50);
+}
+
+.pwa-install-btn:active {
+  transform: translateY(0);
+}
+
+.pwa-install-btn.pulse {
+  animation: pulse 1s infinite;
+}
+
+.pwa-install-icon {
+  font-size: 1.1rem;
+}
+
+.pwa-install-text {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .quick-message-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
