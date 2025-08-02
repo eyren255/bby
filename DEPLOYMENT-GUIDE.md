@@ -21,7 +21,7 @@ Run these commands in your project folder:
 
 ```bash
 # Add the remote repository (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/for-my-baby.git
+git remote add origin https://github.com/eyren255/for-my-baby.git
 
 # Add all files to git
 git add .
@@ -48,7 +48,7 @@ git push -u origin main
 - You'll see a green checkmark when it's ready
 
 ### Step 5: Access Your PWA
-- Your site will be available at: `https://YOUR_USERNAME.github.io/for-my-baby`
+- Your site will be available at: `https://eyren255.github.io/for-my-baby`
 - The PWA features will work perfectly with HTTPS
 
 ## 🔧 Quick Commands
