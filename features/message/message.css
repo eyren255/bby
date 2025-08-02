@@ -1,11 +1,13 @@
 body {
-  font-family: 'Comic Sans MS', cursive;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 100%);
   margin: 0;
   padding: 20px;
   min-height: 100vh;
   color: #9370db;
   overflow-x: hidden;
+  line-height: 1.6;
+  font-size: 16px;
 }
 
 .message-wrapper {

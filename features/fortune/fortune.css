@@ -1,14 +1,13 @@
 body {
-  font-family: 'Comic Sans MS', cursive;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #ffeef8 0%, #fff0fb 50%, #ffeef8 100%);
   margin: 0;
   padding: 20px;
+  color: #d63384;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #6c757d;
   overflow-x: hidden;
+  line-height: 1.6;
+  font-size: 16px;
 }
 
 .fortune-wrapper {
