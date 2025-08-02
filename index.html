@@ -6,26 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>For My Baby 💕</title>
   
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#ff69b4" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="For My Baby" />
-  <meta name="msapplication-TileColor" content="#ff69b4" />
-  <meta name="msapplication-config" content="/browserconfig.xml" />
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json" />
-  
-  <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152x152.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-180x180.png" />
-  <link rel="apple-touch-icon" sizes="167x167" href="assets/icons/icon-167x167.png" />
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png" />
+
   
   <!-- Styles and Scripts -->
   <link rel="stylesheet" href="style.css" />
@@ -36,8 +17,7 @@
   <!-- Supabase Client -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="features/message/supabase-config.js"></script>
-  <!-- PWA Installation Script -->
-  <script src="pwa-install.js"></script>
+
 </head>
 <!-- Modular scripts -->
 <script type="module" src="./firebase.js"></script>
@@ -58,11 +38,7 @@
     <button id="openSettingsBtn" class="settings-btn" aria-label="Settings">
       <span class="settings-icon">⚙️</span>
     </button>
-    <!-- PWA Install Button -->
-    <button id="installPwaBtn" class="pwa-install-btn" aria-label="Install App" style="display: none;">
-      <span class="pwa-install-icon">⬇️</span>
-      <span class="pwa-install-text">Install App</span>
-    </button>
+
   </header>
 
   <!-- Floating Message Notification -->
@@ -278,19 +254,6 @@
     </div>
   </div>
 
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then((registration) => {
-            console.log('SW registered: ', registration);
-          })
-          .catch((registrationError) => {
-            console.log('SW registration failed: ', registrationError);
-          });
-      });
-    }
-  </script>
+
 </body>
 </html>
