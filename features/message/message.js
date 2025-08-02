@@ -177,6 +177,12 @@ async function sendMessage() {
     timestamp: Date.now()
   };
   
+  // Validate message
+  if (!message.title.trim() || !message.content.trim()) {
+    alert('❌ Please fill in both title and message content! 💕');
+    return;
+  }
+  
   try {
     // Show loading state
     const sendBtn = document.querySelector('.send-btn');
@@ -184,8 +190,11 @@ async function sendMessage() {
     sendBtn.innerHTML = '💌 Sending...';
     sendBtn.disabled = true;
     
+    console.log('Sending message:', message);
+    
     // Save to Supabase
-    await MessageService.addMessage(message);
+    const result = await MessageService.addMessage(message);
+    console.log('Message sent successfully:', result);
     
     // Play send sound
     playSound(sendSound);
@@ -226,7 +235,21 @@ I'll see your message on any device I use! 💕
     
   } catch (error) {
     console.error('Error sending message:', error);
-    alert('❌ Error sending message. Please try again! 💕');
+    
+    // Provide more specific error messages
+    let errorMessage = '❌ Error sending message. Please try again! 💕';
+    
+    if (error.message) {
+      if (error.message.includes('network')) {
+        errorMessage = '❌ Network error. Please check your internet connection! 💕';
+      } else if (error.message.includes('permission')) {
+        errorMessage = '❌ Permission error. Message saved locally only! 💕';
+      } else if (error.message.includes('database')) {
+        errorMessage = '❌ Database error. Message saved locally only! 💕';
+      }
+    }
+    
+    alert(errorMessage);
   } finally {
     // Reset button
     const sendBtn = document.querySelector('.send-btn');

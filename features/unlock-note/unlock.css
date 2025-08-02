@@ -76,6 +76,122 @@ body {
   padding: 20px;
 }
 
+/* Enhanced animations for the note */
+@keyframes fadeInChar {
+  from { 
+    opacity: 0; 
+    transform: translateY(5px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes loveMessagePop {
+  0% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(0.5); 
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.1); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1); 
+  }
+}
+
+@keyframes loveMessageFade {
+  from { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1); 
+  }
+  to { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(0.8); 
+  }
+}
+
+/* Enhanced message styling */
+.message-container {
+  text-align: left;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: #d63384;
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.1);
+  min-height: 200px;
+  position: relative;
+}
+
+.message-line {
+  margin-bottom: 8px;
+  word-wrap: break-word;
+}
+
+/* Enhanced heart button */
+.heart-button {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px auto;
+}
+
+.heart-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+  background: linear-gradient(145deg, #ff8fab, #ff69b4);
+}
+
+.heart-button:active {
+  transform: translateY(-1px);
+}
+
+.heart-icon {
+  font-size: 1.3rem;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* Enhanced love counter */
+.love-counter {
+  background: linear-gradient(145deg, #fff0fb, #fff5fd);
+  padding: 15px 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+  margin: 20px auto;
+  max-width: 300px;
+}
+
+.counter-label {
+  font-size: 0.9rem;
+  color: #b244a5;
+  font-weight: 600;
+}
+
+.counter-value {
+  font-size: 1.5rem;
+  color: #ff69b4;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* Enhanced note card */
 .note-card {
   background: linear-gradient(145deg, #fff0fb, #fff5fd);
   border-radius: 25px;
@@ -86,6 +202,7 @@ body {
   position: relative;
   overflow: hidden;
   animation: fadeInUp 1s ease-out 0.3s both;
+  border: 2px solid rgba(255, 105, 180, 0.1);
 }
 
 .note-card::before {
@@ -99,74 +216,58 @@ body {
   animation: shimmer 3s ease-in-out infinite;
 }
 
-/* Note Header Decoration */
-.note-header-decoration {
+/* Enhanced decorations */
+.note-header-decoration,
+.note-footer-decoration {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  margin-bottom: 20px;
-  animation: fadeInDown 1s ease-out 0.5s both;
+  margin: 20px 0;
+  animation: sparkle 2s ease-in-out infinite;
 }
 
-.heart-decoration, .sparkle-decoration {
+.heart-decoration,
+.sparkle-decoration,
+.flower-decoration,
+.star-decoration {
   font-size: 1.5rem;
-  animation: pulse 2s infinite;
+  animation: float 3s ease-in-out infinite;
 }
 
 .sparkle-decoration {
-  animation: sparkle 3s infinite;
+  animation-delay: 0.5s;
 }
 
-/* Note Content */
-.note-content {
-  position: relative;
-  z-index: 2;
+.flower-decoration {
+  animation-delay: 1s;
 }
 
-.note-date {
-  font-size: 1.1rem;
-  color: #b244a5;
-  font-weight: 600;
-  margin-bottom: 25px;
-  font-style: italic;
+.star-decoration {
+  animation-delay: 1.5s;
 }
 
-.message-container {
-  font-size: 1.2rem;
-  line-height: 1.8;
-  color: #7b1e5c;
-  margin-bottom: 30px;
-  text-align: left;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 25px;
-  border-radius: 15px;
-  border-left: 4px solid #ff69b4;
-  animation: fadeInUp 1s ease-out 0.7s both;
-}
-
-/* Note Signature */
+/* Enhanced signature */
 .note-signature {
-  text-align: right;
   margin-top: 30px;
-  animation: fadeInUp 1s ease-out 0.9s both;
+  text-align: right;
+  font-style: italic;
 }
 
 .signature-line {
   color: #ff69b4;
-  font-size: 1.1rem;
-  margin-bottom: 10px;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
 }
 
 .signature-text {
   color: #b244a5;
   font-size: 1rem;
-  font-style: italic;
   margin-bottom: 5px;
 }
 
 .signature-name {
   color: #ff69b4;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
@@ -196,61 +297,6 @@ body {
   align-items: center;
   gap: 20px;
   animation: fadeInUp 1s ease-out 1.3s both;
-}
-
-.heart-button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px 30px;
-  background: linear-gradient(145deg, #ff69b4, #ff8fab);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-}
-
-.heart-button:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
-  background: linear-gradient(145deg, #ff8fab, #ff69b4);
-}
-
-.heart-button:active {
-  transform: translateY(-1px) scale(1.02);
-}
-
-.heart-icon {
-  font-size: 1.3rem;
-  animation: heartbeat 1.5s infinite;
-}
-
-.love-counter {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(145deg, #fff0fb, #fff5fd);
-  padding: 15px 25px;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.1);
-  border: 1px solid rgba(255, 105, 180, 0.2);
-}
-
-.counter-label {
-  font-size: 0.9rem;
-  color: #b244a5;
-  font-weight: 600;
-}
-
-.counter-value {
-  font-size: 1.2rem;
-  color: #ff69b4;
-  font-weight: bold;
 }
 
 /* Animations */
@@ -380,4 +426,53 @@ body {
     padding: 12px 25px;
     font-size: 1rem;
   }
+}
+
+/* Dark mode support */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+  color: #ffffff;
+}
+
+body.dark-mode .note-card {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 2px solid rgba(255, 105, 180, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .message-container {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffb6c1;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .love-counter {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .heart-button {
+  background: linear-gradient(145deg, #3a3a6a, #2a2a5a);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .heart-button:hover {
+  background: linear-gradient(145deg, #4a4a7a, #3a3a6a);
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .counter-label {
+  color: #ffb6c1;
+}
+
+body.dark-mode .counter-value {
+  color: #ff69b4;
+}
+
+body.dark-mode .signature-text {
+  color: #ffb6c1;
+}
+
+body.dark-mode .signature-name {
+  color: #ff69b4;
 }

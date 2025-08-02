@@ -39,8 +39,11 @@ const MessageService = {
 
   // Add new message
   async addMessage(message) {
+    console.log('MessageService.addMessage called with:', message);
+    
     // Fallback to localStorage if Supabase not configured
     if (!isSupabaseConfigured || !supabaseClient) {
+      console.log('Using localStorage fallback for message');
       const allMessages = JSON.parse(localStorage.getItem('allLoveMessages') || '[]');
       const newMessage = {
         ...message,
@@ -53,6 +56,7 @@ const MessageService = {
     }
     
     try {
+      console.log('Attempting to save message to Supabase...');
       const { data, error } = await supabaseClient
         .from('love_messages')
         .insert([{
@@ -64,11 +68,18 @@ const MessageService = {
         }])
         .select();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Message saved to Supabase successfully:', data);
       return data[0];
     } catch (error) {
-      console.error('Error adding message:', error);
+      console.error('Error adding message to Supabase:', error);
+      
       // Fallback to localStorage
+      console.log('Falling back to localStorage...');
       const allMessages = JSON.parse(localStorage.getItem('allLoveMessages') || '[]');
       const newMessage = {
         ...message,

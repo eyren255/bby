@@ -4,13 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const loveMessage = document.getElementById('loveMessage');
   const heartButton = document.getElementById('heartButton');
   const loveCount = document.getElementById('loveCount');
-  const heartbeatSound = document.getElementById('heartbeatSound');
-  const sparkleSound = document.getElementById('sparkleSound');
   const clickSound = document.getElementById('clickSound');
+  const unlockSound = document.getElementById('unlockSound');
 
-  // Enhanced message with better formatting
-  const message = `
-Hey Honey Bun 💕,
+  // Enhanced message with better formatting and daily variations
+  const messages = [
+    `Hey Honey Bun 💕,
 
 Even when we're apart, you're always in my thoughts.
 Your smile lights up even the darkest days.
@@ -22,48 +21,98 @@ I love you. Always. Deeply. Truly. Softly.
 
 You're my happy place, my peace, my everything.
 
-Forever yours,
-  `;
+Forever yours,`,
+
+    `My Dearest Love 💖,
+
+Every day with you is a new adventure.
+Your laughter is the sweetest sound.
+Your touch is the warmest comfort.
+Your love is my greatest treasure.
+
+You make every moment magical.
+You turn ordinary days into extraordinary memories.
+You are my dream come true.
+
+With all my heart,`,
+
+    `Sweetheart 💕,
+
+You are the missing piece to my puzzle.
+The answer to my prayers.
+The light in my darkness.
+The joy in my heart.
+
+Every day I fall in love with you more.
+Every moment with you is precious.
+Every smile you give me is a gift.
+
+Yours forever,`
+  ];
+
+  // Get today's message based on date
+  const today = new Date().getDate();
+  const messageIndex = today % messages.length;
+  const message = messages[messageIndex];
 
   // Initialize love counter
   let loveCountValue = parseInt(localStorage.getItem('loveCount') || '0');
   loveCount.textContent = loveCountValue;
 
-  // Display message with typing effect
+  // Display message with simple typing effect
   function displayMessage() {
+    // Clear any existing content
     loveMessage.innerHTML = '';
-    const words = message.split(' ');
-    let index = 0;
-
-    function typeWord() {
-      if (index < words.length) {
-        const word = words[index];
-        const span = document.createElement('span');
-        span.textContent = word + ' ';
-        span.style.opacity = '0';
-        span.style.animation = 'fadeInWord 0.3s ease forwards';
-        loveMessage.appendChild(span);
-        index++;
-        setTimeout(typeWord, 100);
-      }
-    }
-
-    typeWord();
+    
+    // Split message into lines and filter out empty lines
+    const lines = message.split('\n').filter(line => line.trim() !== '');
+    
+    lines.forEach((line, lineIndex) => {
+      // Create line container
+      const lineElement = document.createElement('div');
+      lineElement.className = 'message-line';
+      lineElement.style.marginBottom = line.trim() === '' ? '4px' : '8px';
+      
+      // Add line to message container
+      loveMessage.appendChild(lineElement);
+      
+      // Type out the line character by character
+      let charIndex = 0;
+      const typeLine = () => {
+        if (charIndex < line.length) {
+          const char = line[charIndex];
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.style.opacity = '0';
+          span.style.animation = 'fadeInChar 0.1s ease forwards';
+          lineElement.appendChild(span);
+          charIndex++;
+          setTimeout(typeLine, 50);
+        }
+      };
+      
+      // Start typing this line after a delay
+      setTimeout(typeLine, lineIndex * 100);
+    });
   }
 
-  // Heart button functionality
+  // Heart button functionality with improved feedback
   heartButton?.addEventListener('click', () => {
-    // Play sounds
-    if (heartbeatSound) {
-      heartbeatSound.currentTime = 0;
-      heartbeatSound.volume = 0.4;
-      heartbeatSound.play().catch(() => {});
-    }
-    
-    if (clickSound) {
-      clickSound.currentTime = 0;
-      clickSound.volume = 0.3;
-      clickSound.play().catch(() => {});
+    // Play sounds with error handling
+    try {
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.volume = 0.3;
+        clickSound.play().catch(() => {});
+      }
+      
+      if (unlockSound) {
+        unlockSound.currentTime = 0;
+        unlockSound.volume = 0.4;
+        unlockSound.play().catch(() => {});
+      }
+    } catch (error) {
+      console.log('Audio playback failed:', error);
     }
 
     // Update love counter
@@ -71,33 +120,34 @@ Forever yours,
     localStorage.setItem('loveCount', loveCountValue.toString());
     loveCount.textContent = loveCountValue;
 
-    // Visual feedback
-    heartButton.style.transform = 'scale(0.95)';
+    // Enhanced visual feedback
+    heartButton.style.transform = 'scale(0.9)';
+    heartButton.style.filter = 'brightness(1.2)';
+    
     setTimeout(() => {
       heartButton.style.transform = '';
-    }, 150);
+      heartButton.style.filter = '';
+    }, 200);
 
     // Show love sent message
     showLoveSentMessage();
 
     // Spawn floating hearts
     spawnHearts();
-
-    // Play sparkle sound after a delay
-    setTimeout(() => {
-      if (sparkleSound) {
-        sparkleSound.currentTime = 0;
-        sparkleSound.volume = 0.3;
-        sparkleSound.play().catch(() => {});
-      }
-    }, 500);
   });
 
-  // Show love sent message
+  // Show love sent message with better styling
   function showLoveSentMessage() {
     const message = document.createElement('div');
     message.className = 'love-sent-message';
-    message.textContent = '💖 Love Sent! 💖';
+    message.innerHTML = `
+      <div class="message-content">
+        <span class="heart-icon">💖</span>
+        <span class="message-text">Love Sent!</span>
+        <span class="heart-icon">💖</span>
+      </div>
+    `;
+    
     message.style.cssText = `
       position: fixed;
       top: 50%;
@@ -107,74 +157,85 @@ Forever yours,
       color: white;
       padding: 15px 25px;
       border-radius: 25px;
-      font-size: 1.2rem;
       font-weight: bold;
-      z-index: 1000;
-      animation: fadeInScale 0.5s ease;
+      font-size: 1.1rem;
       box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+      z-index: 1000;
+      animation: loveMessagePop 0.6s ease-out;
     `;
-    
+
     document.body.appendChild(message);
-    
+
     setTimeout(() => {
-      message.style.animation = 'fadeOutScale 0.5s ease';
-      setTimeout(() => message.remove(), 500);
+      message.style.animation = 'loveMessageFade 0.5s ease-out forwards';
+      setTimeout(() => {
+        if (message.parentNode) {
+          document.body.removeChild(message);
+        }
+      }, 500);
     }, 1500);
   }
 
-  // Floating hearts effect
+  // Enhanced floating hearts with better positioning
   function spawnHearts() {
-    for (let i = 0; i < 12; i++) {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.style.left = Math.random() * 100 + '%';
-      heart.style.animationDelay = Math.random() * 2 + 's';
-      heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-      document.body.appendChild(heart);
-      
-      setTimeout(() => heart.remove(), 5000);
+    const hearts = ['💖', '💕', '💗', '💓', '💝'];
+    const colors = ['#ff69b4', '#ff8fab', '#ffb6c1', '#ffc0cb', '#ff1493'];
+    
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.cssText = `
+          position: fixed;
+          left: ${Math.random() * 100}vw;
+          top: 100vh;
+          font-size: ${Math.random() * 20 + 20}px;
+          color: ${colors[Math.floor(Math.random() * colors.length)]};
+          pointer-events: none;
+          z-index: 999;
+          animation: fall ${Math.random() * 3 + 2}s linear forwards;
+        `;
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          if (heart.parentNode) {
+            document.body.removeChild(heart);
+          }
+        }, 5000);
+      }, i * 100);
     }
   }
 
-  // Add CSS animations
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes fadeInWord {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
-    
-    @keyframes fadeOutScale {
-      from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      to { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Initialize floating hearts on page load
-  setTimeout(spawnHearts, 2000);
-
-  // Start displaying the message
+  // Initialize the note - only call displayMessage once
   displayMessage();
 
-  // Add hover effects
-  heartButton?.addEventListener('mouseenter', () => {
-    heartButton.style.transform = 'translateY(-2px) scale(1.02)';
-  });
-
-  heartButton?.addEventListener('mouseleave', () => {
-    heartButton.style.transform = '';
-  });
-
-  // Add periodic floating hearts
-  setInterval(() => {
-    if (Math.random() < 0.3) { // 30% chance every interval
-      spawnHearts();
-    }
-  }, 10000); // Every 10 seconds
+  // Add some interactive decorations
+  addFloatingDecorations();
 });
+
+// Add floating decorations for visual appeal
+function addFloatingDecorations() {
+  const decorations = ['✨', '💫', '⭐', '🌟'];
+  
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => {
+      const decoration = document.createElement('div');
+      decoration.className = 'floating-decoration';
+      decoration.textContent = decorations[Math.floor(Math.random() * decorations.length)];
+      decoration.style.cssText = `
+        position: fixed;
+        left: ${Math.random() * 100}vw;
+        top: ${Math.random() * 100}vh;
+        font-size: ${Math.random() * 15 + 10}px;
+        opacity: 0.6;
+        pointer-events: none;
+        z-index: 1;
+        animation: float ${Math.random() * 4 + 3}s ease-in-out infinite;
+      `;
+
+      document.body.appendChild(decoration);
+    }, i * 500);
+  }
+}
