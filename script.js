@@ -877,6 +877,17 @@ function openSettings() {
       console.log('🔍 openModal function exists:', typeof window.settingsManager.openModal);
     }
     
+    // Try to initialize settings manager if it doesn't exist
+    if (!window.settingsManager) {
+      console.log('🔍 Settings manager not found, trying to initialize...');
+      if (typeof initializeSettings === 'function') {
+        window.settingsManager = initializeSettings();
+        console.log('🔍 Settings manager initialized:', window.settingsManager);
+      } else {
+        console.error('❌ initializeSettings function not found');
+      }
+    }
+    
     // Wait a bit for the settings manager to initialize
     setTimeout(() => {
       console.log('🔍 Delayed check - window.settingsManager:', window.settingsManager);
@@ -1040,5 +1051,214 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Check for new messages every 30 seconds
   setInterval(checkForNewMessages, 30000);
+  
+  // Initialize PWA functionality
+  registerServiceWorker();
+  setupInstallPrompt();
+  checkPWAStatus();
 });
+
+// === PWA Service Worker Registration ===
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    console.log('🔄 Registering Service Worker...');
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registered successfully:', registration);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('🔄 New version available!');
+              showUpdateNotification();
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.error('❌ Service Worker registration failed:', error);
+      });
+  } else {
+    console.log('⚠️ Service Worker not supported');
+  }
+}
+
+// Show update notification
+function showUpdateNotification() {
+  const notification = document.createElement('div');
+  notification.className = 'update-notification';
+  notification.innerHTML = `
+    <div class="update-content">
+      <span class="update-icon">🔄</span>
+      <span class="update-text">New version available! Refresh to update.</span>
+      <button class="update-btn" onclick="location.reload()">Update</button>
+    </div>
+  `;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .update-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #ff69b4, #ff8fab);
+      color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+      z-index: 10000;
+      animation: slideInRight 0.5s ease-out;
+    }
+    
+    .update-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .update-icon {
+      font-size: 1.2rem;
+    }
+    
+    .update-text {
+      font-weight: 500;
+    }
+    
+    .update-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .update-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(notification);
+  
+  // Auto-hide after 10 seconds
+  setTimeout(() => {
+    notification.remove();
+  }, 10000);
+}
+
+// === PWA Install Prompt ===
+let deferredPrompt;
+
+function setupInstallPrompt() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('📱 Install prompt triggered');
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install button if not already installed
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+      showInstallButton();
+    }
+  });
+  
+  // Listen for successful installation
+  window.addEventListener('appinstalled', () => {
+    console.log('📱 App installed successfully');
+    hideInstallButton();
+    deferredPrompt = null;
+  });
+}
+
+function showInstallButton() {
+  // Create install button if it doesn't exist
+  if (!document.getElementById('installBtn')) {
+    const installBtn = document.createElement('button');
+    installBtn.id = 'installBtn';
+    installBtn.className = 'install-btn';
+    installBtn.innerHTML = '📱 Install App';
+    installBtn.onclick = installApp;
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .install-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff69b4, #ff8fab);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        z-index: 1000;
+        animation: bounce 2s infinite;
+      }
+      
+      .install-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+      }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-5px); }
+        60% { transform: translateY(-3px); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(installBtn);
+  }
+}
+
+function hideInstallButton() {
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) {
+    installBtn.remove();
+  }
+}
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('📱 User accepted install prompt');
+      } else {
+        console.log('📱 User dismissed install prompt');
+      }
+      deferredPrompt = null;
+    });
+  }
+}
+
+// === PWA Status Check ===
+function checkPWAStatus() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  const isInstalled = window.navigator.standalone || isStandalone;
+  
+  console.log('📱 PWA Status:', {
+    isStandalone,
+    isInstalled,
+    userAgent: navigator.userAgent
+  });
+  
+  if (isInstalled) {
+    console.log('📱 App is running in standalone mode');
+    // Add standalone-specific features here
+  }
+}
 
