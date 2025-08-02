@@ -12,9 +12,6 @@
   <!-- Styles and Scripts -->
   <link rel="stylesheet" href="style.css" />
   <script defer src="script.js"></script>
-  <script defer>
-    
-  </script>
 </head>
 <!-- Modular scripts -->
 <script type="module" src="./firebase.js"></script>
@@ -23,15 +20,18 @@
 
 <body>
   <!-- Header Section -->
-  <header>
+  <header class="main-header">
     <h1 class="main-title">Welcome, My Honey Bun 💖</h1>
     <p class="main-subtitle">Pick something cute to do today 💕</p>
-    
   </header>
 
   <!-- Tap to Start Section -->
-  <div id="tapToStart">
-    <div class="overlay-text">💖 Tap anywhere to begin...</div>
+  <div id="tapToStart" class="tap-overlay">
+    <div class="overlay-content">
+      <div class="heart-icon">💖</div>
+      <div class="overlay-text">Tap anywhere to begin...</div>
+      <div class="tap-hint">✨ Click to start your adventure ✨</div>
+    </div>
   </div>
 
   <!-- Background Music and Sound Effects -->
@@ -41,54 +41,105 @@
   <!-- Main Menu -->
   <main class="menu" style="display: none;">
     <!-- Cute Things to Play Section -->
-    <section class="menu-section">
-      <h2>💘 Cute Things to Play</h2>
+    <section class="menu-section" data-category="games">
+      <div class="section-header">
+        <h2 class="section-title">💘 Cute Things to Play</h2>
+        <p class="section-description">Fun activities just for us</p>
+      </div>
       <div class="button-grid">
-        <a href="features/hug/hug.html" class="menu-button btn-hug">🤗 Virtual Hug</a>
-        <a href="features/quiz/quiz.html" class="menu-button btn-quiz">❓ Know Me Quiz</a>
-        <a href="features/memory-match/memory.html" class="menu-button btn-memory">🃏 Memory Match</a>
-        <a href="features/dress-bunny/dress.html" class="menu-button btn-bunny">🧸 Dress the Bunny</a>
+        <a href="features/hug/hug.html" class="menu-button btn-hug" aria-label="Virtual Hug">
+          <span class="button-icon">🤗</span>
+          <span class="button-text">Virtual Hug</span>
+        </a>
+        <a href="features/quiz/quiz.html" class="menu-button btn-quiz" aria-label="Know Me Quiz">
+          <span class="button-icon">❓</span>
+          <span class="button-text">Know Me Quiz</span>
+        </a>
+        <a href="features/memory-match/memory.html" class="menu-button btn-memory" aria-label="Memory Match">
+          <span class="button-icon">🃏</span>
+          <span class="button-text">Memory Match</span>
+        </a>
+        <a href="features/dress-bunny/dress.html" class="menu-button btn-bunny" aria-label="Dress the Bunny">
+          <span class="button-icon">🧸</span>
+          <span class="button-text">Dress the Bunny</span>
+        </a>
       </div>
     </section>
 
-
     <!-- Random & Fun Section -->
-    <section class="menu-section">
-      <h2>🔮 Random & Fun</h2>
+    <section class="menu-section" data-category="fun">
+      <div class="section-header">
+        <h2 class="section-title">🔮 Random & Fun</h2>
+        <p class="section-description">Surprise yourself with something special</p>
+      </div>
       <div class="button-grid">
-        <a href="features/wheel/wheel.html" class="menu-button btn-wheel">🎡 Love Spin</a>
-        <a href="features/fortune/fortune.html" class="menu-button btn-fortune">🔮 Daily Fortune</a>
+        <a href="features/wheel/wheel.html" class="menu-button btn-wheel" aria-label="Love Spin">
+          <span class="button-icon">🎡</span>
+          <span class="button-text">Love Spin</span>
+        </a>
+        <a href="features/fortune/fortune.html" class="menu-button btn-fortune" aria-label="Daily Fortune">
+          <span class="button-icon">🔮</span>
+          <span class="button-text">Daily Fortune</span>
+        </a>
       </div>
     </section>
 
     <!-- Sweet Memories Section -->
-    <section class="menu-section">
-      <h2>📖 Sweet Memories</h2>
+    <section class="menu-section" data-category="memories">
+      <div class="section-header">
+        <h2 class="section-title">📖 Sweet Memories</h2>
+        <p class="section-description">Relive our beautiful moments together</p>
+      </div>
       <div class="button-grid">
-        <a href="features/story/story.html" class="menu-button btn-story">📖 Our Story</a>
-        <a href="features/message/message.html" class="menu-button btn-message">💌 Send Me a Message</a>
+        <a href="features/story/story.html" class="menu-button btn-story" aria-label="Our Story">
+          <span class="button-icon">📖</span>
+          <span class="button-text">Our Story</span>
+        </a>
+        <a href="features/message/message.html" class="menu-button btn-message" aria-label="Send Me a Message">
+          <span class="button-icon">💌</span>
+          <span class="button-text">Send Me a Message</span>
+        </a>
       </div>
     </section>
 
     <!-- Surprise Section (Hidden by Default) -->
-    <section class="menu-section surprise hidden">
-      <h2>🎁 Surprise</h2>
+    <section class="menu-section surprise hidden" data-category="surprise">
+      <div class="section-header">
+        <h2 class="section-title">🎁 Surprise</h2>
+        <p class="section-description">Special treats just for you</p>
+      </div>
       <div class="button-grid">
-        <a href="features/unlock-note/unlock.html" class="menu-button btn-note">🔐 Secret Love Note</a>
-        <a href="features/sticker-wall/sticker.html" class="menu-button btn-sticker">🎀 Sticker Wall</a>
+        <a href="features/unlock-note/unlock.html" class="menu-button btn-note" aria-label="Secret Love Note">
+          <span class="button-icon">🔐</span>
+          <span class="button-text">Secret Love Note</span>
+        </a>
+        <a href="features/sticker-wall/sticker.html" class="menu-button btn-sticker" aria-label="Sticker Wall">
+          <span class="button-icon">🎀</span>
+          <span class="button-text">Sticker Wall</span>
+        </a>
       </div>
     </section>
 
     <!-- Reveal Button -->
-    <button id="revealBtn" class="reveal-button">👀 I want a surprise!</button>
+    <div class="reveal-container">
+      <button id="revealBtn" class="reveal-button" aria-label="Reveal surprise section">
+        <span class="reveal-icon">👀</span>
+        <span class="reveal-text">I want a surprise!</span>
+      </button>
+    </div>
   </main>
+
+  <!-- Password Modal -->
   <div id="passwordModal" class="modal">
-  <div class="modal-content">
-    <p>Enter the password to continue 💖</p>
-    <input type="password" id="passwordInput" placeholder="Password..." />
-    <button id="submitPassword">Unlock</button>
+    <div class="modal-content">
+      <h3 class="modal-title">🔐 Enter Password</h3>
+      <p class="modal-description">Enter the password to continue 💖</p>
+      <div class="password-input-container">
+        <input type="password" id="passwordInput" placeholder="Password..." aria-label="Enter password" />
+        <button id="submitPassword" class="submit-btn">Unlock</button>
+      </div>
+    </div>
   </div>
-</div>
 
 </body>
 </html>
