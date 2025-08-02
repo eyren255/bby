@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Story 📖</title>
+  <title>Love Story 📖</title>
+  <link rel="stylesheet" href="../../style.css" />
   <link rel="stylesheet" href="story.css" />
 </head>
 <body>
@@ -48,6 +49,15 @@
     </div>
   </div>
 
+  <!-- Audio Elements -->
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="storySound" src="../../assets/audio/story.mp3" preload="auto"></audio>
+
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="../message/global-message.js"></script>
   <script src="story.js"></script>
 </body>
 </html>

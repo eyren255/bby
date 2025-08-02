@@ -558,3 +558,95 @@ button:disabled {
     margin: 10% auto;
   }
 }
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%);
+  color: #ffffff;
+}
+
+body.dark-mode .hug-container {
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%);
+}
+
+body.dark-mode .hug-title {
+  color: #ff69b4;
+  text-shadow: 2px 2px #1a1a1a, 4px 4px rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .hug-subtitle {
+  color: #ff8fab;
+}
+
+body.dark-mode .hug-stats {
+  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .stat {
+  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .stat-number {
+  color: #ff69b4;
+}
+
+body.dark-mode .stat-label {
+  color: #ff8fab;
+}
+
+body.dark-mode .control-btn {
+  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .control-btn:hover {
+  background: linear-gradient(145deg, #3a3a3a, #4a4a4a);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .back-button {
+  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .back-button:hover {
+  background: linear-gradient(145deg, #3a3a3a, #4a4a4a);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .modal {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .modal-content {
+  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .modal-header h3 {
+  color: #ff69b4;
+}
+
+body.dark-mode .setting-group label {
+  color: #ffffff;
+}
+
+body.dark-mode .setting-group select {
+  background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+  color: #ffffff;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .close-btn {
+  color: #ffffff;
+}
+
+body.dark-mode .hug-message {
+  color: #ffffff;
+  background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}

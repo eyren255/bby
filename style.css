@@ -17,6 +17,10 @@ body {
 .main-header {
   margin-bottom: 40px;
   animation: fadeInDown 1s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .main-title {
@@ -34,6 +38,106 @@ body {
   margin-bottom: 30px;
   opacity: 0.9;
   font-weight: 500;
+}
+
+/* Quick Message Button */
+.quick-message-btn {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.quick-message-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+  background: linear-gradient(145deg, #ff8fab, #ff69b4);
+}
+
+.quick-message-btn:active {
+  transform: translateY(0);
+}
+
+.quick-message-icon {
+  font-size: 1.1rem;
+}
+
+.quick-message-text {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Message Notification */
+.message-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+  z-index: 10000;
+  animation: slideInRight 0.5s ease;
+  max-width: 300px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.message-notification:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification-icon {
+  font-size: 1.2rem;
+  animation: pulse 2s infinite;
+}
+
+.notification-text {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: auto;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* Menu Container */
@@ -188,11 +292,19 @@ body {
   border-color: #f0b8ff;
 }
 
-.btn-wheel { 
-  background: linear-gradient(145deg, #ffe29a, #fff4d1);
-  color: #aa7700;
-  border-color: #ffd966;
+.btn-challenge {
+  background: linear-gradient(145deg, #ff69b4, #ff8fab);
+  color: white;
+  border-color: #ff69b4;
 }
+
+.btn-challenge:hover {
+  background: linear-gradient(145deg, #ff8fab, #ff69b4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+}
+
+
 
 .btn-fortune { 
   background: linear-gradient(145deg, #fff5cc, #fffdf0);
@@ -207,15 +319,21 @@ body {
 }
 
 .btn-message { 
-  background: linear-gradient(145deg, #ffd6e0, #ffeef2);
-  color: #ff3385;
-  border-color: #ffb3c7;
+  background: linear-gradient(145deg, #ffb3d9, #ffe6f2);
+  color: #d63384;
+  border-color: #ff99cc;
+}
+
+.btn-scoreboard { 
+  background: linear-gradient(145deg, #ffd700, #fff8dc);
+  color: #b8860b;
+  border-color: #ffd700;
 }
 
 .btn-note { 
-  background: linear-gradient(145deg, #fce2ce, #fff2e6);
-  color: #d95f0e;
-  border-color: #ffc299;
+  background: linear-gradient(145deg, #dda0dd, #f0e6ff);
+  color: #9932cc;
+  border-color: #d8bfd8;
 }
 
 .btn-sticker { 
@@ -472,14 +590,14 @@ body {
 @media (max-width: 768px) {
   body {
     padding: 15px;
-  }
-  
-  .menu {
+}
+
+.menu {
     padding: 0 10px;
-  }
-  
-  .menu-section {
-    padding: 20px;
+}
+
+.menu-section {
+  padding: 20px;
     margin-bottom: 25px;
   }
   
@@ -523,4 +641,78 @@ body {
     padding: 12px 20px;
     font-size: 1rem;
   }
+}
+
+/* Settings styles moved to features/shared/settings.css */
+
+/* Settings button colors moved to features/shared/settings.css */
+
+/* Settings modal styles moved to features/shared/settings.css */
+
+/* Dark Mode Theme */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+  color: #ffffff;
+}
+
+body.dark-mode .main-title {
+  color: #ff69b4;
+  text-shadow: 2px 2px #0f0f23, 4px 4px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .main-subtitle {
+  color: #ffb6c1;
+}
+
+body.dark-mode .menu-section {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .section-title {
+  color: #ff69b4;
+}
+
+body.dark-mode .section-description {
+  color: #ffb6c1;
+}
+
+body.dark-mode .menu-button {
+  background: linear-gradient(145deg, #3a3a6a, #2a2a5a);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .menu-button:hover {
+  background: linear-gradient(145deg, #4a4a7a, #3a3a6a);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+  transform: translateY(-2px);
+}
+
+body.dark-mode .modal {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+body.dark-mode .modal-content {
+  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+/* Dark mode settings styles moved to features/shared/settings.css */
+
+/* Responsive settings styles moved to features/shared/settings.css */
+
+/* Display Settings Button */
+.btn-display {
+  background: linear-gradient(145deg, #17a2b8, #138496);
+  border-color: #17a2b8;
+  box-shadow: 0 6px 15px rgba(23, 162, 184, 0.3);
+}
+
+.btn-display:hover {
+  background: linear-gradient(145deg, #138496, #17a2b8);
+  border-color: #138496;
+  box-shadow: 0 8px 20px rgba(23, 162, 184, 0.4);
 }

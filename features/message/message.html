@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Send Me a Message 💌</title>
+  <link rel="stylesheet" href="../../style.css" />
   <link rel="stylesheet" href="message.css" />
 </head>
 <body>
   <div class="message-wrapper">
-    <h1>Send Me a Message 💌</h1>
-    <p class="subtitle">Write something sweet for me! 💖</p>
+    <h1>Love Messages 💌</h1>
+    <p class="subtitle">Write sweet messages and see all our love notes! 💖</p>
 
     <!-- Back Button -->
     <div class="back-button-container">
@@ -19,8 +20,8 @@
     <div class="message-container">
       <div class="message-form">
         <div class="form-header">
-          <h2>💕 Write Your Love Message</h2>
-          <p>Express your feelings in a beautiful way...</p>
+          <h2>💕 Write a Love Message</h2>
+          <p>Your message will be saved and visible when I visit the website...</p>
         </div>
 
         <form id="messageForm">
@@ -81,18 +82,27 @@
       </div>
     </div>
 
+
+
     <!-- Message history -->
     <div class="message-history">
-      <h3>📬 Recent Messages</h3>
+      <h3>📬 All Our Love Messages</h3>
+      <p class="history-subtitle">Every sweet message we've shared... 💕</p>
       <div id="messageList" class="message-list">
         <!-- Messages will be loaded here -->
       </div>
     </div>
   </div>
 
-  <audio id="typeSound" src="../../assets/audio/click.wav" preload="auto"></audio>
-  <audio id="sendSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+  <!-- Audio Elements -->
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="sendSound" src="../../assets/audio/send.mp3" preload="auto"></audio>
 
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="global-message.js"></script>
   <script src="message.js"></script>
 </body>
 </html>

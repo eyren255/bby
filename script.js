@@ -14,6 +14,9 @@ function createFloatingHearts() {
 // Initialize floating hearts
 createFloatingHearts();
 
+// Check for new messages when page loads
+checkForNewMessages();
+
 // 🎵 Enhanced tap-to-start screen with better UX
 window.addEventListener('click', () => {
   const music = document.getElementById('bgMusic');
@@ -235,5 +238,529 @@ window.addEventListener('scroll', function() {
     const speed = 0.5 + (index % 3) * 0.2;
     heart.style.transform = `translateY(${scrolled * speed}px) rotate(45deg)`;
   });
+});
+
+// 💌 Check for new messages and show notification
+async function checkForNewMessages() {
+  try {
+    const lastVisit = localStorage.getItem('lastVisitTime') || '0';
+    const currentTime = new Date().toISOString();
+    
+    // Check if there are new messages since last visit
+    const newMessages = await MessageService.getNewMessages(lastVisit);
+    
+    if (newMessages.length > 0) {
+      showMessageNotification(newMessages.length);
+    }
+    
+    // Update last visit time
+    localStorage.setItem('lastVisitTime', currentTime);
+  } catch (error) {
+    console.error('Error checking for new messages:', error);
+  }
+}
+
+// 📬 Show message notification
+function showMessageNotification(count) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(145deg, #ff69b4, #ff8fab);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+    z-index: 10000;
+    animation: bounceIn 0.6s ease;
+    cursor: pointer;
+  `;
+  
+  notification.innerHTML = `
+    💌 You have ${count} new love message${count > 1 ? 's' : ''}!
+    <br><small>Click to view</small>
+  `;
+  
+  // Add click handler to go to messages
+  notification.addEventListener('click', () => {
+    window.location.href = 'features/message/message.html';
+  });
+  
+  document.body.appendChild(notification);
+  
+  // Auto-remove after 10 seconds
+  setTimeout(() => {
+    notification.style.animation = 'fadeOut 0.5s ease';
+    setTimeout(() => notification.remove(), 500);
+  }, 10000);
+}
+
+// Add CSS for message notification animations
+const messageStyle = document.createElement('style');
+messageStyle.textContent = `
+  @keyframes bounceIn {
+    0% { transform: translateX(-50%) scale(0.3); opacity: 0; }
+    50% { transform: translateX(-50%) scale(1.05); }
+    70% { transform: translateX(-50%) scale(0.9); }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; transform: translateX(-50%) scale(1); }
+    to { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  }
+`;
+document.head.appendChild(messageStyle);
+
+// 💌 Quick Message Button Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const quickMessageBtn = document.getElementById('quickMessageBtn');
+  const messageNotification = document.getElementById('messageNotification');
+  
+  // Quick message button click
+  if (quickMessageBtn) {
+    quickMessageBtn.addEventListener('click', () => {
+      // Play click sound
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.volume = 0.3;
+        clickSound.play().catch(() => {});
+      }
+      
+      // Navigate to message page
+      window.location.href = 'features/message/message.html';
+    });
+  }
+  
+  // Message notification click
+  if (messageNotification) {
+    messageNotification.addEventListener('click', () => {
+      window.location.href = 'features/message/message.html';
+    });
+    
+    // Close notification button
+    const closeBtn = messageNotification.querySelector('.notification-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        messageNotification.classList.add('hidden');
+      });
+    }
+  }
+  
+  // Check for new messages every 30 seconds
+  setInterval(checkForNewMessages, 30000);
+});
+
+// 📬 Enhanced message notification system
+function showMessageNotification(count) {
+  const existingNotification = document.getElementById('messageNotification');
+  
+  if (existingNotification) {
+    // Update existing notification
+    const notificationText = existingNotification.querySelector('.notification-text');
+    if (notificationText) {
+      notificationText.textContent = `You have ${count} new love message${count > 1 ? 's' : ''}!`;
+    }
+    existingNotification.classList.remove('hidden');
+    
+    // Auto-hide after 8 seconds
+    setTimeout(() => {
+      existingNotification.classList.add('hidden');
+    }, 8000);
+  } else {
+    // Create new notification (fallback)
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(145deg, #ff69b4, #ff8fab);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+      z-index: 10000;
+      animation: bounceIn 0.6s ease;
+      cursor: pointer;
+    `;
+    
+    notification.innerHTML = `
+      💌 You have ${count} new love message${count > 1 ? 's' : ''}!
+      <br><small>Click to view</small>
+    `;
+    
+    notification.addEventListener('click', () => {
+      window.location.href = 'features/message/message.html';
+    });
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.animation = 'fadeOut 0.5s ease';
+      setTimeout(() => notification.remove(), 500);
+    }, 10000);
+  }
+}
+
+  // === Settings System ===
+  class SettingsManager {
+    constructor() {
+      this.settings = this.loadSettings();
+      this.initSettings();
+      this.setupGlobalListener();
+    }
+
+    loadSettings() {
+      const defaultSettings = {
+        theme: 'light',
+        bgMusic: true,
+        soundEffects: true,
+        volume: 50,
+        fontSize: 'medium',
+        animationSpeed: 'normal'
+      };
+
+      try {
+        const saved = localStorage.getItem('userSettings');
+        return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
+      } catch (error) {
+        console.error('Error loading settings:', error);
+        return defaultSettings;
+      }
+    }
+
+    saveSettings() {
+      try {
+        localStorage.setItem('userSettings', JSON.stringify(this.settings));
+        // Broadcast settings change to all pages
+        this.broadcastSettingsChange();
+      } catch (error) {
+        console.error('Error saving settings:', error);
+      }
+    }
+
+    // Broadcast settings change to all open pages
+    broadcastSettingsChange() {
+      console.log('🔧 SettingsManager: Broadcasting settings change:', this.settings);
+      
+      // Dispatch custom event for other pages to listen to
+      window.dispatchEvent(new CustomEvent('settingsChanged', {
+        detail: this.settings
+      }));
+      
+      // Also use localStorage event for cross-tab communication
+      localStorage.setItem('settingsLastUpdated', Date.now().toString());
+      
+      console.log('🔧 SettingsManager: Settings broadcast completed');
+    }
+
+    // Setup global listener for settings changes
+    setupGlobalListener() {
+      // Listen for settings changes from other pages
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'userSettings' || e.key === 'settingsLastUpdated') {
+          this.settings = this.loadSettings();
+          this.applySettings();
+        }
+      });
+
+      // Listen for custom settings change events
+      window.addEventListener('settingsChanged', (e) => {
+        this.settings = e.detail;
+        this.applySettings();
+      });
+    }
+
+    initSettings() {
+      this.applySettings();
+      this.setupSettingsModal();
+    }
+
+    applySettings() {
+      // Apply theme
+      if (this.settings.theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Apply font size
+      document.body.style.fontSize = this.getFontSizeValue();
+
+      // Apply animation speed
+      document.body.style.setProperty('--animation-speed', this.getAnimationSpeedValue());
+
+      // Apply volume to all audio elements
+      const audioElements = document.querySelectorAll('audio');
+      audioElements.forEach(audio => {
+        audio.volume = this.settings.volume / 100;
+      });
+
+      // Apply background music settings
+      const bgMusic = document.getElementById('bgMusic');
+      if (bgMusic) {
+        if (this.settings.bgMusic) {
+          bgMusic.play().catch(() => {});
+        } else {
+          bgMusic.pause();
+        }
+      }
+    }
+
+    getFontSizeValue() {
+      switch (this.settings.fontSize) {
+        case 'small': return '0.9rem';
+        case 'large': return '1.2rem';
+        default: return '1rem';
+      }
+    }
+
+    getAnimationSpeedValue() {
+      switch (this.settings.animationSpeed) {
+        case 'fast': return '0.3s';
+        case 'slow': return '1.2s';
+        default: return '0.6s';
+      }
+    }
+
+    setupSettingsModal() {
+      const openSettingsBtn = document.getElementById('openSettingsBtn');
+      const settingsModal = document.getElementById('settingsModal');
+      const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+      const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+      // Open settings
+      openSettingsBtn?.addEventListener('click', () => {
+        this.openSettingsModal();
+      });
+
+      // Close settings
+      closeSettingsBtn?.addEventListener('click', () => {
+        this.closeSettingsModal();
+      });
+
+      // Save settings
+      saveSettingsBtn?.addEventListener('click', () => {
+        this.saveCurrentSettings();
+        this.closeSettingsModal();
+        this.showSaveMessage();
+      });
+
+      // Click outside to close
+      settingsModal?.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+          this.closeSettingsModal();
+        }
+      });
+
+      // Setup tabs
+      this.setupTabs();
+      
+      // Setup form controls
+      this.setupFormControls();
+    }
+
+    setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabName = btn.getAttribute('data-tab');
+          this.switchToTab(tabName);
+        });
+      });
+    }
+
+    switchToTab(tabName) {
+      // Remove active class from all tabs and contents
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      // Add active class to selected tab and content
+      document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+      document.getElementById(`${tabName}Tab`)?.classList.add('active');
+    }
+
+    setupFormControls() {
+      // Theme radio buttons
+      document.querySelectorAll('input[name="theme"]').forEach(radio => {
+        radio.checked = radio.value === this.settings.theme;
+        radio.addEventListener('change', (e) => {
+          this.settings.theme = e.target.value;
+          this.applySettings();
+          this.saveSettings(); // Save immediately on change
+        });
+      });
+
+      // Toggle switches
+      const toggles = {
+        'bgMusicToggle': 'bgMusic',
+        'soundEffectsToggle': 'soundEffects'
+      };
+
+      Object.entries(toggles).forEach(([toggleId, settingKey]) => {
+        const toggle = document.getElementById(toggleId);
+        if (toggle) {
+          toggle.checked = this.settings[settingKey];
+          toggle.addEventListener('change', (e) => {
+            this.settings[settingKey] = e.target.checked;
+            this.applySettings();
+            this.saveSettings(); // Save immediately on change
+          });
+        }
+      });
+
+      // Volume slider
+      const volumeSlider = document.getElementById('volumeSlider');
+      const volumeValue = document.getElementById('volumeValue');
+      if (volumeSlider && volumeValue) {
+        volumeSlider.value = this.settings.volume;
+        volumeValue.textContent = `${this.settings.volume}%`;
+        volumeSlider.addEventListener('input', (e) => {
+          this.settings.volume = e.target.value;
+          volumeValue.textContent = `${e.target.value}%`;
+          this.applySettings();
+          this.saveSettings(); // Save immediately on change
+        });
+      }
+
+      // Select dropdowns
+      const selects = {
+        'fontSizeSelect': 'fontSize',
+        'animationSpeedSelect': 'animationSpeed'
+      };
+
+      Object.entries(selects).forEach(([selectId, settingKey]) => {
+        const select = document.getElementById(selectId);
+        if (select) {
+          select.value = this.settings[settingKey];
+          select.addEventListener('change', (e) => {
+            this.settings[settingKey] = e.target.value;
+            this.applySettings();
+            this.saveSettings(); // Save immediately on change
+          });
+        }
+      });
+    }
+
+    openSettingsModal() {
+      const settingsModal = document.getElementById('settingsModal');
+      if (settingsModal) {
+        settingsModal.style.display = 'flex';
+        // Play click sound
+        const clickSound = document.getElementById('clickSound');
+        if (clickSound && this.settings.soundEffects) {
+          clickSound.currentTime = 0;
+          clickSound.volume = this.settings.volume / 100;
+          clickSound.play().catch(() => {});
+        }
+      }
+    }
+
+    closeSettingsModal() {
+      const settingsModal = document.getElementById('settingsModal');
+      if (settingsModal) {
+        settingsModal.style.display = 'none';
+      }
+    }
+
+    saveCurrentSettings() {
+      this.saveSettings();
+      this.applySettings();
+    }
+
+    showSaveMessage(message = 'Settings saved successfully!') {
+      const notification = document.createElement('div');
+      notification.className = 'save-notification';
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(145deg, #28a745, #20c997);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-weight: bold;
+        z-index: 10001;
+        animation: slideInDown 0.5s ease;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutUp 0.5s ease';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 500);
+      }, 2000);
+    }
+  }
+
+  // === Global Settings Loader ===
+  // This ensures settings are applied to all pages automatically
+  function loadAndApplyGlobalSettings() {
+    try {
+      const saved = localStorage.getItem('userSettings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        
+        // Apply theme
+        if (settings.theme === 'dark') {
+          document.body.classList.add('dark-mode');
+        } else {
+          document.body.classList.remove('dark-mode');
+        }
+
+        // Apply font size
+        let fontSize = '1rem';
+        switch (settings.fontSize) {
+          case 'small': fontSize = '0.9rem'; break;
+          case 'large': fontSize = '1.2rem'; break;
+        }
+        document.body.style.fontSize = fontSize;
+
+        // Apply animation speed
+        let animationSpeed = '0.6s';
+        switch (settings.animationSpeed) {
+          case 'fast': animationSpeed = '0.3s'; break;
+          case 'slow': animationSpeed = '1.2s'; break;
+        }
+        document.body.style.setProperty('--animation-speed', animationSpeed);
+
+        // Apply volume to all audio elements
+        const audioElements = document.querySelectorAll('audio');
+        audioElements.forEach(audio => {
+          audio.volume = (settings.volume || 50) / 100;
+        });
+      }
+    } catch (error) {
+      console.error('Error loading global settings:', error);
+    }
+  }
+
+  // Apply settings immediately when script loads
+  loadAndApplyGlobalSettings();
+
+  // Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize existing functionality
+  createFloatingHearts();
+  checkForNewMessages();
+  
+  // Initialize settings
+  window.settingsManager = new SettingsManager();
+  
+  // Check for new messages every 30 seconds
+  setInterval(checkForNewMessages, 30000);
 });
 

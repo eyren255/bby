@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings Test Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffeef8, #fff0f5);
+      min-height: 100vh;
+      margin: 0;
+      transition: all 0.3s ease;
+    }
+    
+    body.dark-mode {
+      background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+      color: white;
+    }
+    
+    .test-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    body.dark-mode .test-container {
+      background: #333;
+      color: white;
+    }
+    
+    .test-button {
+      background: linear-gradient(145deg, #ff69b4, #ff8fab);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px;
+      font-size: 16px;
+    }
+    
+    .test-button:hover {
+      transform: translateY(-2px);
+    }
+    
+    .status {
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      background: #f0f0f0;
+    }
+    
+    body.dark-mode .status {
+      background: #444;
+    }
+    
+    .audio-test {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🌐 Global Settings Test Page</h1>
+    
+    <div class="status">
+      <h3>Current Settings:</h3>
+      <div id="currentSettings">Loading...</div>
+    </div>
+    
+    <div class="audio-test">
+      <h3>Audio Test:</h3>
+      <audio id="bgMusic" src="assets/audio/bg-music.mp3" autoplay loop></audio>
+      <audio id="clickSound" src="assets/audio/click.wav" preload="auto"></audio>
+      <button class="test-button" onclick="playClickSound()">Play Click Sound</button>
+      <button class="test-button" onclick="toggleMusic()">Toggle Music</button>
+    </div>
+    
+    <div>
+      <h3>Test Controls:</h3>
+      <button class="test-button" onclick="testDarkMode()">Toggle Dark Mode</button>
+      <button class="test-button" onclick="testFontSize()">Change Font Size</button>
+      <button class="test-button" onclick="testVolume()">Change Volume</button>
+      <button class="test-button" onclick="refreshSettings()">Refresh Settings</button>
+    </div>
+    
+    <div class="status">
+      <h3>Debug Info:</h3>
+      <div id="debugInfo">Waiting for settings...</div>
+    </div>
+  </div>
+
+  <!-- Global Settings System -->
+  <script src="features/shared/global-settings.js"></script>
+  
+  <script>
+    function updateSettingsDisplay() {
+      const settings = window.globalSettingsManager ? window.globalSettingsManager.settings : 'Not loaded';
+      document.getElementById('currentSettings').innerHTML = `
+        <pre>${JSON.stringify(settings, null, 2)}</pre>
+      `;
+    }
+    
+    function updateDebugInfo() {
+      const debugInfo = {
+        globalSettingsManager: !!window.globalSettingsManager,
+        localStorage: localStorage.getItem('userSettings'),
+        bodyClasses: document.body.className,
+        fontSize: document.body.style.fontSize,
+        audioElements: document.querySelectorAll('audio').length
+      };
+      
+      document.getElementById('debugInfo').innerHTML = `
+        <pre>${JSON.stringify(debugInfo, null, 2)}</pre>
+      `;
+    }
+    
+    function playClickSound() {
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+      }
+    }
+    
+    function toggleMusic() {
+      const bgMusic = document.getElementById('bgMusic');
+      if (bgMusic) {
+        if (bgMusic.paused) {
+          bgMusic.play().catch(() => {});
+        } else {
+          bgMusic.pause();
+        }
+      }
+    }
+    
+    function testDarkMode() {
+      const currentTheme = localStorage.getItem('userSettings') ? 
+        JSON.parse(localStorage.getItem('userSettings')).theme : 'light';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      const settings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+      settings.theme = newTheme;
+      localStorage.setItem('userSettings', JSON.stringify(settings));
+      
+      // Trigger settings change
+      window.dispatchEvent(new CustomEvent('settingsChanged', { detail: settings }));
+      localStorage.setItem('settingsLastUpdated', Date.now().toString());
+      
+      updateSettingsDisplay();
+      updateDebugInfo();
+    }
+    
+    function testFontSize() {
+      const sizes = ['small', 'medium', 'large'];
+      const currentSize = localStorage.getItem('userSettings') ? 
+        JSON.parse(localStorage.getItem('userSettings')).fontSize : 'medium';
+      const currentIndex = sizes.indexOf(currentSize);
+      const newSize = sizes[(currentIndex + 1) % sizes.length];
+      
+      const settings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+      settings.fontSize = newSize;
+      localStorage.setItem('userSettings', JSON.stringify(settings));
+      
+      // Trigger settings change
+      window.dispatchEvent(new CustomEvent('settingsChanged', { detail: settings }));
+      localStorage.setItem('settingsLastUpdated', Date.now().toString());
+      
+      updateSettingsDisplay();
+      updateDebugInfo();
+    }
+    
+    function testVolume() {
+      const currentVolume = localStorage.getItem('userSettings') ? 
+        JSON.parse(localStorage.getItem('userSettings')).volume : 50;
+      const newVolume = currentVolume >= 100 ? 0 : currentVolume + 25;
+      
+      const settings = JSON.parse(localStorage.getItem('userSettings') || '{}');
+      settings.volume = newVolume;
+      localStorage.setItem('userSettings', JSON.stringify(settings));
+      
+      // Trigger settings change
+      window.dispatchEvent(new CustomEvent('settingsChanged', { detail: settings }));
+      localStorage.setItem('settingsLastUpdated', Date.now().toString());
+      
+      updateSettingsDisplay();
+      updateDebugInfo();
+    }
+    
+    function refreshSettings() {
+      if (window.globalSettingsManager) {
+        window.globalSettingsManager.settings = window.globalSettingsManager.loadSettings();
+        window.globalSettingsManager.applySettings();
+      }
+      updateSettingsDisplay();
+      updateDebugInfo();
+    }
+    
+    // Update display periodically
+    setInterval(() => {
+      updateSettingsDisplay();
+      updateDebugInfo();
+    }, 1000);
+    
+    // Initial update
+    setTimeout(() => {
+      updateSettingsDisplay();
+      updateDebugInfo();
+    }, 500);
+  </script>
+</body>
+</html> 

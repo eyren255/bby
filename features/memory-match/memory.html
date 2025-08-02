@@ -4,33 +4,141 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Memory Match 🃏</title>
+  <link rel="stylesheet" href="../../style.css" />
   <link rel="stylesheet" href="memory.css" />
+  <!-- Supabase Client -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="../message/supabase-config.js"></script>
   <script defer src="memory.js"></script>
 </head>
 <body>
 
-  <h1>Memory Match 🃏</h1>
-  <p>Match the cards and win! 🧠</p>
+  <!-- Header Section -->
+  <header class="game-header">
+    <h1 class="main-title">Memory Match 🃏</h1>
+    <p class="subtitle">Find all the matching pairs! 🧠</p>
+  </header>
 
   <!-- Back Button -->
   <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+    <a href="../../index.html" class="back-button">
+      <span class="back-icon">⬅️</span>
+      <span class="back-text">Back to Main Menu</span>
+    </a>
   </div>
 
-  <div class="game-board" id="gameBoard"></div>
-  <div id="matchMessage" class="match-msg hidden">You matched a pair!</div>
-
-  <div id="winMessage" class="hidden">
-    🏆 WOW!! Honey Bun!, Good Job! 💗
+  <!-- Game Stats -->
+  <div class="game-stats">
+    <div class="stat-item">
+      <span class="stat-label">Moves:</span>
+      <span id="moveCount" class="stat-value">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Time:</span>
+      <span id="timer" class="stat-value">00:00</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Best Score:</span>
+      <span id="bestScore" class="stat-value">None</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Level:</span>
+      <span id="level" class="stat-value">Easy</span>
+    </div>
   </div>
 
-  <button onclick="window.location.reload()" class="restart-btn">🔄 Play Again</button>
-  <audio id="flipSound" src="../../assets/audio/click.wav" preload="auto"></audio>
-<audio id="matchSound" src="../../assets/audio/match.wav" preload="auto"></audio>
-<audio id="winSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+  <!-- Game Controls -->
+  <div class="game-controls">
+    <button id="newGameBtn" class="control-button">
+      <span class="control-icon">🔄</span>
+      <span class="control-text">New Game</span>
+    </button>
+    <button id="levelBtn" class="control-button">
+      <span class="control-icon">⚙️</span>
+      <span class="control-text">Change Level</span>
+    </button>
+  </div>
 
+  <!-- Game Board -->
+  <div class="game-container">
+    <div class="game-board" id="gameBoard"></div>
+    
+    <!-- Match Message -->
+    <div id="matchMessage" class="match-msg hidden">
+      <span class="match-icon">🎉</span>
+      <span class="match-text">Perfect Match!</span>
+    </div>
+  </div>
 
+  <!-- Win Message -->
+  <div id="winMessage" class="win-message hidden">
+    <div class="win-card">
+      <div class="win-icon">🏆</div>
+      <h2 class="win-title">Congratulations!</h2>
+      <p class="win-subtitle">You completed the game! 💗</p>
+      <div class="win-stats">
+        <div class="win-stat">
+          <span class="win-stat-label">Moves:</span>
+          <span id="finalMoves" class="win-stat-value">0</span>
+        </div>
+        <div class="win-stat">
+          <span class="win-stat-label">Time:</span>
+          <span id="finalTime" class="win-stat-value">00:00</span>
+        </div>
+        <div class="win-stat">
+          <span class="win-stat-label">Level:</span>
+          <span id="finalLevel" class="win-stat-value">Easy</span>
+        </div>
+      </div>
+      <div class="win-actions">
+        <button id="playAgainBtn" class="play-again-button">
+          <span class="play-again-icon">🔄</span>
+          <span class="play-again-text">Play Again</span>
+        </button>
+        <button id="nextLevelBtn" class="next-level-button">
+          <span class="next-level-icon">⬆️</span>
+          <span class="next-level-text">Next Level</span>
+        </button>
+        
+      </div>
+    </div>
+  </div>
 
+  <!-- Level Selection Modal -->
+  <div id="levelModal" class="modal hidden">
+    <div class="modal-content">
+      <h3 class="modal-title">Choose Difficulty</h3>
+      <div class="level-options">
+        <button class="level-option" data-level="easy">
+          <span class="level-icon">😊</span>
+          <span class="level-name">Easy</span>
+          <span class="level-desc">4x4 Grid</span>
+        </button>
+        <button class="level-option" data-level="medium">
+          <span class="level-icon">😐</span>
+          <span class="level-name">Medium</span>
+          <span class="level-desc">5x5 Grid</span>
+        </button>
+        <button class="level-option" data-level="hard">
+          <span class="level-icon">😰</span>
+          <span class="level-name">Hard</span>
+          <span class="level-desc">6x6 Grid</span>
+        </button>
+      </div>
+      <button id="closeModalBtn" class="close-modal-button">Close</button>
+    </div>
+  </div>
 
+  <!-- Audio Elements -->
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="matchSound" src="../../assets/audio/match.mp3" preload="auto"></audio>
+  <audio id="hugSound" src="../../assets/audio/hug.mp3" preload="auto"></audio>
+
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="../message/global-message.js"></script>
+  <script src="memory.js"></script>
 </body>
 </html>

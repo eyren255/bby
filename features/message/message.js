@@ -1,4 +1,6 @@
 // Message configuration
+
+// Message configuration
 const messageStyles = {
   romantic: {
     background: 'linear-gradient(135deg, #ffe6f0, #ffd6e0)',
@@ -71,6 +73,8 @@ function initMessage() {
   // Initial character count
   updateCharCount();
 }
+
+
 
 // Update character count
 function updateCharCount() {
@@ -163,9 +167,8 @@ function handleSubmit(e) {
 }
 
 // Send message
-function sendMessage() {
+async function sendMessage() {
   const message = {
-    id: Date.now(),
     title: messageTitle.value,
     content: messageContent.value,
     style: currentStyle,
@@ -174,78 +177,123 @@ function sendMessage() {
     timestamp: Date.now()
   };
   
-  // Add to messages array
-  messages.unshift(message);
-  
-  // Save to localStorage
-  localStorage.setItem('loveMessages', JSON.stringify(messages));
-  
-  // Play send sound
-  playSound(sendSound);
-  
-  // Show success message
-  alert('💌 Your love message has been sent! 💕');
-  
-  // Reset form
-  messageForm.reset();
-  updateCharCount();
-  selectedEffects = [];
-  currentStyle = 'romantic';
-  
-  // Reset buttons
-  document.querySelectorAll('.style-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  document.querySelector('.style-btn').classList.add('active');
-  
-  document.querySelectorAll('.effect-btn').forEach(btn => {
-    btn.style.background = '#f8f9fa';
-    btn.style.color = '#333';
-  });
-  
-  // Hide preview
-  hidePreview();
-  
-  // Reload messages
-  loadMessages();
+  try {
+    // Show loading state
+    const sendBtn = document.querySelector('.send-btn');
+    const originalText = sendBtn.innerHTML;
+    sendBtn.innerHTML = '💌 Sending...';
+    sendBtn.disabled = true;
+    
+    // Save to Supabase
+    await MessageService.addMessage(message);
+    
+    // Play send sound
+    playSound(sendSound);
+    
+    // Show success message
+    const successMessage = `
+🎉 Message Sent Successfully! 💌
+
+Your love message has been saved and will sync across all devices! 
+
+I'll see your message on any device I use! 💕
+    `;
+    
+    alert(successMessage);
+    
+    // Reset form
+    messageForm.reset();
+    updateCharCount();
+    selectedEffects = [];
+    currentStyle = 'romantic';
+    
+    // Reset buttons
+    document.querySelectorAll('.style-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector('.style-btn').classList.add('active');
+    
+    document.querySelectorAll('.effect-btn').forEach(btn => {
+      btn.style.background = '#f8f9fa';
+      btn.style.color = '#333';
+    });
+    
+    // Hide preview
+    hidePreview();
+    
+    // Reload messages
+    await loadMessages();
+    
+  } catch (error) {
+    console.error('Error sending message:', error);
+    alert('❌ Error sending message. Please try again! 💕');
+  } finally {
+    // Reset button
+    const sendBtn = document.querySelector('.send-btn');
+    sendBtn.innerHTML = '💌 Send Message';
+    sendBtn.disabled = false;
+  }
 }
 
 // Load messages
-function loadMessages() {
+async function loadMessages() {
   messageList.innerHTML = '';
   
-  if (messages.length === 0) {
+  try {
+    // Show loading state
     messageList.innerHTML = `
       <div style="text-align: center; color: #666; font-style: italic; padding: 20px;">
-        No messages yet. Write your first love message! 💕
+        Loading messages... 💕
       </div>
     `;
-    return;
-  }
-  
-  messages.forEach(message => {
-    const messageElement = document.createElement('div');
-    messageElement.className = 'message-item';
     
-    const effects = message.effects.map(effect => {
-      switch(effect) {
-        case 'hearts': return '💖';
-        case 'sparkles': return '✨';
-        case 'flowers': return '🌹';
-        case 'music': return '🎵';
-        default: return '';
-      }
-    }).join(' ');
+    // Get all messages from Supabase
+    const allMessages = await MessageService.getAllMessages();
     
-    messageElement.innerHTML = `
-      <h4>${message.title}</h4>
-      <p>${message.content}</p>
-      ${effects ? `<div style="text-align: center; margin-top: 10px; font-size: 1.1rem;">${effects}</div>` : ''}
-      <div class="date">${message.date}</div>
+    if (allMessages.length === 0) {
+      messageList.innerHTML = `
+        <div style="text-align: center; color: #666; font-style: italic; padding: 20px;">
+          No messages yet. Write your first love message! 💕
+        </div>
+      `;
+      return;
+    }
+    
+    messageList.innerHTML = '';
+    
+    allMessages.forEach(message => {
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message-item';
+      
+      const effects = message.effects.map(effect => {
+        switch(effect) {
+          case 'hearts': return '💖';
+          case 'sparkles': return '✨';
+          case 'flowers': return '🌹';
+          case 'music': return '🎵';
+          default: return '';
+        }
+      }).join(' ');
+      
+      const messageDate = new Date(message.created_at).toLocaleDateString();
+      
+      messageElement.innerHTML = `
+        <h4>${message.title}</h4>
+        <p>${message.content}</p>
+        ${effects ? `<div style="text-align: center; margin-top: 10px; font-size: 1.1rem;">${effects}</div>` : ''}
+        <div class="date">${messageDate}</div>
+      `;
+      
+      messageList.appendChild(messageElement);
+    });
+  } catch (error) {
+    console.error('Error loading messages:', error);
+    messageList.innerHTML = `
+      <div style="text-align: center; color: #ff6347; font-style: italic; padding: 20px;">
+        Error loading messages. Please try again! 💕
+      </div>
     `;
-    
-    messageList.appendChild(messageElement);
-  });
+  }
 }
 
 // Play sound effect

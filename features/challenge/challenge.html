@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Love Challenge Generator 💕</title>
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="../../features/shared/settings.css" />
+  <link rel="stylesheet" href="challenge.css" />
+  <!-- Supabase Client -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="../message/supabase-config.js"></script>
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="game-header">
+    <h1 class="main-title">Love Challenge Generator 💕</h1>
+    <p class="subtitle">Discover sweet challenges to make me smile! ✨</p>
+  </header>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">
+      <span class="back-icon">⬅️</span>
+      <span class="back-text">Back to Main Menu</span>
+    </a>
+  </div>
+
+  <!-- Challenge Container -->
+  <div class="game-container">
+    <div class="challenge-section">
+      <div class="card-container">
+        <div id="challengeCard" class="challenge-card">
+          <div class="card-front">
+            <div class="card-icon">💕</div>
+            <div class="card-text">Click to reveal your challenge!</div>
+          </div>
+          <div class="card-back">
+            <div class="challenge-icon" id="challengeIcon">💖</div>
+            <div class="challenge-text" id="challengeText">Your challenge will appear here!</div>
+            <div class="challenge-description" id="challengeDescription">Complete this sweet task for me!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+      <button id="generateBtn" class="generate-button">
+        <span class="generate-icon">✨</span>
+        <span class="generate-text">Generate Challenge</span>
+      </button>
+      
+      <div class="stats-container">
+        <div class="stat-item">
+          <span class="stat-label">Challenges Today:</span>
+          <span id="challengeCount" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Last Challenge:</span>
+          <span id="lastChallenge" class="stat-value">None yet</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Section -->
+    <div id="resultContainer" class="result-container hidden">
+      <div class="result-card">
+        <button id="closeResultBtn" class="close-result-btn" aria-label="Close result">
+          <span class="close-icon">×</span>
+        </button>
+        <div class="result-icon">🎉</div>
+        <h2 id="result" class="result-text"></h2>
+        <p class="result-description">Complete this sweet challenge for me!</p>
+        <button id="generateAgainBtn" class="generate-again-button">
+          <span class="generate-again-icon">🔄</span>
+          <span class="generate-again-text">Get Another Challenge</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="flipSound" src="../../assets/audio/flip.mp3" preload="auto"></audio>
+  <audio id="winSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+
+  <!-- Global Messaging System -->
+  <script src="../message/global-message.js"></script>
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <script src="challenge.js"></script>
+</body>
+</html>

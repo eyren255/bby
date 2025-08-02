@@ -11,7 +11,13 @@
   
   <!-- Styles and Scripts -->
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="features/shared/settings.css" />
   <script defer src="script.js"></script>
+  <!-- Global Settings System -->
+  <script src="features/shared/global-settings.js"></script>
+  <!-- Supabase Client -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="features/message/supabase-config.js"></script>
 </head>
 <!-- Modular scripts -->
 <script type="module" src="./firebase.js"></script>
@@ -23,7 +29,25 @@
   <header class="main-header">
     <h1 class="main-title">Welcome, My Honey Bun 💖</h1>
     <p class="main-subtitle">Pick something cute to do today 💕</p>
+    <!-- Quick Message Button -->
+    <button id="quickMessageBtn" class="quick-message-btn" aria-label="Quick Message">
+      <span class="quick-message-icon">💌</span>
+      <span class="quick-message-text">Quick Message</span>
+    </button>
+    <!-- Settings Button -->
+    <button id="openSettingsBtn" class="settings-btn" aria-label="Settings">
+      <span class="settings-icon">⚙️</span>
+    </button>
   </header>
+
+  <!-- Floating Message Notification -->
+  <div id="messageNotification" class="message-notification hidden">
+    <div class="notification-content">
+      <span class="notification-icon">💌</span>
+      <span class="notification-text">New love message!</span>
+      <button class="notification-close">×</button>
+    </div>
+  </div>
 
   <!-- Tap to Start Section -->
   <div id="tapToStart" class="tap-overlay">
@@ -73,9 +97,9 @@
         <p class="section-description">Surprise yourself with something special</p>
       </div>
       <div class="button-grid">
-        <a href="features/wheel/wheel.html" class="menu-button btn-wheel" aria-label="Love Spin">
-          <span class="button-icon">🎡</span>
-          <span class="button-text">Love Spin</span>
+        <a href="features/challenge/challenge.html" class="menu-button btn-challenge" aria-label="Love Challenge Generator">
+          <span class="button-icon">💕</span>
+          <span class="button-text">Love Challenge Generator</span>
         </a>
         <a href="features/fortune/fortune.html" class="menu-button btn-fortune" aria-label="Daily Fortune">
           <span class="button-icon">🔮</span>
@@ -98,6 +122,10 @@
         <a href="features/message/message.html" class="menu-button btn-message" aria-label="Send Me a Message">
           <span class="button-icon">💌</span>
           <span class="button-text">Send Me a Message</span>
+        </a>
+        <a href="features/scoreboard/scoreboard.html" class="menu-button btn-scoreboard" aria-label="Scoreboard">
+          <span class="button-icon">🏆</span>
+          <span class="button-text">Scoreboard</span>
         </a>
       </div>
     </section>
@@ -141,5 +169,88 @@
     </div>
   </div>
 
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal settings-modal">
+    <div class="modal-content settings-content">
+      <div class="settings-header">
+        <h3 class="modal-title">⚙️ Settings</h3>
+        <button id="closeSettingsBtn" class="close-settings-btn" aria-label="Close settings">
+          <span class="close-icon">×</span>
+        </button>
+      </div>
+      
+      <div class="settings-tabs">
+        <button class="tab-btn active" data-tab="theme">🎨 Theme</button>
+        <button class="tab-btn" data-tab="sound">🔊 Sound</button>
+        <button class="tab-btn" data-tab="display">📱 Display</button>
+      </div>
+
+      <div class="settings-content">
+        <!-- Theme Tab -->
+        <div id="themeTab" class="tab-content active">
+          <div class="setting-group">
+            <h4>Theme Mode</h4>
+            <div class="theme-options">
+              <label class="theme-option">
+                <input type="radio" name="theme" value="light" checked>
+                <span class="theme-preview light-theme">Light Mode</span>
+              </label>
+              <label class="theme-option">
+                <input type="radio" name="theme" value="dark">
+                <span class="theme-preview dark-theme">Dark Mode</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sound Tab -->
+        <div id="soundTab" class="tab-content">
+          <div class="setting-group">
+            <h4>Background Music</h4>
+            <label class="toggle-switch">
+              <input type="checkbox" id="bgMusicToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-group">
+            <h4>Sound Effects</h4>
+            <label class="toggle-switch">
+              <input type="checkbox" id="soundEffectsToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-group">
+            <h4>Volume</h4>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider">
+            <span id="volumeValue">50%</span>
+          </div>
+        </div>
+
+        <!-- Display Tab -->
+        <div id="displayTab" class="tab-content">
+          <div class="setting-group">
+            <h4>Font Size</h4>
+            <select id="fontSizeSelect" class="setting-select">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <h4>Animation Speed</h4>
+            <select id="animationSpeedSelect" class="setting-select">
+              <option value="fast">Fast</option>
+              <option value="normal" selected>Normal</option>
+              <option value="slow">Slow</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-footer">
+        <button id="saveSettingsBtn" class="save-settings-btn">Save Settings</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

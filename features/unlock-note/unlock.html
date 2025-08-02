@@ -4,16 +4,77 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Secret Love Note 🔐</title>
+  <link rel="stylesheet" href="../../style.css" />
   <link rel="stylesheet" href="unlock.css" />
+  <!-- Supabase Client -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="../message/supabase-config.js"></script>
   <script defer src="unlock.js"></script>
 </head>
 <body>
-  <h1>Secret Love Note 🔐</h1>
-  <p id="loveMessage" class="message-container"></p>
+  <!-- Header Section -->
+  <header class="note-header">
+    <h1 class="main-title">Secret Love Note 🔐</h1>
+    <p class="subtitle">A special message just for you 💕</p>
+  </header>
 
   <!-- Back Button -->
   <div class="back-button-container">
-    <a href="../../index.html" class="back-button">⬅️ Back to Main Menu</a>
+    <a href="../../index.html" class="back-button">
+      <span class="back-icon">⬅️</span>
+      <span class="back-text">Back to Main Menu</span>
+    </a>
   </div>
+
+  <!-- Note Container -->
+  <div class="note-container">
+    <div class="note-card">
+      <div class="note-header-decoration">
+        <div class="heart-decoration">💖</div>
+        <div class="sparkle-decoration">✨</div>
+        <div class="heart-decoration">💖</div>
+      </div>
+      
+      <div class="note-content">
+        <div class="note-date">Today's Special Message</div>
+        <div id="loveMessage" class="message-container"></div>
+        <div class="note-signature">
+          <div class="signature-line">──────────</div>
+          <div class="signature-text">With all my love,</div>
+          <div class="signature-name">Your Bf 💌</div>
+        </div>
+      </div>
+      
+      <div class="note-footer-decoration">
+        <div class="flower-decoration">🌸</div>
+        <div class="star-decoration">⭐</div>
+        <div class="flower-decoration">🌸</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Elements -->
+  <div class="interactive-elements">
+    <button id="heartButton" class="heart-button">
+      <span class="heart-icon">💖</span>
+      <span class="heart-text">Send Love Back</span>
+    </button>
+    
+    <div class="love-counter">
+      <span class="counter-label">Love Sent Today:</span>
+      <span id="loveCount" class="counter-value">0</span>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="unlockSound" src="../../assets/audio/unlock.mp3" preload="auto"></audio>
+
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="../message/global-message.js"></script>
+  <script src="unlock.js"></script>
 </body>
 </html>

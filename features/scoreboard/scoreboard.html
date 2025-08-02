@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scoreboard 🏆</title>
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="scoreboard.css" />
+  <!-- Supabase Client -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="../message/supabase-config.js"></script>
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="scoreboard-header">
+    <h1 class="main-title">🏆 Love Scoreboard</h1>
+    <p class="subtitle">Track all your achievements and progress! 💕</p>
+  </header>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <a href="../../index.html" class="back-button">
+      <span class="back-icon">⬅️</span>
+      <span class="back-text">Back to Main Menu</span>
+    </a>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-overview">
+    <div class="stat-card total-games">
+      <div class="stat-icon">🎮</div>
+      <div class="stat-content">
+        <div class="stat-number" id="totalGames">0</div>
+        <div class="stat-label">Total Games</div>
+      </div>
+    </div>
+    <div class="stat-card total-points">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-content">
+        <div class="stat-number" id="totalPoints">0</div>
+        <div class="stat-label">Total Points</div>
+      </div>
+    </div>
+    <div class="stat-card best-score">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-content">
+        <div class="stat-number" id="bestScore">0</div>
+        <div class="stat-label">Best Score</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Sections -->
+  <div class="games-container">
+    <!-- Memory Match Section -->
+    <section class="game-section" id="memorySection">
+      <div class="section-header">
+        <h2 class="game-title">🃏 Memory Match</h2>
+        <p class="game-description">Your matching skills and achievements</p>
+      </div>
+      
+      <div class="difficulty-tabs">
+        <button class="tab-btn active" data-level="easy">😊 Easy</button>
+        <button class="tab-btn" data-level="medium">😐 Medium</button>
+        <button class="tab-btn" data-level="hard">😰 Hard</button>
+      </div>
+
+      <div class="game-stats">
+        <div class="stat-item">
+          <span class="stat-label">Best Score:</span>
+          <span class="stat-value" id="memoryBestScore">None</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Fastest Time:</span>
+          <span class="stat-value" id="memoryFastestTime">None</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Games Completed:</span>
+          <span class="stat-value" id="memoryGamesCompleted">0</span>
+        </div>
+      </div>
+
+      <div class="recent-scores">
+        <h3>🏅 Recent Achievements</h3>
+        <div class="scores-list" id="memoryScores">
+          <div class="loading">Loading scores...</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Achievement Badges -->
+  <section class="achievements-section">
+    <h2 class="section-title">🏅 Achievement Badges</h2>
+    <div class="badges-container" id="badgesContainer">
+      <!-- Badges will be populated by JavaScript -->
+    </div>
+  </section>
+
+  <!-- Refresh Button -->
+  <div class="refresh-container">
+    <button id="refreshBtn" class="refresh-button">
+      <span class="refresh-icon">🔄</span>
+      <span class="refresh-text">Refresh Scores</span>
+    </button>
+  </div>
+
+  <!-- Audio Elements -->
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="achievementSound" src="../../assets/audio/achievement.mp3" preload="auto"></audio>
+
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="../message/global-message.js"></script>
+  <script src="scoreboard.js"></script>
+</body>
+</html> 

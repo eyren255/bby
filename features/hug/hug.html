@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Virtual Hug 🤗</title>
+  <link rel="stylesheet" href="../../style.css" />
   <link rel="stylesheet" href="hug.css" />
 </head>
 <body>
@@ -88,11 +89,15 @@
     </div>
   </div>
 
-  <!-- Audio elements -->
-  <audio id="hugSound" src="../../assets/audio/hug.wav" preload="auto"></audio>
-  <audio id="particleSound" src="../../assets/audio/crystal.wav" preload="auto"></audio>
-  <audio id="achievementSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
+  <!-- Audio Elements -->
+  <audio id="bgMusic" src="../../assets/audio/bg-music.mp3" autoplay loop></audio>
+  <audio id="clickSound" src="../../assets/audio/click.wav" preload="auto"></audio>
+  <audio id="hugSound" src="../../assets/audio/hug.mp3" preload="auto"></audio>
 
+  <!-- Global Settings System -->
+  <script src="../shared/global-settings.js"></script>
+  <!-- Global Messaging System -->
+  <script src="../message/global-message.js"></script>
   <script src="hug.js"></script>
 </body>
 </html>
