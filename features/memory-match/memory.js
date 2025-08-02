@@ -362,6 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Flip the card immediately
     card.classList.add('flipped');
     card.textContent = card.dataset.emoji;
+    
+    // Ensure emoji is visible on mobile
+    ensureEmojiVisibility(card);
+    
     flipped.push(card);
 
     if (flipped.length === 2) {
@@ -370,6 +374,81 @@ document.addEventListener('DOMContentLoaded', () => {
       // Check match immediately with a short delay for visual feedback
       setTimeout(checkMatch, 300);
     }
+  }
+
+  // Ensure emoji is visible on mobile devices
+  function ensureEmojiVisibility(card) {
+    const emoji = card.dataset.emoji;
+    
+    // Check if emoji is visible by measuring its width
+    setTimeout(() => {
+      const rect = card.getBoundingClientRect();
+      const computedStyle = window.getComputedStyle(card);
+      const fontSize = parseFloat(computedStyle.fontSize);
+      
+      // If the card has no width or the emoji seems invisible, try alternatives
+      if (rect.width < 10 || card.textContent.trim() === '') {
+        console.log('🔄 Emoji not visible, trying fallback for:', emoji);
+        
+        // Try different emoji representations
+        const fallbackEmojis = {
+          '🐰': '🐰',
+          '💌': '💌',
+          '🌸': '🌸',
+          '🧸': '🧸',
+          '💖': '💖',
+          '⭐️': '⭐',
+          '🍓': '🍓',
+          '🎀': '🎀',
+          '🌹': '🌹',
+          '💕': '💕',
+          '🎈': '🎈',
+          '🍰': '🍰',
+          '🎁': '🎁',
+          '💝': '💝',
+          '🌺': '🌺',
+          '🎪': '🎪',
+          '🎭': '🎭',
+          '🎨': '🎨'
+        };
+        
+        // Try the fallback emoji
+        const fallback = fallbackEmojis[emoji] || emoji;
+        card.textContent = fallback;
+        
+        // If still not visible, try using a simple text representation
+        setTimeout(() => {
+          const newRect = card.getBoundingClientRect();
+          if (newRect.width < 10) {
+            console.log('🔄 Using text fallback for:', emoji);
+            // Use a simple text representation
+            const textFallbacks = {
+              '🐰': 'BUNNY',
+              '💌': 'LOVE',
+              '🌸': 'FLOWER',
+              '🧸': 'BEAR',
+              '💖': 'HEART',
+              '⭐️': 'STAR',
+              '🍓': 'STRAWBERRY',
+              '🎀': 'BOW',
+              '🌹': 'ROSE',
+              '💕': 'HEARTS',
+              '🎈': 'BALLOON',
+              '🍰': 'CAKE',
+              '🎁': 'GIFT',
+              '💝': 'GIFT HEART',
+              '🌺': 'FLOWER',
+              '🎪': 'CIRCUS',
+              '🎭': 'THEATER',
+              '🎨': 'ART'
+            };
+            card.textContent = textFallbacks[emoji] || emoji;
+            card.style.fontSize = '0.8rem';
+            card.style.fontWeight = 'bold';
+          }
+        }, 100);
+      }
+    }, 50);
   }
 
   // Check for match
