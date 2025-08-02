@@ -8,16 +8,90 @@
 </head>
 <body>
   <div class="hug-container">
-    <div id="tapOverlay" class="overlay">
-      <p class="tap-text">🤗 Tap to Hug</p>
+    <!-- Floating hearts background -->
+    <div id="floatingHearts" class="floating-hearts"></div>
+    
+    <!-- Main hug area -->
+    <div class="hug-area">
+      <div id="tapOverlay" class="overlay">
+        <div class="hug-content">
+          <div class="hug-icon">🤗</div>
+          <h1 class="hug-title">Virtual Hug</h1>
+          <p class="hug-subtitle">Tap to give me a warm hug!</p>
+          <div class="hug-stats">
+            <div class="stat">
+              <span class="stat-number" id="hugCount">0</span>
+              <span class="stat-label">Hugs Given</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number" id="hugStreak">0</span>
+              <span class="stat-label">Day Streak</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <img id="hugGif" src="../../assets/gif/hug.gif" alt="Virtual Hug" class="hug-gif" style="display: none;" />
+      
+      <!-- Hug animation container -->
+      <div id="hugAnimation" class="hug-animation" style="display: none;">
+        <div class="hug-particles"></div>
+        <div class="hug-message">💕 Sending you love! 💕</div>
+      </div>
     </div>
 
-    <img id="hugGif" src="../../assets/gif/hug.gif" alt="Virtual Hug" class="hug-gif" style="display: none;" />
+    <!-- Controls -->
+    <div class="hug-controls">
+      <button id="autoHugBtn" class="control-btn">🤖 Auto Hug</button>
+      <button id="resetBtn" class="control-btn">🔄 Reset</button>
+      <button id="settingsBtn" class="control-btn">⚙️ Settings</button>
+    </div>
 
+    <!-- Settings modal -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Hug Settings</h3>
+          <button class="close-btn" id="closeSettings">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label>Hug Duration:</label>
+            <select id="hugDuration">
+              <option value="3000">3 seconds</option>
+              <option value="4000" selected>4 seconds</option>
+              <option value="5000">5 seconds</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label>Auto Hug Interval:</label>
+            <select id="autoHugInterval">
+              <option value="0">Disabled</option>
+              <option value="5000">5 seconds</option>
+              <option value="10000">10 seconds</option>
+              <option value="30000">30 seconds</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label>
+              <input type="checkbox" id="soundEnabled" checked>
+              Enable Sounds
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back button -->
     <div class="back-button-container">
       <a href="../../index.html" class="back-button">← Back to Menu</a>
     </div>
   </div>
+
+  <!-- Audio elements -->
+  <audio id="hugSound" src="../../assets/audio/hug.wav" preload="auto"></audio>
+  <audio id="particleSound" src="../../assets/audio/crystal.wav" preload="auto"></audio>
+  <audio id="achievementSound" src="../../assets/audio/win.mp3" preload="auto"></audio>
 
   <script src="hug.js"></script>
 </body>
