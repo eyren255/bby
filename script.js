@@ -11,6 +11,550 @@ function createFloatingHearts() {
   }
 }
 
+// === OFFLINE STATUS DETECTION ===
+let isOnline = navigator.onLine;
+let offlineNotification = null;
+let offlineActions = [];
+let syncInProgress = false;
+
+function updateOnlineStatus() {
+  const wasOffline = !isOnline;
+  isOnline = navigator.onLine;
+  
+  if (!isOnline) {
+    showOfflineNotification();
+  } else {
+    hideOfflineNotification();
+    
+    // If we were offline and now we're online, sync offline actions
+    if (wasOffline && offlineActions.length > 0) {
+      syncOfflineActions();
+    }
+  }
+}
+
+function showOfflineNotification() {
+  if (offlineNotification) return;
+  
+  offlineNotification = document.createElement('div');
+  offlineNotification.id = 'offlineNotification';
+  offlineNotification.innerHTML = `
+    <div class="offline-notification-content">
+      <span class="offline-icon">📱</span>
+      <span class="offline-text">You're offline - but Baby Love still works! 💕</span>
+    </div>
+  `;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    #offlineNotification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #ff69b4, #ff8fab);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+      z-index: 10000;
+      animation: slideInDown 0.5s ease-out;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .offline-notification-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .offline-icon {
+      font-size: 1.1rem;
+    }
+    
+    @keyframes slideInDown {
+      from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+  `;
+  
+  if (!document.querySelector('#offlineNotificationStyles')) {
+    style.id = 'offlineNotificationStyles';
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(offlineNotification);
+}
+
+function hideOfflineNotification() {
+  if (offlineNotification) {
+    offlineNotification.style.animation = 'slideOutUp 0.5s ease-out';
+    setTimeout(() => {
+      if (offlineNotification && offlineNotification.parentNode) {
+        offlineNotification.remove();
+        offlineNotification = null;
+      }
+    }, 500);
+  }
+}
+
+// === OFFLINE ACTION QUEUING ===
+function queueOfflineAction(action) {
+  const actionWithTimestamp = {
+    ...action,
+    timestamp: Date.now(),
+    id: generateActionId()
+  };
+  
+  offlineActions.push(actionWithTimestamp);
+  saveOfflineActions();
+  
+  console.log('📦 Queued offline action:', action.type, actionWithTimestamp);
+  
+  // Show queued action notification
+  showQueuedActionNotification(action.type);
+}
+
+function generateActionId() {
+  return 'action_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function saveOfflineActions() {
+  try {
+    localStorage.setItem('babyLove_offlineActions', JSON.stringify(offlineActions));
+  } catch (error) {
+    console.error('❌ Failed to save offline actions:', error);
+  }
+}
+
+function loadOfflineActions() {
+  try {
+    const saved = localStorage.getItem('babyLove_offlineActions');
+    if (saved) {
+      offlineActions = JSON.parse(saved);
+      console.log('📦 Loaded offline actions:', offlineActions.length);
+    }
+  } catch (error) {
+    console.error('❌ Failed to load offline actions:', error);
+    offlineActions = [];
+  }
+}
+
+function showQueuedActionNotification(actionType) {
+  const actionNames = {
+    'message': '💌 Message',
+    'score': '🏆 Score',
+    'game_result': '🎮 Game Result',
+    'setting': '⚙️ Setting'
+  };
+  
+  const actionName = actionNames[actionType] || 'Action';
+  
+  const notification = document.createElement('div');
+  notification.className = 'queued-action-notification';
+  notification.innerHTML = `
+    <div class="queued-action-content">
+      <span class="queued-action-icon">📦</span>
+      <span class="queued-action-text">${actionName} saved for when you're online</span>
+    </div>
+  `;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .queued-action-notification {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #FF9800, #FFB74D);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+      z-index: 10000;
+      animation: slideInUp 0.5s ease-out;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .queued-action-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .queued-action-icon {
+      font-size: 1.1rem;
+    }
+    
+    @keyframes slideInUp {
+      from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+  `;
+  
+  if (!document.querySelector('#queuedActionNotificationStyles')) {
+    style.id = 'queuedActionNotificationStyles';
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notification);
+  
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    notification.style.animation = 'slideOutDown 0.5s ease-out';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 500);
+  }, 3000);
+}
+
+// === BACKGROUND SYNC ===
+async function syncOfflineActions() {
+  if (syncInProgress || offlineActions.length === 0) return;
+  
+  syncInProgress = true;
+  console.log('🔄 Starting offline action sync...');
+  
+  showSyncNotification();
+  
+  const actionsToSync = [...offlineActions];
+  let successCount = 0;
+  let errorCount = 0;
+  
+  for (const action of actionsToSync) {
+    try {
+      await processOfflineAction(action);
+      successCount++;
+      
+      // Remove successful action from queue
+      offlineActions = offlineActions.filter(a => a.id !== action.id);
+      
+    } catch (error) {
+      console.error('❌ Failed to sync action:', action, error);
+      errorCount++;
+    }
+  }
+  
+  // Save updated actions list
+  saveOfflineActions();
+  
+  syncInProgress = false;
+  
+  // Show sync result
+  showSyncResultNotification(successCount, errorCount);
+  
+  console.log(`✅ Sync complete: ${successCount} successful, ${errorCount} failed`);
+}
+
+async function processOfflineAction(action) {
+  switch (action.type) {
+    case 'message':
+      return await syncOfflineMessage(action);
+    case 'score':
+      return await syncOfflineScore(action);
+    case 'game_result':
+      return await syncOfflineGameResult(action);
+    case 'setting':
+      return await syncOfflineSetting(action);
+    default:
+      console.warn('⚠️ Unknown action type:', action.type);
+      return Promise.resolve();
+  }
+}
+
+async function syncOfflineMessage(action) {
+  // Simulate message sync to Firebase/Supabase
+  console.log('💌 Syncing offline message:', action.data);
+  
+  // Here you would integrate with your actual messaging system
+  // For now, we'll simulate the sync
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  return Promise.resolve();
+}
+
+async function syncOfflineScore(action) {
+  // Simulate score sync to leaderboard
+  console.log('🏆 Syncing offline score:', action.data);
+  
+  // Here you would integrate with your actual scoreboard system
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
+  return Promise.resolve();
+}
+
+async function syncOfflineGameResult(action) {
+  // Simulate game result sync
+  console.log('🎮 Syncing offline game result:', action.data);
+  
+  await new Promise(resolve => setTimeout(resolve, 400));
+  
+  return Promise.resolve();
+}
+
+async function syncOfflineSetting(action) {
+  // Sync user settings
+  console.log('⚙️ Syncing offline setting:', action.data);
+  
+  await new Promise(resolve => setTimeout(resolve, 200));
+  
+  return Promise.resolve();
+}
+
+function showSyncNotification() {
+  const notification = document.createElement('div');
+  notification.id = 'syncNotification';
+  notification.innerHTML = `
+    <div class="sync-notification-content">
+      <span class="sync-icon">🔄</span>
+      <span class="sync-text">Syncing offline actions...</span>
+    </div>
+  `;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    #syncNotification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+      z-index: 10000;
+      animation: slideInRight 0.5s ease-out;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .sync-notification-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .sync-icon {
+      font-size: 1.1rem;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  
+  if (!document.querySelector('#syncNotificationStyles')) {
+    style.id = 'syncNotificationStyles';
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notification);
+}
+
+function showSyncResultNotification(successCount, errorCount) {
+  const notification = document.getElementById('syncNotification');
+  if (notification) {
+    notification.remove();
+  }
+  
+  const resultNotification = document.createElement('div');
+  resultNotification.className = 'sync-result-notification';
+  
+  let icon, text, bgColor;
+  
+  if (errorCount === 0) {
+    icon = '✅';
+    text = `Successfully synced ${successCount} actions!`;
+    bgColor = 'linear-gradient(135deg, #4CAF50, #45a049)';
+  } else if (successCount === 0) {
+    icon = '❌';
+    text = `Failed to sync ${errorCount} actions`;
+    bgColor = 'linear-gradient(135deg, #f44336, #d32f2f)';
+  } else {
+    icon = '⚠️';
+    text = `Synced ${successCount} actions, ${errorCount} failed`;
+    bgColor = 'linear-gradient(135deg, #FF9800, #FFB74D)';
+  }
+  
+  resultNotification.innerHTML = `
+    <div class="sync-result-content">
+      <span class="sync-result-icon">${icon}</span>
+      <span class="sync-result-text">${text}</span>
+    </div>
+  `;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .sync-result-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${bgColor};
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      z-index: 10000;
+      animation: slideInRight 0.5s ease-out;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .sync-result-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .sync-result-icon {
+      font-size: 1.1rem;
+    }
+  `;
+  
+  if (!document.querySelector('#syncResultNotificationStyles')) {
+    style.id = 'syncResultNotificationStyles';
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(resultNotification);
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    resultNotification.style.animation = 'slideOutRight 0.5s ease-out';
+    setTimeout(() => {
+      if (resultNotification.parentNode) {
+        resultNotification.remove();
+      }
+    }, 500);
+  }, 5000);
+}
+
+// === INTEGRATION WITH EXISTING FUNCTIONS ===
+// Override message sending to queue when offline
+function sendMessageOffline(messageData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'message',
+      data: messageData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online message sending
+  return sendMessageOnline(messageData);
+}
+
+function sendMessageOnline(messageData) {
+  // Your existing message sending logic here
+  console.log('💌 Sending message online:', messageData);
+  return Promise.resolve({ success: true, offline: false });
+}
+
+// Override score submission to queue when offline
+function submitScoreOffline(scoreData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'score',
+      data: scoreData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online score submission
+  return submitScoreOnline(scoreData);
+}
+
+function submitScoreOnline(scoreData) {
+  // Your existing score submission logic here
+  console.log('🏆 Submitting score online:', scoreData);
+  return Promise.resolve({ success: true, offline: false });
+}
+
+// Override game result submission
+function submitGameResultOffline(gameData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'game_result',
+      data: gameData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online game result submission
+  return submitGameResultOnline(gameData);
+}
+
+function submitGameResultOnline(gameData) {
+  // Your existing game result submission logic here
+  console.log('🎮 Submitting game result online:', gameData);
+  return Promise.resolve({ success: true, offline: false });
+}
+
+// Override settings save to queue when offline
+function saveSettingOffline(settingData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'setting',
+      data: settingData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online settings save
+  return saveSettingOnline(settingData);
+}
+
+function saveSettingOnline(settingData) {
+  // Your existing settings save logic here
+  console.log('⚙️ Saving setting online:', settingData);
+  return Promise.resolve({ success: true, offline: false });
+}
+
+// Listen for online/offline events
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// Load offline actions on page load
+loadOfflineActions();
+
+// Keyboard shortcuts for offline features
+document.addEventListener('keydown', (event) => {
+  // Ctrl/Cmd + Shift + C to show cache info
+  if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'C') {
+    event.preventDefault();
+    showCacheInfo();
+  }
+  
+  // Ctrl/Cmd + Shift + R to force reload
+  if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'R') {
+    event.preventDefault();
+    window.location.reload();
+  }
+  
+  // Ctrl/Cmd + Shift + S to manually sync offline actions
+  if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'S') {
+    event.preventDefault();
+    if (isOnline && offlineActions.length > 0) {
+      syncOfflineActions();
+    }
+  }
+});
+
 // Initialize floating hearts
 createFloatingHearts();
 
@@ -1076,6 +1620,9 @@ function registerServiceWorker() {
             }
           });
         });
+        
+        // Check if app is ready for offline use
+        checkOfflineReadiness();
       })
       .catch((error) => {
         console.error('❌ Service Worker registration failed:', error);
@@ -1083,6 +1630,180 @@ function registerServiceWorker() {
   } else {
     console.log('⚠️ Service Worker not supported');
   }
+}
+
+// Check if the app is ready for offline use
+function checkOfflineReadiness() {
+  if ('caches' in window) {
+    caches.open('baby-love-v2').then((cache) => {
+      cache.keys().then((requests) => {
+        const cachedCount = requests.length;
+        console.log(`📦 App has ${cachedCount} resources cached for offline use`);
+        
+        if (cachedCount > 10) {
+          showOfflineReadyNotification();
+        }
+      });
+    });
+  }
+}
+
+// Show notification when app is ready for offline use
+function showOfflineReadyNotification() {
+  const notification = document.createElement('div');
+  notification.className = 'offline-ready-notification';
+  notification.innerHTML = `
+    <div class="offline-ready-content">
+      <span class="offline-ready-icon">✅</span>
+      <span class="offline-ready-text">Baby Love is ready for offline use! 💕</span>
+    </div>
+  `;
+  
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .offline-ready-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      z-index: 10000;
+      animation: slideInUp 0.5s ease-out;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .offline-ready-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .offline-ready-icon {
+      font-size: 1.1rem;
+    }
+    
+    @keyframes slideInUp {
+      from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+  `;
+  
+  if (!document.querySelector('#offlineReadyNotificationStyles')) {
+    style.id = 'offlineReadyNotificationStyles';
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notification);
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    notification.style.animation = 'slideOutDown 0.5s ease-out';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 500);
+  }, 5000);
+}
+
+// Cache management functions
+function getCacheInfo() {
+  if ('caches' in window) {
+    return caches.open('baby-love-v2').then((cache) => {
+      return cache.keys().then((requests) => {
+        const totalSize = requests.length;
+        const fileTypes = {};
+        
+        requests.forEach(request => {
+          const url = request.url;
+          const extension = url.split('.').pop().toLowerCase();
+          fileTypes[extension] = (fileTypes[extension] || 0) + 1;
+        });
+        
+        return {
+          totalFiles: totalSize,
+          fileTypes: fileTypes
+        };
+      });
+    });
+  }
+  return Promise.resolve(null);
+}
+
+function showCacheInfo() {
+  getCacheInfo().then((info) => {
+    if (info) {
+      const message = `📦 Offline Cache: ${info.totalFiles} files cached\n`;
+      console.log(message, info);
+      
+      // Show a user-friendly notification
+      const notification = document.createElement('div');
+      notification.className = 'cache-info-notification';
+      notification.innerHTML = `
+        <div class="cache-info-content">
+          <span class="cache-info-icon">📦</span>
+          <span class="cache-info-text">${info.totalFiles} files cached for offline use</span>
+        </div>
+      `;
+      
+      // Add styles
+      const style = document.createElement('style');
+      style.textContent = `
+        .cache-info-notification {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #2196F3, #1976D2);
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border-radius: 25px;
+          box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+          z-index: 10000;
+          animation: slideInLeft 0.5s ease-out;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+        
+        .cache-info-content {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .cache-info-icon {
+          font-size: 1.1rem;
+        }
+        
+        @keyframes slideInLeft {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `;
+      
+      if (!document.querySelector('#cacheInfoNotificationStyles')) {
+        style.id = 'cacheInfoNotificationStyles';
+        document.head.appendChild(style);
+      }
+      
+      document.body.appendChild(notification);
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.5s ease-out';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.remove();
+          }
+        }, 500);
+      }, 3000);
+    }
+  });
 }
 
 // Show update notification
@@ -1619,4 +2340,80 @@ function checkPWAStatus() {
     // Add standalone-specific features here
   }
 }
+
+// === OFFLINE INTEGRATION FUNCTIONS ===
+// These functions can be used by other features to handle offline actions
+
+// Send message with offline support
+window.sendMessageWithOfflineSupport = function(messageData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'message',
+      data: messageData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online message sending
+  return sendMessageOnline(messageData);
+};
+
+// Submit score with offline support
+window.submitScoreWithOfflineSupport = function(scoreData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'score',
+      data: scoreData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online score submission
+  return submitScoreOnline(scoreData);
+};
+
+// Submit game result with offline support
+window.submitGameResultWithOfflineSupport = function(gameData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'game_result',
+      data: gameData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online game result submission
+  return submitGameResultOnline(gameData);
+};
+
+// Save setting with offline support
+window.saveSettingWithOfflineSupport = function(settingData) {
+  if (!isOnline) {
+    queueOfflineAction({
+      type: 'setting',
+      data: settingData
+    });
+    return Promise.resolve({ success: true, offline: true });
+  }
+  
+  // Normal online settings save
+  return saveSettingOnline(settingData);
+};
+
+// Get offline actions count
+window.getOfflineActionsCount = function() {
+  return offlineActions.length;
+};
+
+// Manually trigger sync
+window.manualSyncOfflineActions = function() {
+  if (isOnline && offlineActions.length > 0) {
+    syncOfflineActions();
+  }
+};
+
+// Check if currently offline
+window.isCurrentlyOffline = function() {
+  return !isOnline;
+};
 

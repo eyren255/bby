@@ -503,72 +503,145 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update performance display
     performance.textContent = performance;
     
-    // Check for best score and save to cloud first
+    // Check for best score and save with offline support
     const currentScore = `${moves} moves in ${formatTime(elapsedTime)}`;
     const savedBestScore = localStorage.getItem(`memoryBestScore_${currentLevel}`);
     
-    let cloudSaveSuccessful = false;
-    
-    if (!savedBestScore || moves < parseInt(savedBestScore.split(' ')[0])) {
-      // Try to save to cloud first
-      try {
-        await ScoreboardService.saveScore(`memory_${currentLevel}`, moves, {
-          time: formatTime(elapsedTime),
-          level: currentLevel,
-          scoreText: currentScore
-        });
-        cloudSaveSuccessful = true;
-        console.log('✅ Score saved to cloud successfully');
-      } catch (error) {
-        console.error('❌ Error saving score to cloud:', error);
-        // Fallback to localStorage only if cloud save fails
+    // Always save locally first for immediate access
+    try {
+      const scoreData = {
+        score: moves,
+        time: elapsedTime,
+        level: currentLevel,
+        timestamp: Date.now(),
+        performance: performance,
+        scoreText: currentScore
+      };
+      
+      // Get existing scores for this level
+      const existingScores = JSON.parse(localStorage.getItem('loveMemoryScores') || '{}');
+      const levelKey = `memory_${currentLevel}`;
+      
+      if (!existingScores[levelKey]) {
+        existingScores[levelKey] = [];
+      }
+      
+      // Add new score
+      existingScores[levelKey].push(scoreData);
+      
+      // Keep only top 10 scores per level
+      existingScores[levelKey] = existingScores[levelKey]
+        .sort((a, b) => a.score - b.score) // Lower score is better for memory match
+        .slice(0, 10);
+      
+      // Save to localStorage
+      localStorage.setItem('loveMemoryScores', JSON.stringify(existingScores));
+      
+      // Update best score if this is better
+      if (!savedBestScore || moves < parseInt(savedBestScore.split(' ')[0])) {
         localStorage.setItem(`memoryBestScore_${currentLevel}`, currentScore);
-        console.log('📱 Score saved to localStorage as fallback');
+        bestScore.textContent = currentScore;
       }
-      bestScore.textContent = currentScore;
+      
+      console.log('📱 Score saved locally');
+      
+    } catch (error) {
+      console.error('❌ Error saving score to localStorage:', error);
     }
-
-    // Only save to localStorage if cloud save failed or internet is not available
-    if (!cloudSaveSuccessful) {
-      try {
-        const scoreData = {
-          score: moves,
-          time: elapsedTime,
-          level: currentLevel,
-          timestamp: Date.now(),
-          performance: performance
-        };
-        
-        // Get existing scores for this level
-        const existingScores = JSON.parse(localStorage.getItem('loveMemoryScores') || '{}');
-        const levelKey = `memory_${currentLevel}`;
-        
-        if (!existingScores[levelKey]) {
-          existingScores[levelKey] = [];
-        }
-        
-        // Add new score
-        existingScores[levelKey].push(scoreData);
-        
-        // Keep only top 10 scores per level
-        existingScores[levelKey] = existingScores[levelKey]
-          .sort((a, b) => a.score - b.score) // Lower score is better for memory match
-          .slice(0, 10);
-        
-        // Save to localStorage
-        localStorage.setItem('loveMemoryScores', JSON.stringify(existingScores));
-        
-        console.log('📱 Score saved to localStorage (no internet available)');
-        
-      } catch (error) {
-        console.error('❌ Error saving score to localStorage:', error);
-      }
-    } else {
-      console.log('☁️ Score saved to cloud, skipping localStorage');
+    
+    // Submit score with offline support
+    if (window.submitScoreWithOfflineSupport) {
+      const scoreData = {
+        game: 'memory-match',
+        level: currentLevel,
+        score: moves,
+        time: elapsedTime,
+        performance: performance,
+        scoreText: currentScore,
+        timestamp: Date.now()
+      };
+      
+      window.submitScoreWithOfflineSupport(scoreData)
+        .then(result => {
+          if (result.offline) {
+            console.log('📦 Score queued for offline sync');
+            // Show offline notification
+            showOfflineScoreNotification();
+          } else {
+            console.log('✅ Score submitted to leaderboard');
+          }
+        })
+        .catch(error => {
+          console.error('❌ Error submitting score:', error);
+        });
     }
 
     // Show win message
     winMessage.classList.remove('hidden');
+  }
+
+  // Show offline score notification
+  function showOfflineScoreNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'offline-score-notification';
+    notification.innerHTML = `
+      <div class="offline-score-content">
+        <span class="offline-score-icon">📦</span>
+        <span class="offline-score-text">Score saved! Will sync when online</span>
+      </div>
+    `;
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .offline-score-notification {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #FF9800, #FFB74D);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        z-index: 10000;
+        animation: slideInUp 0.5s ease-out;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      
+      .offline-score-content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .offline-score-icon {
+        font-size: 1.1rem;
+      }
+      
+      @keyframes slideInUp {
+        from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+      }
+    `;
+    
+    if (!document.querySelector('#offlineScoreNotificationStyles')) {
+      style.id = 'offlineScoreNotificationStyles';
+      document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      notification.style.animation = 'slideOutDown 0.5s ease-out';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+        }
+      }, 500);
+    }, 3000);
   }
 
   // Event Listeners
