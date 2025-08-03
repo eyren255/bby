@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Love Assistant - Baby Love</title>
+    <link rel="stylesheet" href="ai-assistant.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="ai-header">
+            <h1 class="ai-title">🤖 AI Love Assistant</h1>
+            <p class="ai-subtitle">Your personal guide to romantic activities 💕</p>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <!-- AI messages will appear here -->
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="userInput" class="user-input" placeholder="Tell me how you're feeling...">
+                <button id="sendBtn" class="send-btn">💌</button>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-container">
+            <div class="control-group">
+                <label class="control-label">How are you feeling?</label>
+                <div class="mood-buttons">
+                    <button class="mood-btn" data-mood="happy">😊 Happy</button>
+                    <button class="mood-btn" data-mood="sad">😢 Sad</button>
+                    <button class="mood-btn" data-mood="excited">🤩 Excited</button>
+                    <button class="mood-btn" data-mood="calm">😌 Calm</button>
+                    <button class="mood-btn" data-mood="romantic">💕 Romantic</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Spice Level 🌶️</label>
+                <div class="spice-slider-container">
+                    <div class="spice-slider" id="spiceSlider">
+                        <div class="slider-track">
+                            <div class="slider-fill"></div>
+                            <div class="slider-thumb"></div>
+                        </div>
+                        <div class="spice-labels">
+                            <span class="spice-label" data-level="sweet">Sweet</span>
+                            <span class="spice-label" data-level="romantic">Romantic</span>
+                            <span class="spice-label" data-level="passionate">Passionate</span>
+                            <span class="spice-label" data-level="spicy">Spicy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Where are you?</label>
+                <div class="location-buttons">
+                    <button class="location-btn" data-location="home">🏠 Home</button>
+                    <button class="location-btn" data-location="bedroom">🛏️ Bedroom</button>
+                    <button class="location-btn" data-location="kitchen">🍳 Kitchen</button>
+                    <button class="location-btn" data-location="bathroom">🛁 Bathroom</button>
+                    <button class="location-btn" data-location="car">🚗 Car</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="generateBtn" class="generate-btn">✨ Generate Activity</button>
+            <button id="randomBtn" class="random-btn">🎲 Surprise Me</button>
+            <button id="saveBtn" class="save-btn">💾 Save Favorite</button>
+        </div>
+
+        <!-- Favorites Section -->
+        <div class="favorites-section">
+            <h3>💖 Saved Favorites</h3>
+            <div id="favoritesList" class="favorites-list">
+                <!-- Saved activities will appear here -->
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <button class="back-btn" onclick="window.location.href='/'">
+            <span class="back-icon">←</span>
+            <span class="back-text">Back to Menu</span>
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Thinking of something special... 💕</div>
+        </div>
+    </div>
+
+    <script src="ai-assistant.js"></script>
+</body>
+</html> 
