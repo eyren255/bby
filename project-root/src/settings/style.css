@@ -1,0 +1,8 @@
+.field { margin-bottom: var(--space-3); display: block; }
+label span { display: block; margin-bottom: 6px; }
+input[type="text"], input[type="url"] { width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid #e7c6d5; background: #fff; }
+.switch { display: flex; align-items: center; gap: 10px; }
+.actions { display: flex; gap: 10px; }
+button { padding: 10px 16px; border-radius: var(--radius-sm); border: none; background: var(--color-accent); color: #fff; cursor: pointer; }
+button.outline { background: transparent; color: var(--color-accent); border: 2px solid var(--color-accent); }
+.muted { color: var(--color-muted); }

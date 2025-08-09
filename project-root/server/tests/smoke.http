@@ -1,0 +1,17 @@
+# Health
+GET http://localhost:4000/api/v1/health
+
+###
+# Submit score
+POST http://localhost:4000/api/v1/scores
+Content-Type: application/json
+
+{
+  "playerName": "Test",
+  "score": 123,
+  "game": "catch-the-hearts"
+}
+
+###
+# Leaderboard
+GET http://localhost:4000/api/v1/leaderboard?game=catch-the-hearts&limit=5

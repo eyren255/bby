@@ -1,0 +1,5 @@
+{
+  "spawnRate": 0.03,
+  "gravity": 1.0,
+  "basket": { "width": 60, "height": 12 }
+}

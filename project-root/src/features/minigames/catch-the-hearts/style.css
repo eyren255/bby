@@ -1,0 +1,4 @@
+.game-area { position: relative; }
+#game { width: 100%; max-width: 800px; display: block; margin: 0 auto; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.hud { display: flex; gap: 16px; align-items: center; justify-content: center; margin-top: 10px; }
+.leaderboards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-top: var(--space-4); }

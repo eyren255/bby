@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Honeybun Anniversary</title>
+  <meta name="description" content="A cute, animated anniversary microsite for Thazin Nwe (Honeybun)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="public/images/favicon-heart.svg">
+  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="src/main-menu/style.css">
+</head>
+<body>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div id="app" class="container">
+    <header class="site-header">
+      <img class="hero-img" src="public/images/honeybun-placeholder.jpg" alt="Honeybun placeholder" />
+      <h1>For Thazin Nwe — Honeybun 💕 — 13 days (Jul 28, 2025)</h1>
+      <p class="tag">Pastel vibes, soft sparkles, and mini games made with love.</p>
+      <div class="status-bar" role="status" aria-live="polite">
+        <span id="onlineStatus" class="badge offline">Offline</span>
+        <span id="syncStatus" class="badge pending">Sync: off</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="cards">
+        <a class="card" href="src/features/minigames/catch-the-hearts/index.html">
+          <h3>Catch the Hearts</h3>
+          <p>Catch falling hearts, beat your high score, share the love.</p>
+        </a>
+        <a class="card" href="src/features/minigames/memory-match/index.html">
+          <h3>Memory Match</h3>
+          <p>Match pairs of cute icons. Remember the good times!</p>
+        </a>
+        <a class="card" href="src/features/countdown-milestones/index.html">
+          <h3>Countdown & Milestones</h3>
+          <p>T-13 days to our special date: 28 July 2025.</p>
+        </a>
+        <a class="card" href="src/features/animated-love-letters/index.html">
+          <h3>Animated Love Letters</h3>
+          <p>Short notes that dance on the screen.</p>
+        </a>
+        <a class="card" href="src/features/gift-box-surprise/index.html">
+          <h3>Gift Box Surprise</h3>
+          <p>Open a box to reveal a surprise message.</p>
+        </a>
+        <a class="card" href="src/features/fortune-cookies/index.html">
+          <h3>Fortune Cookies</h3>
+          <p>Crack a cookie for a sweet fortune.</p>
+        </a>
+        <a class="card" href="src/features/daily-compliments/index.html">
+          <h3>Daily Compliments</h3>
+          <p>New compliments every day.</p>
+        </a>
+        <a class="card" href="src/settings/index.html">
+          <h3>Settings</h3>
+          <p>Toggle animations, syncing, and set your display name.</p>
+        </a>
+      </section>
+
+      <section class="leaderboard-cta">
+        <a class="card outline" href="src/main-menu/leaderboard.html">
+          <h3>Global Leaderboard</h3>
+          <p>See top scores (if server is running).</p>
+        </a>
+      </section>
+    </main>
+
+    <footer>
+      <small>Made with 💗 just for you. Works offline; turn on syncing in Settings to share scores.</small>
+    </footer>
+  </div>
+
+  <!-- GSAP (enhancement only) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" integrity="sha256-YfW5lZQic6f0i0XJ3f2C7qPZkVc+HqMP5YkZzjkN4a8=" crossorigin="anonymous"></script>
+  <script>
+    if (typeof gsap === 'undefined') {
+      console.warn('GSAP failed to load from CDN. Animations will use CSS/vanilla fallbacks.');
+    }
+  </script>
+
+  <!-- Socket.io client (optional) -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-SCwA/IyZvPUW3gkH4f8e8fYw4qvI8C6qR9h4cX8t0VJYzvQnU3QyI3m5pA2yS9xH" crossorigin="anonymous"></script>
+  <script>
+    if (typeof io === 'undefined') {
+      console.warn('Socket.io client failed to load. Realtime leaderboard disabled.');
+    }
+  </script>
+
+  <script src="scripts/api.js"></script>
+  <script src="scripts/animations.js"></script>
+  <script src="src/main-menu/script.js"></script>
+</body>
+</html>
