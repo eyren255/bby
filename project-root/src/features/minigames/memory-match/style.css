@@ -1,0 +1,4 @@
+.grid { display: grid; grid-template-columns: repeat(4, 80px); gap: 12px; justify-content: center; }
+.card-tile { width: 80px; height: 80px; border-radius: 12px; background: #fff; display: grid; place-items: center; font-size: 28px; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .2s; }
+.card-tile.revealed { background: var(--color-accent-3); transform: scale(1.02); }
+.hud { margin-top: 12px; display: flex; gap: 16px; justify-content: center; align-items: center; }

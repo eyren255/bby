@@ -1,0 +1,3 @@
+.gift { display: grid; place-items: center; gap: 12px; }
+.box { font-size: 64px; background: transparent; border: none; cursor: pointer; }
+.message { font-size: 20px; text-align: center; }

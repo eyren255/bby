@@ -1,0 +1,3 @@
+.fortune { text-align: center; }
+#crack { padding: 10px 16px; border-radius: var(--radius-sm); border: none; background: var(--color-accent); color: #fff; cursor: pointer; }
+.fortune-text { margin-top: 16px; font-size: 18px; }

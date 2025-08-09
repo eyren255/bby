@@ -1,0 +1,2 @@
+.compliment { font-size: 20px; text-align: center; }
+button.outline { background: transparent; color: var(--color-accent); border: 2px solid var(--color-accent); padding: 8px 12px; border-radius: var(--radius-sm); }

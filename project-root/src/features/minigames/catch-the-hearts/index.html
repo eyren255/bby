@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Hearts</title>
+  <link rel="stylesheet" href="../../../../styles/theme.css">
+  <link rel="stylesheet" href="../../../../styles/global.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="container">
+    <a href="../../../../index.html" class="card outline">← Back to Home</a>
+    <h2>Catch the Hearts</h2>
+    <div class="status-bar"><span id="onlineStatus" class="badge offline">Offline</span><span id="syncStatus" class="badge pending">Sync: off</span></div>
+    <div class="game-area card">
+      <canvas id="game" width="600" height="400" aria-label="Game area"></canvas>
+      <div class="hud">
+        <span>Score: <strong id="score">0</strong></span>
+        <span>Best (local): <strong id="bestLocal">0</strong></span>
+        <button id="submitBtn">Submit to Leaderboard</button>
+      </div>
+    </div>
+    <div class="leaderboards">
+      <div class="card">
+        <h3>Top Scores (Global)</h3>
+        <ol id="globalList"></ol>
+      </div>
+      <div class="card">
+        <h3>Recent (Global)</h3>
+        <ol id="recentList"></ol>
+      </div>
+    </div>
+  </div>
+  <script src="../../../../scripts/animations.js"></script>
+  <script src="../../../../scripts/api.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
